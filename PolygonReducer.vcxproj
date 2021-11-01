@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup Label="UserMacros">
+    <APIDevKitRoot>D:\Program Files\Graphisoft\API Development Kit 19.3003</APIDevKitRoot>
+    <APIDevKitSupport>$(APIDevKitRoot)\Support</APIDevKitSupport>
+    <APIDevKitModules>$(APIDevKitSupport)\Modules</APIDevKitModules>
+  </PropertyGroup>
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="RFIX\PolygonReducerFix.grc">
+      <FileType>Document</FileType>
+      <Command>"$(APIDevKitSupport)\Tools\Win\ResConv.exe" -m r -D WINDOWS -T W -q utf8 1252 -i "RFIX\$(ProjectName)Fix.grc" -p "RFIX\Images" -D _DEBUG -o "$(ConfigurationName)\$(ProjectName)Fix.grc.rc2"</Command>
+      <Message>Compiling the non-localized GRC file...</Message>
+      <Outputs>$(ConfigurationName)\$(ProjectName)Fix.grc.rc2;%(Outputs)</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="RINT\PolygonReducer.grc">
+      <FileType>Document</FileType>
+      <Command>"$(APIDevKitSupport)\Tools\Win\ResConv.exe" -m r -D WINDOWS -T W -q utf8 1252 -i "RINT\$(ProjectName).grc" -D _DEBUG -o "$(ConfigurationName)\$(ProjectName).grc.rc2"</Command>
+      <Message>Compiling the localized GRC file...</Message>
+      <Outputs>$(ConfigurationName)\$(ProjectName).grc.rc2;%(Outputs)</Outputs>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Src\APICommon.h" />
+    <ClInclude Include="Src\APIEnvir.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Src\APICommon.c" />
+    <ClCompile Include="Src\PolygonReducer.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Library Include="$(APIDevKitSupport)\Lib\Win\ACAP_STAT.lib" />
+    <Library Include="$(APIDevKitModules)\DGLib\Win\DGImp.LIB" />
+    <Library Include="$(APIDevKitModules)\Geometry\Win\GeometryImp.LIB" />
+    <Library Include="$(APIDevKitModules)\GSRoot\Win\GSRootImp.LIB" />
+    <Library Include="$(APIDevKitModules)\GSUtils\Win\GSUtilsImp.LIB" />
+    <Library Include="$(APIDevKitModules)\InputOutput\Win\InputOutputImp.LIB" />
+    <Library Include="$(APIDevKitModules)\UCLib\Win\UCImp.LIB" />
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>16.0</VCProjectVersion>
+    <ProjectGuid>{2daa4bb9-98c8-4099-9e81-977c5acb7d38}</ProjectGuid>
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <PlatformToolset>Windows7.1SDK</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <LinkIncremental>true</LinkIncremental>
+    <OutDir>$(PlatformName)\$(ConfigurationName)\</OutDir>
+    <IntDir>$(PlatformName)\$(ConfigurationName)\</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup>
+    <TargetExt>.apx</TargetExt>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <WarningLevel>Level4</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>_ITERATOR_DEBUG_LEVEL=0;WIN32;_DEBUG;WINDOWS;_WINDOWS;_USRDLL;_STLP_DONT_FORCE_MSVC_LIB_NAME;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <TreatWarningAsError>true</TreatWarningAsError>
+      <AdditionalIncludeDirectories>$(APIDevKitSupport)\Inc;$(APIDevKitModules)\GSRoot;$(APIDevKitModules)\GSUtils;$(APIDevKitModules)\DGLib;$(APIDevKitModules)\Geometry;$(APIDevKitModules)\InputOutput;$(APIDevKitModules)\UCLib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <Optimization>Disabled</Optimization>
+      <StringPooling>true</StringPooling>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <TreatWChar_tAsBuiltInType>false</TreatWChar_tAsBuiltInType>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <PrecompiledHeader />
+      <CallingConvention>FastCall</CallingConvention>
+      <CompileAs>CompileAsCpp</CompileAs>
+      <DisableSpecificWarnings>4996;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+    </ClCompile>
+    <Link>
+      <SubSystem>NotSet</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <OutputFile>$(OutDir)$(ProjectName).apx</OutputFile>
+      <AdditionalDependencies>msvcrtd.lib;msvcprtd.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <IgnoreAllDefaultLibraries>true</IgnoreAllDefaultLibraries>
+      <EntryPointSymbol>DllMainEntry</EntryPointSymbol>
+    </Link>
+    <CustomBuild>
+      <Command>
+      </Command>
+    </CustomBuild>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level4</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>false</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <TreatWarningAsError>true</TreatWarningAsError>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+    <CustomBuild>
+      <Command>$(APIDevKitSupport)\Inc;$(APIDevKitModules)\GSRoot;$(APIDevKitModules)\GSUtils;$(APIDevKitModules)\DGLib;$(APIDevKitModules)\Geometry;$(APIDevKitModules)\InputOutput;$(APIDevKitModules)\UCLib;%(AdditionalIncludeDirectories)</Command>
+    </CustomBuild>
+  </ItemDefinitionGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

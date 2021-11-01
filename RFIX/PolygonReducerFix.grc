@@ -1,0 +1,14 @@
+﻿/* *****************************************************************************
+// Non-localizable resource description for the PolygonReducer Add-On
+// API Development Kit 19; Mac/Win
+//
+// Namespaces:			Contact person:
+//		-None-
+//
+// [SG compatible] - Yes
+// ****************************************************************************/
+
+'MDID' 32500 "Add-On Identifier" {
+	889062495
+	2040922960
+}
