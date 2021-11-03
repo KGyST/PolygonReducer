@@ -13,12 +13,18 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Libraries">
+      <UniqueIdentifier>{6537b44d-17c3-4949-b612-5ecea6d3f85f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <CustomBuild Include="RFIX\PolygonReducerFix.grc">
+    <CustomBuild Include="RFIX.WIN\$(ProjectName).rc2">
       <Filter>Resource Files</Filter>
     </CustomBuild>
-    <CustomBuild Include="RINT\PolygonReducer.grc">
+    <CustomBuild Include="RFIX\$(ProjectName)Fix.grc">
+      <Filter>Resource Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="RINT\$(ProjectName).grc">
       <Filter>Resource Files</Filter>
     </CustomBuild>
   </ItemGroup>
@@ -39,12 +45,26 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <Library Include="..\..\..\API Development Kit 19.3003\Support\Lib\Win\ACAP_STAT.lib" />
-    <Library Include="..\..\..\API Development Kit 19.3003\Support\Modules\DGLib\Win\DGImp.LIB" />
-    <Library Include="..\..\..\API Development Kit 19.3003\Support\Modules\Geometry\Win\GeometryImp.LIB" />
-    <Library Include="..\..\..\API Development Kit 19.3003\Support\Modules\GSUtils\Win\GSUtilsImp.LIB" />
-    <Library Include="..\..\..\API Development Kit 19.3003\Support\Modules\GSRoot\Win\GSRootImp.LIB" />
-    <Library Include="..\..\..\API Development Kit 19.3003\Support\Modules\InputOutput\Win\InputOutputImp.LIB" />
-    <Library Include="..\..\..\API Development Kit 19.3003\Support\Modules\UCLib\Win\UCImp.LIB" />
+    <Library Include="$(APIDevKitSupport)\Lib\Win\ACAP_STAT.lib">
+      <Filter>Libraries</Filter>
+    </Library>
+    <Library Include="$(APIDevKitModules)\DGLib\Win\DGImp.lib">
+      <Filter>Libraries</Filter>
+    </Library>
+    <Library Include="$(APIDevKitModules)\Geometry\Win\GeometryImp.lib">
+      <Filter>Libraries</Filter>
+    </Library>
+    <Library Include="$(APIDevKitModules)\GSRoot\Win\GSRootImp.lib">
+      <Filter>Libraries</Filter>
+    </Library>
+    <Library Include="$(APIDevKitModules)\GSUtils\Win\GSUtilsImp.lib">
+      <Filter>Libraries</Filter>
+    </Library>
+    <Library Include="$(APIDevKitModules)\InputOutput\Win\InputOutputImp.lib">
+      <Filter>Libraries</Filter>
+    </Library>
+    <Library Include="$(APIDevKitModules)\UCLib\Win\UCImp.lib">
+      <Filter>Libraries</Filter>
+    </Library>
   </ItemGroup>
 </Project>

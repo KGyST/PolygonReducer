@@ -38,8 +38,10 @@
 // =============================================================================
 
 
-static void		PolygonReduce (void)
+static void		ReducePolygons(void)
 {
+	int a = 1;
+	UNUSED_VARIABLE(a);
 
 	return;
 }		/* Do_Test */
@@ -52,7 +54,7 @@ static void		PolygonReduce (void)
 GSErrCode __ACENV_CALL	MenuCommandHandler (const API_MenuParams *params)
 {
 	switch (params->menuItemRef.itemIndex) {
-		case 1:		PolygonReduce();				break;
+		case 1:		ReducePolygons ();				break;
 	}
 
 	return NoError;
