@@ -24,6 +24,8 @@
 #include    "APICommon.h"
 
 #include <algorithm>
+#include <numeric>
+
 
 // ---------------------------------- Types ------------------------------------
 
@@ -33,55 +35,29 @@
 
 // ---------------------------------- Prototypes -------------------------------
 
-
+class S_Segmnt
+{
+    unsigned int idx;
+    API_Coord start;
+    API_Coord end;
+    API_Coord center;
+    float length;
+    float angle;
+    float radius;
+    unsigned int status1;
+    unsigned int status2;
+    unsigned int prvIdx;
+    unsigned int nxtIdx;
+    S_Segmnt* previous;
+    S_Segmnt* next;
+    //DELETE
+};
 
 // =============================================================================
 //
 // Main functions
 //
 // =============================================================================
-
-bool IsItPolygon(API_Neig p_neig)
-{
-    if (p_neig.neigID == APINeig_PolyLine
-        || p_neig.neigID == APINeig_Hatch)
-        return true;
-
-    return false;
-}
-
-API_Guid NeigToAPIGuid(API_Neig p_neig)
-{
-    return p_neig.guid;
-}
-
-template <class T>
-GSErrCode GetItemsFromNeig(
-    API_Neig** p_neigs,
-    GS::Array<T>* resultArray,
-    bool (*funcFilter)(API_Neig)
-    //T(*funcConverter)(API_Neig)
-    )
-{
-    UInt32 nSel = BMGetHandleSize((GSHandle)p_neigs) / sizeof(API_Neig);
-
-    API_Neig _an;
-
-    try {
-        for (UInt32 ii = 0; ii < nSel; ++ii) {
-            _an = (*p_neigs)[ii];
-
-            if (funcFilter(_an))
-                resultArray->Push((T)_an);
-                //resultArray->Push(funcConverter(_an));
-        }
-    }
-    catch (...) {
-        return 1;
-    }
-
-    return 0;
-}
 
 void TrackPoly(const API_Polygon* poly, const API_ElementMemo* memo)
 {
@@ -102,6 +78,87 @@ void TrackPoly(const API_Polygon* poly, const API_ElementMemo* memo)
 }
 
 
+bool IsItPolygon(API_Neig p_neig)
+{
+    if  (   p_neig.neigID == APINeig_PolyLine
+        ||  p_neig.neigID == APINeig_PolyLineOn
+        ||  p_neig.neigID == APINeig_Hatch
+        ||  p_neig.neigID == APINeig_HatchOn
+        )
+        return true;
+
+    return false;
+}
+
+API_Guid NeigToAPIGuid(API_Neig p_neig)
+{
+    return p_neig.guid;
+}
+
+// To be removed ------------------------------
+
+template <class inT>
+bool ReturnTrue (inT p_inObj)
+{
+    UNUSED_PARAMETER(p_inObj);
+
+    return true;
+}
+
+template <class T>
+T ConvertToTheSame(T p_obj)
+{
+    return p_obj;
+}
+
+API_ElementMemo ConvertToMemos(API_Neig p_neig)
+{
+    API_Guid _guid = p_neig.guid;
+    API_ElementMemo _memo;
+
+    GSErrCode err = ACAPI_Element_GetMemo(_guid, &_memo);
+
+    UNUSED_VARIABLE(err);
+
+    return _memo;
+}
+
+API_Coord** ConvertToCoords(API_ElementMemo p_memo)
+{
+    return p_memo.coords;
+}
+
+///To be removed ------------------------------
+
+template <class inT, class outT>
+GSErrCode ConvertToGSArray(
+    inT** p_neigs,
+    GS::Array<outT>* resultArray,
+    bool (*funcFilter)(inT) = ReturnTrue<inT>,
+    outT (*funcConverter)(inT) = ConvertToTheSame
+    )
+{
+    UInt32 nSel = BMGetHandleSize((GSHandle)p_neigs) / sizeof(inT);
+
+    inT _an;
+
+    try {
+        for (UInt32 ii = 0; ii < nSel; ++ii) {
+            _an = (*p_neigs)[ii];
+
+            if (funcFilter(_an))
+                resultArray->Push(funcConverter(_an));
+        }
+    }
+    catch (...) {
+        return 1;
+    }
+
+    return 0;
+}
+
+//------------------------------
+
 static void		ReducePolygons(void)
 {
     GSErrCode           err;
@@ -110,7 +167,7 @@ static void		ReducePolygons(void)
     GS::Array<API_Neig> indxs = *new GS::Array<API_Neig>();
     GS::Array<API_Guid> inds = *new GS::Array<API_Guid>();
     GS::Array<API_ElementMemo> memos = *new GS::Array<API_ElementMemo>();
-    //GS::Array<API_ElementMemo> memos = *new GS::Array<API_ElementMemo>();
+    GS::Array<API_Coord> coords = *new GS::Array<API_Coord>();
 
     err = ACAPI_Selection_Get(&selectionInfo, &selNeigs, true);
 
@@ -124,24 +181,17 @@ static void		ReducePolygons(void)
         return;
     }
     
-    err = GetItemsFromNeig<API_Neig>(selNeigs, &indxs, IsItPolygon);
+    err = ConvertToGSArray<API_Neig, API_ElementMemo>(selNeigs, &memos, ReturnTrue<API_Neig>, ConvertToMemos);
 
-    API_Guid _guid;
-    API_ElementMemo _memo;
-    //API_Polygon *_poly;
-
-    for ( Int32 i = 0; i < (Int32) indxs.GetSize() && err == NoError; ++i) {
-        _guid = indxs[i].guid;
-        inds.Push(_guid);
-
-        err = ACAPI_Element_GetMemo(_guid, &_memo);
-        memos.Push(_memo);
+    for (unsigned int i = 0; i < memos.GetSize(); i++)
+    {
+        err = ConvertToGSArray<API_Coord, API_Coord>(memos[i].coords, &coords);
     }
 
-    //for (Int32 i = 0; i < (Int32) memos.GetSize() && err == NoError; ++i) {
-    //    TrackPoly(_poly, &_memo);
-    //}
-
+    for (unsigned int i = 0; i < coords.GetSize(); i++)
+    {
+        WriteReport_Alert("X = %f, Y = %f", coords[i].x, coords[i].y);
+    }
 
     BMKillHandle((GSHandle*)&selNeigs);
 
