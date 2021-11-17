@@ -17,74 +17,98 @@
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{2DAA4BB9-98C8-4099-9E81-977C5ACB7D38}</ProjectGuid>
-    <ProjectName>PolygonReducer</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
-  <PropertyGroup Label="Configuration">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <PlatformToolset>Windows7.1SDK</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
   </ImportGroup>
-  <ImportGroup Label="PropertySheets">
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <Import Project="$(LocalAppData)\Microsoft\VisualStudio\10.0\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(LocalAppData)\Microsoft\VisualStudio\10.0\Microsoft.Cpp.$(Platform).user.props')" />
   </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(LocalAppData)\Microsoft\VisualStudio\10.0\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(LocalAppData)\Microsoft\VisualStudio\10.0\Microsoft.Cpp.$(Platform).user.props')" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <LinkIncremental>true</LinkIncremental>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <LinkIncremental>false</LinkIncremental>
-  </PropertyGroup>
-  <PropertyGroup>
     <IntDir>$(PlatformName)\$(ConfigurationName)\</IntDir>
     <OutDir>$(PlatformName)\$(ConfigurationName)\</OutDir>
     <TargetExt>.apx</TargetExt>
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <IntDir>$(PlatformName)\$(ConfigurationName)\</IntDir>
+    <OutDir>$(PlatformName)\$(ConfigurationName)\</OutDir>
+    <TargetExt>.apx</TargetExt>
+    <LinkIncremental>false</LinkIncremental>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
-      <AdditionalIncludeDirectories>$(APIDevKitSupport)\Inc;$(APIDevKitModules)\GSRoot;$(APIDevKitModules)\GSUtils;$(APIDevKitModules)\DGLib;$(APIDevKitModules)\Geometry;$(APIDevKitModules)\InputOutput;$(APIDevKitModules)\UCLib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>_ITERATOR_DEBUG_LEVEL=0;WIN32;_DEBUG;WINDOWS;_WINDOWS;_USRDLL;_STLP_DONT_FORCE_MSVC_LIB_NAME;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
-      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
-      <FunctionLevelLinking>true</FunctionLevelLinking>
-      <BrowseInformation>false</BrowseInformation>
-    </ClCompile>
-    <Link>
-      <GenerateDebugInformation>true</GenerateDebugInformation>
-      <ProgramDatabaseFile>$(OutDir)$(ProjectName).pdb</ProgramDatabaseFile>
-      <AdditionalDependencies>msvcrtd.lib;msvcprtd.lib;%(AdditionalDependencies)</AdditionalDependencies>
-    </Link>
-  </ItemDefinitionGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <ClCompile>
-      <AdditionalIncludeDirectories>$(APIDevKitSupport)\Inc;$(APIDevKitModules)\GSRoot;$(APIDevKitModules)\GSUtils;$(APIDevKitModules)\DGLib;$(APIDevKitModules)\Geometry;$(APIDevKitModules)\InputOutput;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <Optimization>MaxSpeed</Optimization>
-      <PreprocessorDefinitions>WIN32;NDEBUG;WINDOWS;_WINDOWS;_USRDLL;_STLP_DONT_FORCE_MSVC_LIB_NAME;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
-      <BrowseInformation>true</BrowseInformation>
-    </ClCompile>
-    <Link>
-      <OptimizeReferences>true</OptimizeReferences>
-      <EnableCOMDATFolding>true</EnableCOMDATFolding>
-      <AdditionalDependencies>msvcrt.lib;msvcprt.lib;%(AdditionalDependencies)</AdditionalDependencies>
-    </Link>
-  </ItemDefinitionGroup>
-  <ItemDefinitionGroup>
-    <ClCompile>
+      <AdditionalIncludeDirectories>$(APIDevKitSupport)\Inc;$(APIDevKitModules)\GSRoot;$(APIDevKitModules)\GSUtils;$(APIDevKitModules)\DGLib;$(APIDevKitModules)\Geometry;$(APIDevKitModules)\InputOutput;$(APIDevKitModules)\UCLib;$(APIDevKitModules)\VBElemDialogs;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <WarningLevel>Level4</WarningLevel>
       <TreatWarningAsError>true</TreatWarningAsError>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>_ITERATOR_DEBUG_LEVEL=0;WIN32;_DEBUG;WINDOWS;_WINDOWS;_USRDLL;_STLP_DONT_FORCE_MSVC_LIB_NAME;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <StringPooling>true</StringPooling>
       <MinimalRebuild>false</MinimalRebuild>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <BufferSecurityCheck>true</BufferSecurityCheck>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <ProgramDataBaseFileName>$(OutDir)$(ProjectName).pdb</ProgramDataBaseFileName>
+      <BrowseInformation>false</BrowseInformation>
+      <BrowseInformationFile>$(IntDir)</BrowseInformationFile>
+      <CallingConvention>FastCall</CallingConvention>
+      <CompileAs>CompileAsCpp</CompileAs>
+      <DisableSpecificWarnings>4996;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <TreatWChar_tAsBuiltInType>false</TreatWChar_tAsBuiltInType>
+    </ClCompile>
+    <Link>
+      <OutputFile>$(OutDir)$(ProjectName).apx</OutputFile>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <ProgramDatabaseFile>$(OutDir)$(ProjectName).pdb</ProgramDatabaseFile>
+      <SubSystem>NotSet</SubSystem>
+      <EntryPointSymbol>DllMainEntry</EntryPointSymbol>
+      <TargetMachine>MachineX64</TargetMachine>
+      <ImportLibrary>
+      </ImportLibrary>
+      <LinkDLL>true</LinkDLL>
+      <IgnoreAllDefaultLibraries>true</IgnoreAllDefaultLibraries>
+      <AdditionalDependencies>msvcrtd.lib;msvcprtd.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalOptions>/export:GetExportedFuncAddrs,%401 /export:SetImportedFuncAddrs,%402 %(AdditionalOptions)</AdditionalOptions>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>$(APIDevKitSupport)\Inc;$(APIDevKitModules)\GSRoot;$(APIDevKitModules)\GSUtils;$(APIDevKitModules)\DGLib;$(APIDevKitModules)\Geometry;$(APIDevKitModules)\InputOutput;$(APIDevKitModules)\UCLib;$(APIDevKitModules)\VBElemDialogs;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <WarningLevel>Level4</WarningLevel>
+      <TreatWarningAsError>true</TreatWarningAsError>
+      <Optimization>MaxSpeed</Optimization>
+      <PreprocessorDefinitions>WIN32;NDEBUG;WINDOWS;_WINDOWS;_USRDLL;_STLP_DONT_FORCE_MSVC_LIB_NAME;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <StringPooling>true</StringPooling>
+      <MinimalRebuild>false</MinimalRebuild>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <BufferSecurityCheck>true</BufferSecurityCheck>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
       <PrecompiledHeader>
       </PrecompiledHeader>
       <ObjectFileName>$(IntDir)</ObjectFileName>
       <ProgramDataBaseFileName>$(OutDir)$(ProjectName).pdb</ProgramDataBaseFileName>
+      <BrowseInformation>true</BrowseInformation>
       <BrowseInformationFile>$(IntDir)</BrowseInformationFile>
       <CallingConvention>FastCall</CallingConvention>
       <CompileAs>CompileAsCpp</CompileAs>
@@ -94,20 +118,26 @@
     <Link>
       <OutputFile>$(OutDir)$(ProjectName).apx</OutputFile>
       <SubSystem>NotSet</SubSystem>
+      <OptimizeReferences>true</OptimizeReferences>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <EntryPointSymbol>DllMainEntry</EntryPointSymbol>
       <TargetMachine>MachineX64</TargetMachine>
       <ImportLibrary>
       </ImportLibrary>
       <LinkDLL>true</LinkDLL>
       <IgnoreAllDefaultLibraries>true</IgnoreAllDefaultLibraries>
+      <AdditionalDependencies>msvcrt.lib;msvcprt.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalOptions>/export:GetExportedFuncAddrs,%401 /export:SetImportedFuncAddrs,%402 %(AdditionalOptions)</AdditionalOptions>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Src\PolygonReducer_Resource.h" />
+    <ClInclude Include="Src\InfoboxPanel.hpp" />
     <ClInclude Include="Src\APIEnvir.h" />
     <ClInclude Include="Src\APICommon.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Src\InfoboxPanel.cpp" />
     <ClCompile Include="Src\APICommon.c" />
     <ClCompile Include="Src\PolygonReducer.cpp" />
   </ItemGroup>
@@ -129,12 +159,13 @@
       <Command>rc /i "$(APIDevKitSupport)\Inc" /i "$(APIDevKitModules)\DGLib" /i "$(ConfigurationName)" /d _DEBUG /fo"$(OutDir)$(ProjectName).res" "RFIX.WIN\$(ProjectName).rc2"</Command>
       <Message>Compiling the RC2 file...</Message>
       <Outputs>$(OutDir)$(ProjectName).res;%(Outputs)</Outputs>
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(ConfigurationName)\$(ProjectName).grc.rc2;$(ConfigurationName)\$(ProjectName)Fix.grc.rc2;%(AdditionalInputs)</AdditionalInputs>
+      <AdditionalInputs>$(ConfigurationName)\$(ProjectName).grc.rc2;$(ConfigurationName)\$(ProjectName)Fix.grc.rc2;%(AdditionalInputs)</AdditionalInputs>
+      <Command>rc /i "$(APIDevKitSupport)\Inc" /i ".\Src" /i "$(APIDevKitModules)\DGLib" /i "$(ConfigurationName)" /d _DEBUG /fo"$(OutDir)$(ProjectName).res" "RFIX.WIN\$(ProjectName).rc2"</Command>
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>
     <Library Include="$(APIDevKitSupport)\Lib\Win\ACAP_STAT.lib">
-      <FileType>LIB</FileType>
+      <FileType>Document</FileType>
     </Library>
     <Library Include="$(APIDevKitModules)\DGLib\Win\DGImp.lib">
       <FileType>Document</FileType>
@@ -148,7 +179,7 @@
     <Library Include="$(APIDevKitModules)\InputOutput\Win\InputOutputImp.lib">
       <FileType>Document</FileType>
     </Library>
-    <Library Include="$(APIDevKitModules)\Geometry\Win\GeometryImp.lib">
+    <Library Include="$(APIDevKitModules)\VBElemDialogs\Win\VBElemDialogsImp.lib">
       <FileType>Document</FileType>
     </Library>
     <Library Include="$(APIDevKitModules)\UCLib\Win\UCImp.lib">

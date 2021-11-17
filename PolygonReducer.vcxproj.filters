@@ -14,7 +14,7 @@
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
     <Filter Include="Libraries">
-      <UniqueIdentifier>{6537b44d-17c3-4949-b612-5ecea6d3f85f}</UniqueIdentifier>
+      <UniqueIdentifier>{51e8555b-c3f8-46ae-87f6-df2610fa57df}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -29,10 +29,13 @@
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Src\APICommon.h">
+    <ClInclude Include="Src\APIEnvir.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Src\APIEnvir.h">
+    <ClInclude Include="Src\PolygonReducer_Resource.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\APICommon.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -51,9 +54,6 @@
     <Library Include="$(APIDevKitModules)\DGLib\Win\DGImp.lib">
       <Filter>Libraries</Filter>
     </Library>
-    <Library Include="$(APIDevKitModules)\Geometry\Win\GeometryImp.lib">
-      <Filter>Libraries</Filter>
-    </Library>
     <Library Include="$(APIDevKitModules)\GSRoot\Win\GSRootImp.lib">
       <Filter>Libraries</Filter>
     </Library>
@@ -64,6 +64,9 @@
       <Filter>Libraries</Filter>
     </Library>
     <Library Include="$(APIDevKitModules)\UCLib\Win\UCImp.lib">
+      <Filter>Libraries</Filter>
+    </Library>
+    <Library Include="$(APIDevKitModules)\VBElemDialogs\Win\VBElemDialogsImp.lib">
       <Filter>Libraries</Filter>
     </Library>
   </ItemGroup>

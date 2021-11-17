@@ -8,6 +8,8 @@
 // [SG compatible] - Yes
 // ****************************************************************************/
 
+#include "PolygonReducer_Resource.h"
+
 /* Add-On Information */
 
 'STR#' 32000 "Add-on Info strings" {
@@ -19,12 +21,26 @@
 
 'STR#' 32500 "Menu strings" {
 /* [   ] */		"Samu"
-/* [   ] */		"PolygonReducer"
-/* [  1] */			"PolygonReducer"
+/* [   ] */		"@APP_NAME@"
+/* [  1] */			"@APP_NAME@"
 }
 
 'STR#' 32520 "Prompt strings" {
 /* [   ] */		"Samu"
-/* [   ] */		"PolygonReducer"
-/* [  1] */			"PolygonReducer"
+/* [   ] */		"@APP_NAME@"
+/* [  1] */			"@APP_NAME@"
+}
+
+'STR#' IDS_INFOBOXPAGE_NAME "@APP_NAME@ infobox page" {
+/* [  1] */		"@APP_NAME@"
+}
+
+'GDLG'  InfoBoxPageId  TabPage  0    0  160   36  "" {
+/* [  1] */ LeftText            0    0   45   18  ExtraSmall  vCenter  "Segment number:"
+/* [  2] */ TextEdit           60    1  100   16  ExtraSmall  15
+}
+
+'DLGH'  InfoBoxPageId  DLG_InfoBoxPageId {
+1	""							LeftText_0
+2	""							TextEdit_0
 }
