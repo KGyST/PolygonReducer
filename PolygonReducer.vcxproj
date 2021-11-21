@@ -131,14 +131,15 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="Src\PolygonReducer_Resource.h" />
     <ClInclude Include="Src\InfoboxPanel.hpp" />
+    <ClInclude Include="Src\PolygonReducer.hpp" />
+    <ClInclude Include="Src\PolygonReducer_Resource.h" />
     <ClInclude Include="Src\APIEnvir.h" />
     <ClInclude Include="Src\APICommon.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Src\InfoboxPanel.cpp" />
     <ClCompile Include="Src\APICommon.c" />
+    <ClCompile Include="Src\InfoboxPanel.cpp" />
     <ClCompile Include="Src\PolygonReducer.cpp" />
   </ItemGroup>
   <ItemGroup>

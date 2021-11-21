@@ -2,40 +2,41 @@
 #include "DGModule.hpp"
 #include "IAPIToolUIData.hpp"
 #include "APIToolUIPanel.hpp"
-
+#include "PolygonReducer.hpp"
 
 namespace PolygonReducer {
 
 	// --- PolygonReducerPage ---------------------------------------------------------
 
-	class PolygonReducerPage : public DG::TabPage {
+	class PolygonReducerInfoboxPage : public DG::TabPage {
 
 		friend class	PolygonReducerPageObserver;
 
 	private:
-		//enum {
-		//	NameTextEditId = 2,
-		//	UValueRealEditId = 4
-		//};
+		enum {
+			iUIPointNumberId = 2,
+			sUITestId = 3
+		};
 
-		//DG::RealEdit			iUIPointNumber;
+		DG::IntEdit				iUIPointNumber;
+		DG::TextEdit			sUITest;
 		TBUI::IAPIToolUIData*	uiData;
 	public:
 
-		PolygonReducerPage(const DG::TabControl& tabControl, TBUI::IAPIToolUIData* puiData);
-		~PolygonReducerPage(void);
+		PolygonReducerInfoboxPage(const DG::TabControl& tabControl, TBUI::IAPIToolUIData* puiData);
+		~PolygonReducerInfoboxPage(void);
 	};
 
 
 	// --- PolygonReducerPageObserver -------------------------------------------------
 
 	class PolygonReducerPageObserver : public	DG::TextEditBaseObserver,
-		public	DG::RealEditObserver,
+		public	DG::IntEditObserver,
 		public  DG::CompoundItemObserver,
 		public  TBUI::IAPIToolUIDataObserver
 	{
 	private:
-		PolygonReducerPage* tabPage;
+		PolygonReducerInfoboxPage* tabPage;
 
 		//void			GetUserDataFromDefault(WallUserData* data);
 		//void			SetUserDataToDefault(WallUserData* sdata);
@@ -44,8 +45,7 @@ namespace PolygonReducer {
 		virtual void	iUIPointNumberChanged(const DG::PosIntEditChangeEvent& ev);
 
 	public:
-
-		explicit PolygonReducerPageObserver(PolygonReducerPage* testPage);
+		explicit PolygonReducerPageObserver(PolygonReducerInfoboxPage* testPage);
 		~PolygonReducerPageObserver(void);
 
 	};

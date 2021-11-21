@@ -21,26 +21,28 @@
 
 'STR#' 32500 "Menu strings" {
 /* [   ] */		"Samu"
-/* [   ] */		"@APP_NAME@"
-/* [  1] */			"@APP_NAME@"
+/* [   ] */		"PolygonReducer"
+/* [  1] */			"PolygonReducer"
 }
 
 'STR#' 32520 "Prompt strings" {
 /* [   ] */		"Samu"
-/* [   ] */		"@APP_NAME@"
-/* [  1] */			"@APP_NAME@"
+/* [   ] */		"PolygonReducer"
+/* [  1] */			"PolygonReducer"
 }
 
-'STR#' IDS_INFOBOXPAGE_NAME "@APP_NAME@ infobox page" {
-/* [  1] */		"@APP_NAME@"
+'STR#' IDS_INFOBOXPAGE_NAME "PolygonReducer infobox page" {
+/* [  1] */		"PolygonReducer"
 }
 
 'GDLG'  InfoBoxPageId  TabPage  0    0  160   36  "" {
-/* [  1] */ LeftText            0    0   45   18  ExtraSmall  vCenter  "Segment number:"
-/* [  2] */ TextEdit           60    1  100   16  ExtraSmall  15
+/* [  1] */ LeftText            0    0  100   18  ExtraSmall  vCenter  "Segment number:"
+/* [  2] */ IntEdit            115    1  45   16  ExtraSmall  "0" "1000"
+/* [  3] */ TextEdit           115   19  45   16  ExtraSmall  15
 }
 
 'DLGH'  InfoBoxPageId  DLG_InfoBoxPageId {
 1	""							LeftText_0
-2	""							TextEdit_0
+2	""							IntEdit_0
+3	""							TextEdit_0
 }
