@@ -9,15 +9,6 @@
 #include "S_Segment.hpp"
 #include "PolygonReducer.hpp"
 
-//template <class T>
-//extern GS::Array<T>* ArraySlice(GS::Array<T> p_array, int start, int end);
-//
-//template <class inT>
-//extern bool ReturnTrue(inT p_inObj);
-//
-//template <class T>
-//extern GS::Array<T>* ArraySlice(GS::Array<T> p_array, UInt32 start, UInt32 end);
-
 class S_Polygon
 {
 private:

@@ -62,8 +62,7 @@ GS::Array<T> * ArraySlice(GS::Array<T> p_array, UInt32 start, UInt32 end) {
     return result;
 }
 
-template GS::Array<UInt32>* ArraySlice(GS::Array<UInt32>, UInt32, UInt32);
-template GS::Array<API_Coord>* ArraySlice(GS::Array<API_Coord>, UInt32, UInt32);
+
 
 void TrackPoly(const API_Polygon* poly, const API_ElementMemo* memo)
 {
@@ -111,19 +110,11 @@ bool ReturnTrue (inT p_inObj)
     return true;
 }
 
-template bool ReturnTrue< UInt32>(UInt32);
-template bool ReturnTrue< Int32>(Int32);
-template bool ReturnTrue< API_PolyArc>(API_PolyArc);
-
 template <class T>
 T ConvertToTheSame(T p_obj)
 {
     return p_obj;
 }
-
-template UInt32 ConvertToTheSame< UInt32>(UInt32);
-template Int32 ConvertToTheSame< Int32>(Int32);
-template API_PolyArc ConvertToTheSame< API_PolyArc>(API_PolyArc);
 
 API_ElementMemo ConvertToMemos(API_Neig p_neig)
 {
