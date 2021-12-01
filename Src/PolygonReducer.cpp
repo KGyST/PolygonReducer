@@ -8,31 +8,17 @@
 // [SG compatible] - Yes
 // *****************************************************************************
 
-#include	"RS.hpp"
-#define ACExtension
 
-#include "APIEnvir.h"
-#include "PolygonReducer_Resource.h"
-#include "InfoboxPanel.hpp"
 #include "PolygonReducer.hpp"
 
 // ---------------------------------- Includes ---------------------------------
 
 #include	<stdio.h>
 #include	<string.h>
-
-#include	"ACAPinc.h"					// also includes APIdefs.h
-
-#include	"basicgeometry.h"
-
-
-#include    "APICommon.h"
-
 #include <algorithm>
 #include <numeric>
+
 using namespace PolygonReducer;
-
-
 
 // ---------------------------------- Types ------------------------------------
 
@@ -51,31 +37,33 @@ enum {
 
 PolygonReducerPanel* infoBox = NULL;
 
-// ---------------------------------- Prototypes -------------------------------
 
-class S_Segmnt
-{
-    unsigned int idx;
-    API_Coord start;
-    API_Coord end;
-    API_Coord center;
-    float length;
-    float angle;
-    float radius;
-    unsigned int status1;
-    unsigned int status2;
-    unsigned int prvIdx;
-    unsigned int nxtIdx;
-    S_Segmnt* previous;
-    S_Segmnt* next;
-    //DELETE
-};
+
 
 // =============================================================================
 //
 // Main functions
 //
 // =============================================================================
+
+
+template <class T>
+GS::Array<T> * ArraySlice(GS::Array<T> p_array, UInt32 start, UInt32 end) {
+    GS::Array<T> *result = new GS::Array<T>();
+    UInt32 _size = p_array.GetSize();
+
+    if (end > _size) end = _size;
+
+    for (UInt32 i = start; i < end; i++)
+    {
+        result->Push(p_array[i]);
+    }
+
+    return result;
+}
+
+template GS::Array<UInt32>* ArraySlice(GS::Array<UInt32>, UInt32, UInt32);
+template GS::Array<API_Coord>* ArraySlice(GS::Array<API_Coord>, UInt32, UInt32);
 
 void TrackPoly(const API_Polygon* poly, const API_ElementMemo* memo)
 {
@@ -123,11 +111,19 @@ bool ReturnTrue (inT p_inObj)
     return true;
 }
 
+template bool ReturnTrue< UInt32>(UInt32);
+template bool ReturnTrue< Int32>(Int32);
+template bool ReturnTrue< API_PolyArc>(API_PolyArc);
+
 template <class T>
 T ConvertToTheSame(T p_obj)
 {
     return p_obj;
 }
+
+template UInt32 ConvertToTheSame< UInt32>(UInt32);
+template Int32 ConvertToTheSame< Int32>(Int32);
+template API_PolyArc ConvertToTheSame< API_PolyArc>(API_PolyArc);
 
 API_ElementMemo ConvertToMemos(API_Neig p_neig)
 {
@@ -152,8 +148,8 @@ template <class inT, class outT>
 GSErrCode ConvertToGSArray(
     inT** p_neigs,
     GS::Array<outT>* resultArray,
-    bool (*funcFilter)(inT) = ReturnTrue<inT>,
-    outT (*funcConverter)(inT) = ConvertToTheSame
+    bool (*funcFilter)(inT),
+    outT (*funcConverter)(inT)
     )
 // FIXME nameless functions as default parameters
 {
@@ -175,6 +171,9 @@ GSErrCode ConvertToGSArray(
 
     return 0;
 }
+
+template GSErrCode ConvertToGSArray< UInt32, UInt32>(UInt32**, GS::Array<UInt32>*, bool (*funcFilter)(UInt32), UInt32(*funcConverter)(UInt32));
+template GSErrCode ConvertToGSArray< API_PolyArc, API_PolyArc>(API_PolyArc**, GS::Array<API_PolyArc>*, bool (*funcFilter)(API_PolyArc), API_PolyArc(*funcConverter)(API_PolyArc));
 
 //------------------------------
 
@@ -223,6 +222,8 @@ extern int GetPointNumber(void)
     API_SelectionInfo   selectionInfo;
     API_Neig** selNeigs;
     GS::Array<API_ElementMemo> memos = *new GS::Array<API_ElementMemo>();
+    GS::Array<API_Coord> coords = *new GS::Array<API_Coord>();
+    GS::Array<INT32> pends = *new GS::Array<INT32>();
 
     err = ACAPI_Selection_Get(&selectionInfo, &selNeigs, true);
 
@@ -238,7 +239,13 @@ extern int GetPointNumber(void)
 
     err = ConvertToGSArray<API_Neig, API_ElementMemo>(selNeigs, &memos, ReturnTrue<API_Neig>, ConvertToMemos);
 
-    return memos.GetSize();
+    for (unsigned int i = 0; i < memos.GetSize(); i++)
+    {
+        err = ConvertToGSArray<API_Coord, API_Coord>(memos[i].coords, &coords);
+        err = ConvertToGSArray<INT32, INT32>(memos[i].pends, &pends);
+    }
+
+    return coords.GetSize() - pends.GetSize();
 }
 
 // -----------------------------------------------------------------------------
@@ -381,3 +388,4 @@ GSErrCode __ACENV_CALL	FreeData(void)
 
     return NoError;
 }		// FreeData
+

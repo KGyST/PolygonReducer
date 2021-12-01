@@ -131,16 +131,24 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Src\S_Arc.hpp" />
+    <ClInclude Include="Src\S_Polygon.hpp" />
     <ClInclude Include="Src\InfoboxPanel.hpp" />
     <ClInclude Include="Src\PolygonReducer.hpp" />
     <ClInclude Include="Src\PolygonReducer_Resource.h" />
     <ClInclude Include="Src\APIEnvir.h" />
     <ClInclude Include="Src\APICommon.h" />
+    <ClInclude Include="Src\S_Polyline.hpp" />
+    <ClInclude Include="Src\S_Segment.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Src\APICommon.c" />
     <ClCompile Include="Src\InfoboxPanel.cpp" />
+    <ClCompile Include="Src\S_Arc.cpp" />
+    <ClCompile Include="Src\S_Polygon.cpp" />
     <ClCompile Include="Src\PolygonReducer.cpp" />
+    <ClCompile Include="Src\S_Polyline.cpp" />
+    <ClCompile Include="Src\S_Segment.cpp" />
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="RFIX\$(ProjectName)Fix.grc">

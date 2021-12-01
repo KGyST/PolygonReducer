@@ -21,8 +21,8 @@ namespace PolygonReducer {
 		DG::IntEdit				iUIPointNumber;
 		DG::TextEdit			sUITest;
 		TBUI::IAPIToolUIData*	uiData;
-	public:
 
+	public:
 		PolygonReducerInfoboxPage(const DG::TabControl& tabControl, TBUI::IAPIToolUIData* puiData);
 		~PolygonReducerInfoboxPage(void);
 	};

@@ -10,9 +10,8 @@ namespace PolygonReducer {
 		sUITest(GetReference(), sUITestId),
 		uiData(puiData)
 	{
-		//int _n = GetPointNumber();
-		//iUIPointNumber.SetValue( _n);
-		iUIPointNumber.SetValue( 99 );
+		int _n = GetPointNumber();
+		iUIPointNumber.SetValue( _n);
 		sUITest.SetText("teszt") ;
 	}
 
