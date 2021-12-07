@@ -15,6 +15,9 @@
     <Filter Include="Source Files\Geometry">
       <UniqueIdentifier>{fd90c756-497d-4367-a228-4e1b558ec2a3}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Gui">
+      <UniqueIdentifier>{74ff62f4-0a73-44eb-ab9f-e81ee022df6e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="RFIX.WIN\$(ProjectName).rc2">
@@ -32,9 +35,6 @@
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="Src\APIEnvir.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Src\InfoboxPanel.hpp">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="Src\PolygonReducer.hpp">
@@ -55,15 +55,21 @@
     <ClInclude Include="Src\S_Polyline.hpp">
       <Filter>Source Files\Geometry</Filter>
     </ClInclude>
+    <ClInclude Include="Src\InfoboxPanel.hpp">
+      <Filter>Source Files\Gui</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\GDLDialog.hpp">
+      <Filter>Source Files\Gui</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\SettingsDialog.hpp">
+      <Filter>Source Files\Gui</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Src\APICommon.c">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Src\PolygonReducer.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Src\InfoboxPanel.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Src\S_Arc.cpp">
@@ -77,6 +83,15 @@
     </ClCompile>
     <ClCompile Include="Src\S_Polyline.cpp">
       <Filter>Source Files\Geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\InfoboxPanel.cpp">
+      <Filter>Source Files\Gui</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\GDLDialog.cpp">
+      <Filter>Source Files\Gui</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\SettingsDialog.cpp">
+      <Filter>Source Files\Gui</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -101,5 +116,11 @@
     <Library Include="$(APIDevKitModules)\VBElemDialogs\Win\VBElemDialogsImp.lib">
       <Filter>Libraries</Filter>
     </Library>
+    <Library Include="$(APIDevKitModules)\Geometry\Win\GeometryImp.LIB" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Src\PolygonReducer.tpp">
+      <Filter>Source Files</Filter>
+    </None>
   </ItemGroup>
 </Project>

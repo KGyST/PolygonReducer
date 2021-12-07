@@ -131,6 +131,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Src\GDLDialog.hpp" />
+    <ClInclude Include="Src\SettingsDialog.hpp" />
     <ClInclude Include="Src\S_Arc.hpp" />
     <ClInclude Include="Src\S_Polygon.hpp" />
     <ClInclude Include="Src\InfoboxPanel.hpp" />
@@ -143,7 +145,9 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Src\APICommon.c" />
+    <ClCompile Include="Src\GDLDialog.cpp" />
     <ClCompile Include="Src\InfoboxPanel.cpp" />
+    <ClCompile Include="Src\SettingsDialog.cpp" />
     <ClCompile Include="Src\S_Arc.cpp" />
     <ClCompile Include="Src\S_Polygon.cpp" />
     <ClCompile Include="Src\PolygonReducer.cpp" />
@@ -194,6 +198,12 @@
     <Library Include="$(APIDevKitModules)\UCLib\Win\UCImp.lib">
       <FileType>Document</FileType>
     </Library>
+    <Library Include="$(APIDevKitModules)\Geometry\Win\GeometryImp.LIB">
+      <FileType>Document</FileType>
+    </Library>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Src\PolygonReducer.tpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

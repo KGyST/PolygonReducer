@@ -18,6 +18,10 @@
 #include <algorithm>
 #include <numeric>
 
+#include "S_Polygon.hpp"
+#include "S_Polygon.hpp"
+
+
 using namespace PolygonReducer;
 
 // ---------------------------------- Types ------------------------------------
@@ -37,31 +41,13 @@ enum {
 
 PolygonReducerPanel* infoBox = NULL;
 
-
-
+// ----------------------------------  --------------------------------
 
 // =============================================================================
 //
 // Main functions
 //
 // =============================================================================
-
-
-template <class T>
-GS::Array<T> * ArraySlice(GS::Array<T> p_array, UInt32 start, UInt32 end) {
-    GS::Array<T> *result = new GS::Array<T>();
-    UInt32 _size = p_array.GetSize();
-
-    if (end > _size) end = _size;
-
-    for (UInt32 i = start; i < end; i++)
-    {
-        result->Push(p_array[i]);
-    }
-
-    return result;
-}
-
 
 
 void TrackPoly(const API_Polygon* poly, const API_ElementMemo* memo)
@@ -100,22 +86,6 @@ API_Guid NeigToAPIGuid(API_Neig p_neig)
     return p_neig.guid;
 }
 
-// To be removed ------------------------------
-
-template <class inT>
-bool ReturnTrue (inT p_inObj)
-{
-    UNUSED_PARAMETER(p_inObj);
-
-    return true;
-}
-
-template <class T>
-T ConvertToTheSame(T p_obj)
-{
-    return p_obj;
-}
-
 API_ElementMemo ConvertToMemos(API_Neig p_neig)
 {
     API_Guid _guid = p_neig.guid;
@@ -133,38 +103,8 @@ API_Coord** ConvertToCoords(API_ElementMemo p_memo)
     return p_memo.coords;
 }
 
-///To be removed ------------------------------
+//------------------------------
 
-template <class inT, class outT>
-GSErrCode ConvertToGSArray(
-    inT** p_neigs,
-    GS::Array<outT>* resultArray,
-    bool (*funcFilter)(inT),
-    outT (*funcConverter)(inT)
-    )
-// FIXME nameless functions as default parameters
-{
-    UInt32 nSel = BMGetHandleSize((GSHandle)p_neigs) / sizeof(inT);
-
-    inT _an;
-
-    try {
-        for (UInt32 ii = 0; ii < nSel; ++ii) {
-            _an = (*p_neigs)[ii];
-
-            if (funcFilter(_an))
-                resultArray->Push(funcConverter(_an));
-        }
-    }
-    catch (...) {
-        return 1;
-    }
-
-    return 0;
-}
-
-template GSErrCode ConvertToGSArray< UInt32, UInt32>(UInt32**, GS::Array<UInt32>*, bool (*funcFilter)(UInt32), UInt32(*funcConverter)(UInt32));
-template GSErrCode ConvertToGSArray< API_PolyArc, API_PolyArc>(API_PolyArc**, GS::Array<API_PolyArc>*, bool (*funcFilter)(API_PolyArc), API_PolyArc(*funcConverter)(API_PolyArc));
 
 //------------------------------
 
@@ -234,7 +174,10 @@ extern int GetPointNumber(void)
     {
         err = ConvertToGSArray<API_Coord, API_Coord>(memos[i].coords, &coords);
         err = ConvertToGSArray<INT32, INT32>(memos[i].pends, &pends);
+
+        S_Polygon _sp = *new S_Polygon(&memos[i] );
     }
+
 
     return coords.GetSize() - pends.GetSize();
 }

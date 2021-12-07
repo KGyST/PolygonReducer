@@ -27,15 +27,12 @@ S_Polygon::S_Polygon(const API_ElementMemo* p_memo) {
     {
         _segment = *new S_Segment(_idx++, _vertexIDs[i - 1], _vertexIDs[i], _coords[i - 1], _coords[i]);
 
-        for (UInt32 j = 0; j < _parcs.GetSize(); j++)
-        {
-            if (_parcs[j].begIndex >= _pends[i] && _parcs[j].endIndex < _pends[i + 1])
-            {
-                _segment.SetArc(_parcs[j].arcAngle);
-            }
-        }
-
         _segments.Push(_segment);
+    }
+
+    for (UInt32 i = 0; i < _parcs.GetSize(); i++)
+    {
+        _segments[_parcs[i].begIndex].SetArc(_parcs[i].arcAngle);
     }
 
     for (UInt32 i = 0; i < _pends.GetSize() - 1; i++)

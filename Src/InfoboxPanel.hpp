@@ -8,18 +8,23 @@ namespace PolygonReducer {
 
 	// --- PolygonReducerPage ---------------------------------------------------------
 
-	class PolygonReducerInfoboxPage : public DG::TabPage {
-
+	class PolygonReducerInfoboxPage : 
+		public DG::TabPage
+	{
 		friend class	PolygonReducerPageObserver;
 
-	private:
-		enum {
+	protected:
+		enum Controls  {
 			iUIPointNumberId = 2,
-			sUITestId = 3
+			sUITestId = 3,
+			SettingsButtonId = 4,
+			GDLButtonId = 5,
 		};
-
+	
 		DG::IntEdit				iUIPointNumber;
 		DG::TextEdit			sUITest;
+		DG::Button				GDLButton;
+		DG::Button				SettingsButton;
 		TBUI::IAPIToolUIData*	uiData;
 
 	public:
@@ -30,10 +35,12 @@ namespace PolygonReducer {
 
 	// --- PolygonReducerPageObserver -------------------------------------------------
 
-	class PolygonReducerPageObserver : public	DG::TextEditBaseObserver,
+	class PolygonReducerPageObserver : 
+		public	DG::TextEditBaseObserver,
 		public	DG::IntEditObserver,
 		public  DG::CompoundItemObserver,
-		public  TBUI::IAPIToolUIDataObserver
+		public  TBUI::IAPIToolUIDataObserver,
+		public	DG::ButtonItemObserver
 	{
 	private:
 		PolygonReducerInfoboxPage* tabPage;
@@ -43,11 +50,11 @@ namespace PolygonReducer {
 	protected:
 		virtual	void	APIElementChanged(const TBUI::APIElemDefaultFieldMask& fieldMask) override;
 		virtual void	iUIPointNumberChanged(const DG::PosIntEditChangeEvent& ev);
+		virtual void	ButtonClicked(const DG::ButtonClickEvent& ev) override;
 
 	public:
 		explicit PolygonReducerPageObserver(PolygonReducerInfoboxPage* testPage);
 		~PolygonReducerPageObserver(void);
-
 	};
 
 	// --- Wrapper class --------------------------------------------------------

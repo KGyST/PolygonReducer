@@ -1,4 +1,7 @@
 #include "S_Segment.hpp"
+#include "APICommon.h"
+
+using namespace Geometry;
 
 void S_Segment::init(int idx, int startIdx, int endIdx, API_Coord start, API_Coord end) {
     start = start;
@@ -19,5 +22,23 @@ S_Segment::~S_Segment()
 void S_Segment::SetArc(double angle)
 {
     angle = angle;
-    //FIXME
+
+    Coord _start = *new Coord(start.x, start.y);
+    Coord _end   = *new Coord(end.x, end.y);
+    double _halfAngle = PI / 4 - angle / 2;
+
+    Coord rotEnd   = RotCoord(_start, _end, sin(_halfAngle), cos(_halfAngle));
+    Coord rotStart = RotCoord(_end, _start, sin(_halfAngle), cos(_halfAngle));
+
+    Sector lin1 = SetSector(_start, rotEnd);
+    Sector lin2 = SetSector(_end, rotStart);
+
+    Coord* xc = new Coord( 0,0 );
+
+    double eps=0, radEps = 0;
+
+    XLinesEps(lin1, lin2, xc, eps, radEps);
+
+    center.x = xc->x;
+    center.y = xc->y;
 }

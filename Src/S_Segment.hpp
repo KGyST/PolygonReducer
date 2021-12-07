@@ -6,6 +6,9 @@
 
 #define ACExtension
 #include "ACAPinc.h"					// also includes APIdefs.h
+#include "Point2DData.h"
+#include "Sector2DData.h"
+
 
 class S_Segment
 {
