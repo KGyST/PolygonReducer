@@ -2,8 +2,10 @@
 #include "PolygonReducer_Resource.h"
 #include "APIEnvir.h"
 #include "ACAPinc.h"
-#include	"GDLDialog.hpp"
-#include	"SettingsDialog.hpp"
+#include "GDLDialog.hpp"
+#include "SettingsDialog.hpp"
+#include "PolygonReducer.template.hpp"
+#include "Utils.hpp"
 
 namespace PolygonReducer {
 	PolygonReducerInfoboxPage::PolygonReducerInfoboxPage(const DG::TabControl& tabControl, TBUI::IAPIToolUIData* puiData) :
@@ -14,13 +16,53 @@ namespace PolygonReducer {
 		SettingsButton	(GetReference(), SettingsButtonId),
 		uiData			(puiData)
 	{
-		int _n = GetPointNumber();
-		iUIPointNumber.SetValue( _n);
-		sUITest.SetText("teszt") ;
+		iUIPointNumber.SetValue(GetPointNumber());
+
 	}
 
-	PolygonReducerInfoboxPage::~PolygonReducerInfoboxPage(void) {
+	PolygonReducerInfoboxPage::~PolygonReducerInfoboxPage() {
 		uiData = NULL;
+	}
+
+	void PolygonReducerInfoboxPage::SetCurrentPolygon(S_Polygon* currentPolygon)
+	{
+		m_currentPolygon = currentPolygon;
+	}
+
+	int PolygonReducerInfoboxPage::GetPointNumber()
+	{
+		GSErrCode           err;
+		API_SelectionInfo   selectionInfo;
+		API_Neig** selNeigs;
+		GS::Array<API_ElementMemo> memos = *new GS::Array<API_ElementMemo>();
+		GS::Array<API_Coord> coords = *new GS::Array<API_Coord>();
+		GS::Array<INT32> pends = *new GS::Array<INT32>();
+
+		err = ACAPI_Selection_Get(&selectionInfo, &selNeigs, true);
+
+		BMKillHandle((GSHandle*)&selectionInfo.marquee.coords);
+
+		if (err == APIERR_NOSEL)
+			err = NoError;
+
+		if (err != NoError) {
+			BMKillHandle((GSHandle*)&selNeigs);
+			return 0;
+		}
+
+		err = ConvertToGSArray<API_Neig, API_ElementMemo>(selNeigs, &memos, ReturnTrue<API_Neig>, ConvertToMemos);
+
+		for (unsigned int i = 0; i < memos.GetSize(); i++)
+		{
+			err = ConvertToGSArray<API_Coord, API_Coord>(memos[i].coords, &coords);
+			err = ConvertToGSArray<INT32, INT32>(memos[i].pends, &pends);
+
+			S_Polygon* _sp = new S_Polygon(&memos[i]);
+
+			SetCurrentPolygon(_sp);
+		}
+
+		return coords.GetSize() - pends.GetSize();
 	}
 
 	void	PolygonReducerPageObserver::APIElementChanged(const TBUI::APIElemDefaultFieldMask& fieldMask) {
@@ -37,15 +79,17 @@ namespace PolygonReducer {
 
 	void	PolygonReducerPageObserver::ButtonClicked(const DG::ButtonClickEvent& ev)
 	{
-		if (ev.GetSource() == &tabPage->GDLButton)
+		if (ev.GetSource() == &m_tabPage->GDLButton)
 		{
 			GDLDialog* dialog = new GDLDialog()  ;
-			dialog->setEditText("teszt\nteszt\nteszt\nteszt\nteszt\nteszt\nteszt\nteszt\nteszt\nteszt\nteszt\nteszt\nteszt\nteszt\nteszt\nteszt\nteszt\nteszt\nteszt\nteszt");
-			GDLDialogObserver observer(dialog);
+			std::string _s = m_tabPage->m_currentPolygon->getGDLcode();
+			dialog->setEditText(_s);
+
+			GDLDialogObserver observer (dialog);
 			dialog->Invoke();
 		}
 
-		if (ev.GetSource() == &tabPage->SettingsButton)
+		if (ev.GetSource() == &m_tabPage->SettingsButton)
 		{
 			SettingsDialog* dialog = new SettingsDialog();
 			SettingsDialogObserver observer(dialog);
@@ -56,10 +100,10 @@ namespace PolygonReducer {
 	}
 
 	PolygonReducerPageObserver::PolygonReducerPageObserver(PolygonReducerInfoboxPage* testPage) :
-		tabPage(testPage)
+		m_tabPage(testPage)
 	{
-		AttachToAllItems(*tabPage);
-		tabPage->uiData->AttachObserver(this);
+		AttachToAllItems(*m_tabPage);
+		m_tabPage->uiData->AttachObserver(this);
 
 		TBUI::APIElemDefaultFieldMask mask;
 		mask.SetAll();
@@ -67,9 +111,9 @@ namespace PolygonReducer {
 	}
 
 	PolygonReducerPageObserver::~PolygonReducerPageObserver(void) {
-		DetachFromAllItems(*tabPage);
-		tabPage->uiData->DetachObserver(this);
-		tabPage = NULL;
+		DetachFromAllItems(*m_tabPage);
+		m_tabPage->uiData->DetachObserver(this);
+		m_tabPage = NULL;
 	}
 
 

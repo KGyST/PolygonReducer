@@ -3,45 +3,50 @@
 // -----------------------------------------------------------------------------
 
 // ---------------------------------- Includes ---------------------------------
-
 #include	"APIEnvir.h"
 #include	"ACAPinc.h"
 
 #include	"GDLDialog.hpp"
 
 // --- Class definition: GDLDialog --------------------------------------
+namespace PolygonReducer {
 
-GDLDialog::GDLDialog() :
-	DG::ModalDialog(ACAPI_GetOwnResModule(), GDLPageId, ACAPI_GetOwnResModule()),
-	closeButton(GetReference(), ButtonID),
-	edit(GetReference(), EditID)
-{
-}
+	GDLDialog::GDLDialog() :
+		DG::ModalDialog(ACAPI_GetOwnResModule(), GDLPageId, ACAPI_GetOwnResModule()),
+		closeButton(GetReference(), ButtonID),
+		edit(GetReference(), EditID)
+	{
+	}
 
-void GDLDialog::setEditText(GS::UniString text) {
-	edit.SetText(text);
-}
+	void GDLDialog::setEditText(std::string text) {
+		edit.SetText(GS::UniString(text.c_str() )  );
+	}
 
-GDLDialog::~GDLDialog()
-{
-}
+	void GDLDialog::setEditText(GS::UniString text) {
+		edit.SetText(text);
+	}
 
-// --- GDLDialogObserver -------------------------------------
+	GDLDialog::~GDLDialog()
+	{
+	}
 
-GDLDialogObserver::GDLDialogObserver(GDLDialog *dialog):
-	dialog(dialog)
+	// --- GDLDialogObserver -------------------------------------
+
+	GDLDialogObserver::GDLDialogObserver(GDLDialog* dialog) :
+		dialog(dialog)
 	{
 		dialog->Attach(*this);
 		AttachToAllItems(*dialog);
 	}
 
-GDLDialogObserver::~GDLDialogObserver(void) {
+	GDLDialogObserver::~GDLDialogObserver(void) {
 		dialog->Detach(*this);
 		DetachFromAllItems(*dialog);
-}
+	}
 
-void GDLDialogObserver::ButtonClicked(const DG::ButtonClickEvent& ev)
-{
-	if (ev.GetSource() == &dialog->closeButton)
-		dialog->PostCloseRequest(DG::ModalDialog::Accept);
+	void GDLDialogObserver::ButtonClicked(const DG::ButtonClickEvent& ev)
+	{
+		if (ev.GetSource() == &dialog->closeButton)
+			dialog->PostCloseRequest(DG::ModalDialog::Accept);
+	}
 }

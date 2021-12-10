@@ -49,9 +49,6 @@
     <ClInclude Include="Src\S_Polygon.hpp">
       <Filter>Source Files\Geometry</Filter>
     </ClInclude>
-    <ClInclude Include="Src\S_Segment.hpp">
-      <Filter>Source Files\Geometry</Filter>
-    </ClInclude>
     <ClInclude Include="Src\S_Polyline.hpp">
       <Filter>Source Files\Geometry</Filter>
     </ClInclude>
@@ -63,6 +60,12 @@
     </ClInclude>
     <ClInclude Include="Src\SettingsDialog.hpp">
       <Filter>Source Files\Gui</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\S_Segment.hpp">
+      <Filter>Source Files\Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Utils.hpp">
+      <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -78,9 +81,6 @@
     <ClCompile Include="Src\S_Polygon.cpp">
       <Filter>Source Files\Geometry</Filter>
     </ClCompile>
-    <ClCompile Include="Src\S_Segment.cpp">
-      <Filter>Source Files\Geometry</Filter>
-    </ClCompile>
     <ClCompile Include="Src\S_Polyline.cpp">
       <Filter>Source Files\Geometry</Filter>
     </ClCompile>
@@ -92,6 +92,12 @@
     </ClCompile>
     <ClCompile Include="Src\SettingsDialog.cpp">
       <Filter>Source Files\Gui</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\S_Segment.cpp">
+      <Filter>Source Files\Geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Utils.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -119,7 +125,7 @@
     <Library Include="$(APIDevKitModules)\Geometry\Win\GeometryImp.LIB" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Src\PolygonReducer.tpp">
+    <None Include="Src\PolygonReducer.template.hpp">
       <Filter>Source Files</Filter>
     </None>
   </ItemGroup>

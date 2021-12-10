@@ -142,12 +142,14 @@
     <ClInclude Include="Src\APICommon.h" />
     <ClInclude Include="Src\S_Polyline.hpp" />
     <ClInclude Include="Src\S_Segment.hpp" />
+    <ClInclude Include="Src\Utils.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Src\APICommon.c" />
     <ClCompile Include="Src\GDLDialog.cpp" />
     <ClCompile Include="Src\InfoboxPanel.cpp" />
     <ClCompile Include="Src\SettingsDialog.cpp" />
+    <ClCompile Include="Src\Utils.cpp" />
     <ClCompile Include="Src\S_Arc.cpp" />
     <ClCompile Include="Src\S_Polygon.cpp" />
     <ClCompile Include="Src\PolygonReducer.cpp" />
@@ -203,7 +205,7 @@
     </Library>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Src\PolygonReducer.tpp" />
+    <None Include="Src\PolygonReducer.template.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

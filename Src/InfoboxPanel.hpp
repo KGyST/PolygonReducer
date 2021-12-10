@@ -1,8 +1,13 @@
 #pragma once
+#ifndef INFOBOX_PANEL_HPP
+#define INFOBOX_PANEL_HPP
+#define ACExtension
+
 #include "DGModule.hpp"
 #include "IAPIToolUIData.hpp"
 #include "APIToolUIPanel.hpp"
 #include "PolygonReducer.hpp"
+#include "S_Polygon.hpp"
 
 namespace PolygonReducer {
 
@@ -26,10 +31,13 @@ namespace PolygonReducer {
 		DG::Button				GDLButton;
 		DG::Button				SettingsButton;
 		TBUI::IAPIToolUIData*	uiData;
+		S_Polygon*				m_currentPolygon;
 
 	public:
 		PolygonReducerInfoboxPage(const DG::TabControl& tabControl, TBUI::IAPIToolUIData* puiData);
-		~PolygonReducerInfoboxPage(void);
+		~PolygonReducerInfoboxPage();
+		void SetCurrentPolygon(S_Polygon* currentPolygon);
+		int GetPointNumber();
 	};
 
 
@@ -43,7 +51,7 @@ namespace PolygonReducer {
 		public	DG::ButtonItemObserver
 	{
 	private:
-		PolygonReducerInfoboxPage* tabPage;
+		PolygonReducerInfoboxPage* m_tabPage;
 
 		//void			GetUserDataFromDefault(WallUserData* data);
 		//void			SetUserDataToDefault(WallUserData* sdata);
@@ -72,3 +80,4 @@ namespace PolygonReducer {
 		virtual		void	DestroyPage(void) override;
 	};
 }
+#endif // !INFOBOX_PANEL_HPP
