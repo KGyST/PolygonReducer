@@ -4,6 +4,7 @@
     <APIDevKitRoot>D:\Program Files\Graphisoft\API Development Kit 19.3003</APIDevKitRoot>
     <APIDevKitSupport>$(APIDevKitRoot)\Support</APIDevKitSupport>
     <APIDevKitModules>$(APIDevKitSupport)\Modules</APIDevKitModules>
+	<BoostLib>D:\Letöltések\boost_1_78_0</BoostLib>
   </PropertyGroup>
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|x64">
@@ -50,7 +51,7 @@
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
-      <AdditionalIncludeDirectories>$(APIDevKitSupport)\Inc;$(APIDevKitModules)\GSRoot;$(APIDevKitModules)\GSUtils;$(APIDevKitModules)\DGLib;$(APIDevKitModules)\Geometry;$(APIDevKitModules)\InputOutput;$(APIDevKitModules)\UCLib;$(APIDevKitModules)\VBElemDialogs;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(BoostLib);$(APIDevKitSupport)\Inc;$(APIDevKitModules)\GSRoot;$(APIDevKitModules)\GSUtils;$(APIDevKitModules)\DGLib;$(APIDevKitModules)\Geometry;$(APIDevKitModules)\InputOutput;$(APIDevKitModules)\UCLib;$(APIDevKitModules)\VBElemDialogs;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <WarningLevel>Level4</WarningLevel>

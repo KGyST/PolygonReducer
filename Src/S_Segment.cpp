@@ -1,6 +1,8 @@
 #include "S_Segment.hpp"
 #include "APICommon.h"
 
+#include <boost/format.hpp>
+
 using namespace Geometry;
 namespace PolygonReducer {
 
@@ -49,9 +51,7 @@ namespace PolygonReducer {
     {
         std::string result = "";
 
-        char* _s = "";
-
-        sprintf(_s, "%d %d \n", start.x, start.y);
+        auto _s = str(boost::format("%1% %2% \n") % start.x % start.y);
 
         result += std::string(_s);
 
