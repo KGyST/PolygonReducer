@@ -34,7 +34,7 @@
 //#include "PolygonReducer.hpp"
 
 using namespace PolygonReducer;
-//MUST NOT BE IN NAMESPACE
+// MUST NOT BE IN NAMESPACE
 
 // ---------------------------------- Types ------------------------------------
 

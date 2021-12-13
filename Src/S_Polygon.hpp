@@ -14,8 +14,8 @@ namespace PolygonReducer {
     class S_Polygon
     {
     private:
-        GS::Array <S_Polyline>* polylines;
-        GS::Array <S_Segment>* segments;
+        GS::Array <S_Polyline*>* m_polylines;
+        GS::Array <S_Segment*>*  m_segments;
 
         int m_pointCount;
 

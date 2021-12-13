@@ -13,34 +13,34 @@ namespace PolygonReducer {
     class S_Segment
     {
     private:
-        unsigned int idx;
-        API_Coord start;
-        API_Coord end;
-        double length;
+        unsigned int    m_idx;
+        API_Coord       m_start;
+        API_Coord       m_end;
+        double          m_length;
 
-        unsigned int status1;
-        unsigned int status2;
+        unsigned int    m_status1;
+        unsigned int    m_status2;
         //unsigned int prvIdx;
         //unsigned int nxtIdx;
-        unsigned int startIdx;  // vertexID
-        unsigned int endIdx;    // vertexID
-        S_Segment* previous;
-        S_Segment* next;
-        bool startPoint;        // Is it a start of a subcontour
+        unsigned int    m_startIdx;  // vertexID
+        unsigned int    m_endIdx;    // vertexID
+        S_Segment*      m_previous;
+        S_Segment*      m_next;
+        bool            m_startPoint;        // Is it a start of a subcontour
 
-        API_Coord center;
-        float angle;
-        float radius;
+        API_Coord*      m_center;
+        float           m_angle;
+        float           m_radius;
 
         //DELETE
-        void init(int idx, int startIdx, int endIdx, API_Coord start, API_Coord end);
+        void init(int idx, int startIdx, int endIdx, API_Coord& p_start, API_Coord& p_end);
 
 
     public:
         S_Segment() {};
-        inline S_Segment(API_Coord start, API_Coord end) { init(0, 0, 0, start, end); };
-        S_Segment(int idx, API_Coord start, API_Coord end) { init(idx, 0, 0, start, end); };
-        S_Segment(int idx, int startIdx, int endIdx, API_Coord start, API_Coord end) { init(idx, startIdx, endIdx, start, end); };
+        inline S_Segment(API_Coord& start, API_Coord& end) { init(0, 0, 0, start, end); };
+        S_Segment(int idx, API_Coord& start, API_Coord& end) { init(idx, 0, 0, start, end); };
+        S_Segment(int idx, int startIdx, int endIdx, API_Coord& start, API_Coord& end) { init(idx, startIdx, endIdx, start, end); };
         ~S_Segment();
 
         void SetArc(double angle);

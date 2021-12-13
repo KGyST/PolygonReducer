@@ -17,7 +17,7 @@ namespace PolygonReducer {
 		uiData			(puiData)
 	{
 		iUIPointNumber.SetValue(GetPointNumber());
-
+		//m_currentPolygon = 
 	}
 
 	PolygonReducerInfoboxPage::~PolygonReducerInfoboxPage() {
