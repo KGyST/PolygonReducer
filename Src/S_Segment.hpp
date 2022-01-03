@@ -28,9 +28,9 @@ namespace PolygonReducer {
         S_Segment*      m_next;
         bool            m_startPoint;        // Is it a start of a subcontour
 
-        API_Coord*      m_center;
-        float           m_angle;
-        float           m_radius;
+        API_Coord       m_center;
+        double          m_angle;
+        double          m_radius;
 
         //DELETE
         void init(int idx, int startIdx, int endIdx, API_Coord& p_start, API_Coord& p_end);

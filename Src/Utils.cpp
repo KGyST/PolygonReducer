@@ -1,7 +1,8 @@
 #include "Utils.hpp"
 #include "APICommon.h"
 #include "ACAPinc.h"					// also includes APIdefs.h
-
+#include <math.h>
+#include <stdlib.h>
 
 void TrackPoly(const API_Polygon* poly, const API_ElementMemo* memo)
 {
@@ -54,3 +55,7 @@ API_Coord** ConvertToCoords(API_ElementMemo p_memo)
 {
     return p_memo.coords;
 }
+
+
+
+

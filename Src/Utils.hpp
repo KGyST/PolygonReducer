@@ -1,7 +1,8 @@
 #pragma once
-#include <APIdefs.h>
 #ifndef UTILS_HPP
 #define UTILS_HPP
+
+#include <APIdefs.h>
 #define ACExtension
 
 

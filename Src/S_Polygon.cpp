@@ -57,9 +57,10 @@ namespace PolygonReducer {
 
         string result = "";
 
-        for (UInt16 i = 0; i < m_segments->GetSize(); i++)
+        for (UInt16 i = 1; i < m_segments->GetSize(); i++)
         {
             S_Segment* _s = (*m_segments)[i];
+            if (i > 1) result += ",\n";
             result += _s->toString();
         }
 

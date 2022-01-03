@@ -4,7 +4,7 @@
     <APIDevKitRoot>D:\Program Files\Graphisoft\API Development Kit 19.3003</APIDevKitRoot>
     <APIDevKitSupport>$(APIDevKitRoot)\Support</APIDevKitSupport>
     <APIDevKitModules>$(APIDevKitSupport)\Modules</APIDevKitModules>
-	<BoostLib>D:\Letöltések\boost_1_78_0</BoostLib>
+    <BoostLib>D:\Letöltések\boost_1_78_0</BoostLib>
   </PropertyGroup>
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|x64">
@@ -18,6 +18,7 @@
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{2DAA4BB9-98C8-4099-9E81-977C5ACB7D38}</ProjectGuid>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
@@ -93,7 +94,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
-      <AdditionalIncludeDirectories>$(APIDevKitSupport)\Inc;$(APIDevKitModules)\GSRoot;$(APIDevKitModules)\GSUtils;$(APIDevKitModules)\DGLib;$(APIDevKitModules)\Geometry;$(APIDevKitModules)\InputOutput;$(APIDevKitModules)\UCLib;$(APIDevKitModules)\VBElemDialogs;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(BoostLib);$(APIDevKitSupport)\Inc;$(APIDevKitModules)\GSRoot;$(APIDevKitModules)\GSUtils;$(APIDevKitModules)\DGLib;$(APIDevKitModules)\Geometry;$(APIDevKitModules)\InputOutput;$(APIDevKitModules)\UCLib;$(APIDevKitModules)\VBElemDialogs;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <WarningLevel>Level4</WarningLevel>
@@ -132,30 +133,60 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="Src\GDLDialog.hpp" />
-    <ClInclude Include="Src\SettingsDialog.hpp" />
-    <ClInclude Include="Src\S_Arc.hpp" />
-    <ClInclude Include="Src\S_Polygon.hpp" />
-    <ClInclude Include="Src\InfoboxPanel.hpp" />
-    <ClInclude Include="Src\PolygonReducer.hpp" />
-    <ClInclude Include="Src\PolygonReducer_Resource.h" />
-    <ClInclude Include="Src\APIEnvir.h" />
-    <ClInclude Include="Src\APICommon.h" />
-    <ClInclude Include="Src\S_Polyline.hpp" />
-    <ClInclude Include="Src\S_Segment.hpp" />
-    <ClInclude Include="Src\Utils.hpp" />
+    <ClInclude Include="Src\GDLDialog.hpp">
+    </ClInclude>
+    <ClInclude Include="Src\SettingsDialog.hpp">
+    </ClInclude>
+    <ClInclude Include="Src\S_Arc.hpp">
+    </ClInclude>
+    <ClInclude Include="Src\S_Polygon.hpp">
+    </ClInclude>
+    <ClInclude Include="Src\InfoboxPanel.hpp">
+    </ClInclude>
+    <ClInclude Include="Src\PolygonReducer.hpp">
+    </ClInclude>
+    <ClInclude Include="Src\PolygonReducer_Resource.h">
+    </ClInclude>
+    <ClInclude Include="Src\APIEnvir.h">
+    </ClInclude>
+    <ClInclude Include="Src\APICommon.h">
+    </ClInclude>
+    <ClInclude Include="Src\S_Polyline.hpp">
+    </ClInclude>
+    <ClInclude Include="Src\S_Segment.hpp">
+    </ClInclude>
+    <ClInclude Include="Src\Utils.hpp">
+    </ClInclude>
+    <ClInclude Include="Src\Utils2.hpp">
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Src\APICommon.c" />
-    <ClCompile Include="Src\GDLDialog.cpp" />
-    <ClCompile Include="Src\InfoboxPanel.cpp" />
-    <ClCompile Include="Src\SettingsDialog.cpp" />
-    <ClCompile Include="Src\Utils.cpp" />
-    <ClCompile Include="Src\S_Arc.cpp" />
-    <ClCompile Include="Src\S_Polygon.cpp" />
-    <ClCompile Include="Src\PolygonReducer.cpp" />
-    <ClCompile Include="Src\S_Polyline.cpp" />
-    <ClCompile Include="Src\S_Segment.cpp" />
+    <ClCompile Include="Src\APICommon.c">
+    </ClCompile>
+    <ClCompile Include="Src\GDLDialog.cpp">
+    </ClCompile>
+    <ClCompile Include="Src\InfoboxPanel.cpp">
+    </ClCompile>
+    <ClCompile Include="Src\SettingsDialog.cpp">
+    </ClCompile>
+    <ClCompile Include="Src\Utils.cpp">
+    </ClCompile>
+    <ClCompile Include="Src\S_Arc.cpp">
+    </ClCompile>
+    <ClCompile Include="Src\S_Polygon.cpp">
+    </ClCompile>
+    <ClCompile Include="Src\PolygonReducer.cpp">
+    </ClCompile>
+    <ClCompile Include="Src\S_Polyline.cpp">
+    </ClCompile>
+    <ClCompile Include="Src\S_Segment.cpp">
+    </ClCompile>
+    <ClCompile Include="Src\Utils2.cpp">
+    </ClCompile>
+    <ClCompile Include="Tests\Utils_test.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="RFIX\$(ProjectName)Fix.grc">
@@ -206,7 +237,8 @@
     </Library>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Src\PolygonReducer.template.hpp" />
+    <None Include="Src\PolygonReducer.template.hpp">
+    </None>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

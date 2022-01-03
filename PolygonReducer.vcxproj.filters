@@ -18,6 +18,9 @@
     <Filter Include="Source Files\Gui">
       <UniqueIdentifier>{74ff62f4-0a73-44eb-ab9f-e81ee022df6e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Tests">
+      <UniqueIdentifier>{5dfb82c3-c349-4e36-aeec-6b5c00af43fe}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="RFIX.WIN\$(ProjectName).rc2">
@@ -67,6 +70,9 @@
     <ClInclude Include="Src\Utils.hpp">
       <Filter>Source Files</Filter>
     </ClInclude>
+    <ClInclude Include="Src\Utils2.hpp">
+      <Filter>Source Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Src\APICommon.c">
@@ -99,6 +105,12 @@
     <ClCompile Include="Src\Utils.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Tests\Utils_test.cpp">
+      <Filter>Source Files\Tests</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Utils2.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Library Include="$(APIDevKitSupport)\Lib\Win\ACAP_STAT.lib">
@@ -122,7 +134,9 @@
     <Library Include="$(APIDevKitModules)\VBElemDialogs\Win\VBElemDialogsImp.lib">
       <Filter>Libraries</Filter>
     </Library>
-    <Library Include="$(APIDevKitModules)\Geometry\Win\GeometryImp.LIB" />
+    <Library Include="$(APIDevKitModules)\Geometry\Win\GeometryImp.LIB">
+      <Filter>Libraries</Filter>
+    </Library>
   </ItemGroup>
   <ItemGroup>
     <None Include="Src\PolygonReducer.template.hpp">
