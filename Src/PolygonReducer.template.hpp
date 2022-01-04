@@ -19,7 +19,7 @@ namespace PolygonReducer {
         return p_obj;
     }
 
-    ///To be removed ------------------------------
+///To be removed ------------------------------
 
     template <class T>
     GS::Array<T>* ArraySlice(GS::Array<T> p_array, UInt32 start, UInt32 end) {

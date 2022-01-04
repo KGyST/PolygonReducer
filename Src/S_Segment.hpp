@@ -29,7 +29,7 @@ namespace PolygonReducer {
         bool            m_startPoint;        // Is it a start of a subcontour
 
         API_Coord*      m_center;
-        float           m_angle;
+        double          m_angle;
         float           m_radius;
 
         //DELETE
@@ -43,7 +43,11 @@ namespace PolygonReducer {
         S_Segment(int idx, int startIdx, int endIdx, API_Coord& start, API_Coord& end) { init(idx, startIdx, endIdx, start, end); };
         ~S_Segment();
 
+        const API_Coord *getStart() { return &m_start; };
+        const API_Coord *getEnd() { return &m_end; };
+
         void SetArc(double angle);
+        void SetArc(double angle, Coord center);
         std::string toString();
     };
 }

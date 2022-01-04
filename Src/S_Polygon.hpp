@@ -15,7 +15,6 @@ namespace PolygonReducer {
     {
     private:
         GS::Array <S_Polyline*>* m_polylines;
-        GS::Array <S_Segment*>*  m_segments;
 
         int m_pointCount;
 
@@ -28,6 +27,9 @@ namespace PolygonReducer {
         std::string getGDLcode();
 
         void setPointCount(const int i_count);
+        void setupArcs(void);
+
+        GS::Array <S_Segment*>* m_segments;
     };
 }
 #endif // !S_POLYGON_HPP

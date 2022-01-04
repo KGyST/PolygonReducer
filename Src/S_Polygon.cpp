@@ -3,7 +3,6 @@
 
 // ---------------------------------- Prototypes -------------------------------
 namespace PolygonReducer {
-
     S_Polygon::S_Polygon(const API_ElementMemo* p_memo) {
         m_polylines = new GS::Array <S_Polyline*>();
         m_segments = new GS::Array <S_Segment*>();
@@ -41,16 +40,27 @@ namespace PolygonReducer {
 
         for (UInt32 i = 0; i < _pends->GetSize() - 1; i++)
         {
-            GS::Array<API_Coord> *_c = ArraySlice<API_Coord>(*_coords, (*_pends)[i] + 1, (*_pends)[i + 1]);
-            GS::Array<UInt32>    *_v = ArraySlice<UInt32>(*_vertexIDs, (*_pends)[i] + 1, (*_pends)[i + 1]);
-            GS::Array<API_PolyArc> *_parcsFiltered = new GS::Array<API_PolyArc>();
-            _parcsFiltered->EnsureSize((*_pends)[i + 1] - (*_pends)[i] + 1);
+            //GS::Array<API_Coord> *_coordsFiltered = ArraySlice<API_Coord>(*_coords, (*_pends)[i] + 1, (*_pends)[i + 1]);
+            //GS::Array<UInt32>    *_vertexIDsFiltered = ArraySlice<UInt32>(*_vertexIDs, (*_pends)[i] + 1, (*_pends)[i + 1]);
+            //GS::Array<API_PolyArc> *_parcsFiltered = new GS::Array<API_PolyArc>();
+            //_parcsFiltered->EnsureSize((*_pends)[i + 1] - (*_pends)[i] + 1);
 
-            m_polylines->Push(new S_Polyline(_c, _parcsFiltered, _v));
+            //m_polylines->Push(new S_Polyline(_coordsFiltered, _parcsFiltered, _vertexIDsFiltered));
+            m_polylines->Push(new S_Polyline(this, (*_pends)[i], (*_pends)[i+1]));
         }
     }
 
     S_Polygon::~S_Polygon() {}
+
+    API_ElementMemo* S_Polygon::getResultMemo()
+    {
+        return nullptr;
+    }
+
+    API_ElementMemo* S_Polygon::getOriginalMemo()
+    {
+        return nullptr;
+    }
 
     std::string S_Polygon::getGDLcode() {
         using namespace std;
@@ -64,6 +74,14 @@ namespace PolygonReducer {
         }
 
         return result;
+    }
+    void S_Polygon::setPointCount(const int i_count)
+    {
+        UNUSED_PARAMETER(i_count);
+    }
+    void S_Polygon::setupArcs(void)
+        //going through segments and unify them as arcs if they are so
+    {
     }
 }
 

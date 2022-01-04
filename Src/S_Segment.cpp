@@ -47,6 +47,13 @@ namespace PolygonReducer {
         m_center->y = xc->y;
     }
 
+    void S_Segment::SetArc(double angle, Coord center)
+    {
+        m_angle = angle;
+        m_center->x = center.x;
+        m_center->y = center.y;
+    }
+
     //using namespace std;
     std::string S_Segment::toString()
     {
