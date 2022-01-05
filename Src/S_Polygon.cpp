@@ -40,13 +40,21 @@ namespace PolygonReducer {
 
         for (UInt32 i = 0; i < _pends->GetSize() - 1; i++)
         {
-            //GS::Array<API_Coord> *_coordsFiltered = ArraySlice<API_Coord>(*_coords, (*_pends)[i] + 1, (*_pends)[i + 1]);
-            //GS::Array<UInt32>    *_vertexIDsFiltered = ArraySlice<UInt32>(*_vertexIDs, (*_pends)[i] + 1, (*_pends)[i + 1]);
-            //GS::Array<API_PolyArc> *_parcsFiltered = new GS::Array<API_PolyArc>();
-            //_parcsFiltered->EnsureSize((*_pends)[i + 1] - (*_pends)[i] + 1);
+            GS::Array<API_Coord> *_coordsFiltered = ArraySlice<API_Coord>(*_coords, (*_pends)[i] + 1, (*_pends)[i + 1]);
+            GS::Array<UInt32>    *_vertexIDsFiltered = ArraySlice<UInt32>(*_vertexIDs, (*_pends)[i] + 1, (*_pends)[i + 1]);
+            GS::Array<API_PolyArc> *_parcsFiltered = new GS::Array<API_PolyArc>();
 
-            //m_polylines->Push(new S_Polyline(_coordsFiltered, _parcsFiltered, _vertexIDsFiltered));
-            m_polylines->Push(new S_Polyline(this, (*_pends)[i], (*_pends)[i+1]));
+            auto _it = _parcs->Enumerate();
+            while (_it != NULL)
+            {
+                if (_it->begIndex >= (*_pends)[i] && _it->endIndex <= (*_pends)[i + 1])
+                {
+                    _parcsFiltered->Push(*_it);
+                }
+                _it++;
+            }
+
+            m_polylines->Push(new S_Polyline(_coordsFiltered, _parcsFiltered, _vertexIDsFiltered));
         }
     }
 
