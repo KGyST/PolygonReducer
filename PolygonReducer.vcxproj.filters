@@ -61,11 +61,14 @@
     <ClInclude Include="Src\SettingsDialog.hpp">
       <Filter>Source Files\Gui</Filter>
     </ClInclude>
-    <ClInclude Include="Src\S_Segment.hpp">
-      <Filter>Source Files\Geometry</Filter>
-    </ClInclude>
     <ClInclude Include="Src\Utils.hpp">
       <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Coord.hpp">
+      <Filter>Source Files\Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Segment.hpp">
+      <Filter>Source Files\Geometry</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -93,11 +96,14 @@
     <ClCompile Include="Src\SettingsDialog.cpp">
       <Filter>Source Files\Gui</Filter>
     </ClCompile>
-    <ClCompile Include="Src\S_Segment.cpp">
-      <Filter>Source Files\Geometry</Filter>
-    </ClCompile>
     <ClCompile Include="Src\Utils.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Coord.cpp">
+      <Filter>Source Files\Geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Segment.cpp">
+      <Filter>Source Files\Geometry</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

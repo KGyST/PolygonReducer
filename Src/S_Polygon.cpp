@@ -5,13 +5,13 @@
 namespace PolygonReducer {
     S_Polygon::S_Polygon(const API_ElementMemo* p_memo) {
         m_polylines = new GS::Array <S_Polyline*>();
-        m_segments = new GS::Array <S_Segment*>();
+        m_segments = new GS::Array <S::Segment*>();
 
         GS::Array<Int32>        *_pends = new GS::Array<Int32>();
         GS::Array<API_Coord>   *_coords = new GS::Array<API_Coord>();
         GS::Array<API_PolyArc>  *_parcs = new GS::Array<API_PolyArc>();
         GS::Array<UInt32>   *_vertexIDs = new GS::Array<UInt32>();
-        GS::Array<S_Segment> *_segments = new GS::Array<S_Segment>();
+        GS::Array<S::Segment> *_segments = new GS::Array<S::Segment>();
 
         UInt32 err;
 
@@ -20,14 +20,14 @@ namespace PolygonReducer {
         err = ConvertToGSArray<API_PolyArc, API_PolyArc>(p_memo->parcs, _parcs);
         err = ConvertToGSArray<UInt32, UInt32>(p_memo->vertexIDs, _vertexIDs);
 
-        S_Segment *_segment;
+        S::Segment *_segment;
         int _idx = 0;
 
         for (UInt32 i = 1; i < _coords->GetSize(); i++)
         {
             API_Coord c1 ((*_coords)[i - 1]) ;
             API_Coord c2 ((*_coords)[i]);
-            _segment = new S_Segment(_idx++, (*_vertexIDs)[i - 1], (*_vertexIDs)[i], c1, c2);
+            _segment = new S::Segment(_idx++, (*_vertexIDs)[i - 1], (*_vertexIDs)[i], c1, c2);
 
             _segments->Push(*_segment);
             m_segments->Push(_segment);
@@ -77,7 +77,7 @@ namespace PolygonReducer {
 
         for (UInt16 i = 0; i < m_segments->GetSize(); i++)
         {
-            S_Segment* _s = (*m_segments)[i];
+            S::Segment* _s = (*m_segments)[i];
             result += _s->toString();
         }
 

@@ -5,7 +5,7 @@
 #define ACExtension
 #include "ACAPinc.h"					// also includes APIdefs.h
 #include "S_Polyline.hpp"
-#include "S_Segment.hpp"
+#include "Segment.hpp"
 #include "PolygonReducer.hpp"
 #include <string>
 
@@ -29,7 +29,7 @@ namespace PolygonReducer {
         void setPointCount(const int i_count);
         void setupArcs(void);
 
-        GS::Array <S_Segment*>* m_segments;
+        GS::Array <S::Segment*>* m_segments;
     };
 }
 #endif // !S_POLYGON_HPP

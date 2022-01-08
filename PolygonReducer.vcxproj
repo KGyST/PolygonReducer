@@ -4,7 +4,7 @@
     <APIDevKitRoot>D:\Program Files\Graphisoft\API Development Kit 19.3003</APIDevKitRoot>
     <APIDevKitSupport>$(APIDevKitRoot)\Support</APIDevKitSupport>
     <APIDevKitModules>$(APIDevKitSupport)\Modules</APIDevKitModules>
-	<BoostLib>D:\Letöltések\boost_1_78_0</BoostLib>
+    <BoostLib>D:\Letöltések\boost_1_78_0</BoostLib>
   </PropertyGroup>
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|x64">
@@ -132,6 +132,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Src\Coord.hpp" />
     <ClInclude Include="Src\GDLDialog.hpp" />
     <ClInclude Include="Src\SettingsDialog.hpp" />
     <ClInclude Include="Src\S_Arc.hpp" />
@@ -142,11 +143,12 @@
     <ClInclude Include="Src\APIEnvir.h" />
     <ClInclude Include="Src\APICommon.h" />
     <ClInclude Include="Src\S_Polyline.hpp" />
-    <ClInclude Include="Src\S_Segment.hpp" />
+    <ClInclude Include="Src\Segment.hpp" />
     <ClInclude Include="Src\Utils.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Src\APICommon.c" />
+    <ClCompile Include="Src\Coord.cpp" />
     <ClCompile Include="Src\GDLDialog.cpp" />
     <ClCompile Include="Src\InfoboxPanel.cpp" />
     <ClCompile Include="Src\SettingsDialog.cpp" />
@@ -155,7 +157,7 @@
     <ClCompile Include="Src\S_Polygon.cpp" />
     <ClCompile Include="Src\PolygonReducer.cpp" />
     <ClCompile Include="Src\S_Polyline.cpp" />
-    <ClCompile Include="Src\S_Segment.cpp" />
+    <ClCompile Include="Src\Segment.cpp" />
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="RFIX\$(ProjectName)Fix.grc">

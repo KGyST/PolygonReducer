@@ -4,7 +4,7 @@
 
 #define ACExtension
 #include "ACAPinc.h"					// also includes APIdefs.h
-#include "S_Segment.hpp"
+#include "Segment.hpp"
 //#include "S_Polygon.hpp"
 #include "Point2DData.h"
 #include "Sector2DData.h"
@@ -13,7 +13,7 @@ namespace PolygonReducer {
     class S_Polyline
     {
     private:
-        GS::Array <S_Segment*>* segments;
+        GS::Array <S::Segment*>* segments;
 
     public:
         S_Polyline(GS::Array<API_Coord>* coords, GS::Array<API_PolyArc>* pars, GS::Array<UInt32>* vertexIDs);
