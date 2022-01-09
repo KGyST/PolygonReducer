@@ -21,12 +21,12 @@ S::Segment::~Segment()
 {
 }
 
-S::Coord S::Segment::midPoint()
+const S::Coord S::Segment::midPoint() const
 {
     return Coord((m_start.getX() + m_end.getX())/2, (m_start.getY() + m_end.getY())/2);
 }
 
-S::Segment S::Segment::midPerp()
+const S::Segment S::Segment::midPerp() const
 {
     ::Coord _start = m_start.toCoord();
     ::Coord _midPoint = midPoint().toCoord();

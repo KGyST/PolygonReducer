@@ -49,8 +49,8 @@ namespace S {
         Coord *getStart() { return &m_start; };
         Coord *getEnd() { return &m_end; };
 
-        Coord midPoint();
-        Segment midPerp();
+        const Coord midPoint() const;
+        const Segment midPerp() const;
 
         const double getLength() { return sqrt(pow((m_end.getX() - m_start.getX()), 2) + pow((m_end.getY() - m_start.getY()), 2));  };
         //const Sector toSector();

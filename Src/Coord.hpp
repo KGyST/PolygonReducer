@@ -25,14 +25,14 @@ namespace S {
 		void setY(const double y) { m_y = y; };
 		void setEps(const double eps) { m_eps = eps; };
 
-		const double getX(void) { return m_x; };
-		const double getY(void) { return m_y; };
-		const double getEps(void) { return m_eps; };
+		const double getX(void) const { return m_x; };
+		const double getY(void) const { return m_y; };
+		const double getEps(void) const { return m_eps; };
 
 		bool operator== (Coord anotherCoord);
 
-		::Coord toCoord();
-		API_Coord toAPICoord();
+		::Coord toCoord() const;
+		API_Coord toAPICoord() const;
 	};
 }
 

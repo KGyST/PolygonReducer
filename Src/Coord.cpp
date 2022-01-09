@@ -29,13 +29,13 @@ bool S::Coord::operator==(Coord anotherCoord)
 }
 
 
-::Coord S::Coord::toCoord()
+::Coord S::Coord::toCoord() const
 {
 	return ::Coord(m_x, m_y);
 }
 
 
-API_Coord S::Coord::toAPICoord()
+API_Coord S::Coord::toAPICoord() const
 {
 	API_Coord res = { m_x, m_y };
 	return res;
