@@ -20,7 +20,7 @@ S::Coord::Coord(const double x, const double y) :
 {}
 
 
-bool S::Coord::operator==(Coord anotherCoord)
+bool S::Coord::operator==(Coord anotherCoord) const
 {
 	return	m_x - m_eps < anotherCoord.x
 		&&	m_x + m_eps > anotherCoord.x
@@ -29,13 +29,13 @@ bool S::Coord::operator==(Coord anotherCoord)
 }
 
 
-::Coord S::Coord::toCoord() const
+::Coord S::Coord::ToCoord() const
 {
 	return ::Coord(m_x, m_y);
 }
 
 
-API_Coord S::Coord::toAPICoord() const
+API_Coord S::Coord::ToAPICoord() const
 {
 	API_Coord res = { m_x, m_y };
 	return res;

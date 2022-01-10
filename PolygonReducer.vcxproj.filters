@@ -18,6 +18,9 @@
     <Filter Include="Source Files\Gui">
       <UniqueIdentifier>{74ff62f4-0a73-44eb-ab9f-e81ee022df6e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Containers">
+      <UniqueIdentifier>{8970ac7b-11e2-43d3-bf9d-c2e946bf3000}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="RFIX.WIN\$(ProjectName).rc2">
@@ -43,9 +46,6 @@
     <ClInclude Include="Src\PolygonReducer_Resource.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="Src\S_Arc.hpp">
-      <Filter>Source Files\Geometry</Filter>
-    </ClInclude>
     <ClInclude Include="Src\S_Polygon.hpp">
       <Filter>Source Files\Geometry</Filter>
     </ClInclude>
@@ -70,6 +70,9 @@
     <ClInclude Include="Src\Segment.hpp">
       <Filter>Source Files\Geometry</Filter>
     </ClInclude>
+    <ClInclude Include="Src\Array.hpp">
+      <Filter>Source Files\Containers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Src\APICommon.c">
@@ -77,9 +80,6 @@
     </ClCompile>
     <ClCompile Include="Src\PolygonReducer.cpp">
       <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Src\S_Arc.cpp">
-      <Filter>Source Files\Geometry</Filter>
     </ClCompile>
     <ClCompile Include="Src\S_Polygon.cpp">
       <Filter>Source Files\Geometry</Filter>
@@ -104,6 +104,9 @@
     </ClCompile>
     <ClCompile Include="Src\Segment.cpp">
       <Filter>Source Files\Geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="Array.cpp">
+      <Filter>Source Files\Containers</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

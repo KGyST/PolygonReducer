@@ -17,8 +17,8 @@ namespace PolygonReducer {
         {
             S::Segment s((*coords)[i-1], (*coords)[i]);
 
-            Coord* _halfPoint = new Coord((s.getStart()->getX() + s.getEnd()->getX())/2, (s.getStart()->getY() + s.getEnd()->getY()) / 2);
-            Coord* _start = new Coord(s.getStart()->getX(), s.getStart()->getY());
+            Coord* _halfPoint = new Coord((s.GetStart()->GetX() + s.GetEnd()->GetX())/2, (s.GetStart()->GetY() + s.GetEnd()->GetY()) / 2);
+            Coord* _start = new Coord(s.GetStart()->GetX(), s.GetStart()->GetY());
             Coord _rotEnd = RotCoord(_halfPoint, _start, 1.00, 0.00);
             double eps = 0, radEps = 0;
 

@@ -19,20 +19,21 @@ namespace S {
 		Coord(const API_Coord coord);
 		Coord(const double x, const double y);
 		Coord() : m_x(0.00), m_y(0.00) {};
+		Coord(const Coord& c) : m_x(c.GetX()), m_y(c.GetY()) {};;
 		~Coord() {};
 
-		void setX(const double x) { m_x = x; };
-		void setY(const double y) { m_y = y; };
-		void setEps(const double eps) { m_eps = eps; };
+		void SetX(const double x) { m_x = x; };
+		void SetY(const double y) { m_y = y; };
+		void SetEps(const double eps) { m_eps = eps; };
 
-		const double getX(void) const { return m_x; };
-		const double getY(void) const { return m_y; };
-		const double getEps(void) const { return m_eps; };
+		const double GetX(void) const { return m_x; };
+		const double GetY(void) const { return m_y; };
+		const double GetEps(void) const { return m_eps; };
 
-		bool operator== (Coord anotherCoord);
+		bool operator== (Coord anotherCoord) const;
 
-		::Coord toCoord() const;
-		API_Coord toAPICoord() const;
+		::Coord ToCoord() const;
+		API_Coord ToAPICoord() const;
 	};
 }
 

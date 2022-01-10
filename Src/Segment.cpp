@@ -21,18 +21,18 @@ S::Segment::~Segment()
 {
 }
 
-const S::Coord S::Segment::midPoint() const
+const S::Coord S::Segment::MidPoint() const
 {
-    return Coord((m_start.getX() + m_end.getX())/2, (m_start.getY() + m_end.getY())/2);
+    return Coord((m_start.GetX() + m_end.GetX())/2, (m_start.GetY() + m_end.GetY())/2);
 }
 
-const S::Segment S::Segment::midPerp() const
+const S::Segment S::Segment::MidPerp() const
 {
-    ::Coord _start = m_start.toCoord();
-    ::Coord _midPoint = midPoint().toCoord();
+    ::Coord _start = m_start.ToCoord();
+    ::Coord _midPoint = MidPoint().ToCoord();
     ::Coord _rotEnd = RotCoord(&_midPoint, &_start, 1.00, 0.00);
 
-    return S::Segment(midPoint(), Coord(_rotEnd));
+    return S::Segment(MidPoint(), Coord(_rotEnd));
 }
 
 
@@ -40,40 +40,40 @@ void S::Segment::SetArc(double angle)
 {
     m_angle = angle;
 
-    Coord *_start = new Coord(m_start.getX(), m_start.getY());
-    Coord *_end = new Coord(m_end.getX(), m_end.getY());
+    Coord _start (m_start.GetX(), m_start.GetY());
+    Coord _end (m_end.GetX(), m_end.GetY());
     double _halfAngle = PI / 4 - angle / 2;
 
-    ::Coord rotEnd = RotCoord(_start->toCoord(), _end->toCoord(), sin(_halfAngle), cos(_halfAngle));
-    ::Coord rotStart = RotCoord(_end->toCoord(), _start->toCoord(), sin(_halfAngle), cos(_halfAngle));
+    ::Coord rotEnd = RotCoord(_start.ToCoord(), _end.ToCoord(), sin(_halfAngle), cos(_halfAngle));
+    ::Coord rotStart = RotCoord(_end.ToCoord(), _start.ToCoord(), sin(_halfAngle), cos(_halfAngle));
 
-    Sector lin1 = SetSector(_start->toCoord(), rotEnd);
-    Sector lin2 = SetSector(_end->toCoord(), rotStart);
+    Sector lin1 = SetSector(_start.ToCoord(), rotEnd);
+    Sector lin2 = SetSector(_end.ToCoord(), rotStart);
 
-    ::Coord* xc = new ::Coord(0, 0);
+    ::Coord xc (0, 0);
 
     double eps = 0, radEps = 0;
 
-    XLinesEps(lin1, lin2, xc, eps, radEps);
+    XLinesEps(lin1, lin2, &xc, eps, radEps);
 
-    m_center.setX(xc->x);
-    m_center.setY(xc->y);
+    m_center.SetX(xc.x);
+    m_center.SetY(xc.y);
 }
 
 
 void S::Segment::SetArc(double angle, S::Coord center)
 {
     m_angle = angle;
-    m_center.setX(center.getX());
-    m_center.setY(center.getY());
+    m_center.SetX(center.GetX());
+    m_center.SetY(center.GetY());
 }
 
 
-std::string S::Segment::toString()
+std::string S::Segment::ToString() const
 {
     std::string result = "";
 
-    auto _s = str(boost::format("%-.2f %-.2f \n") % m_start.getX() % m_start.getY());
+    auto _s = str(boost::format("%-.2f %-.2f \n") % m_start.GetX() % m_start.GetY());
 
     result += std::string(_s);
 

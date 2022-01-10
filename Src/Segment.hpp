@@ -39,26 +39,27 @@ namespace S {
 
     public:
         Segment() {};
-        inline Segment(const Coord& start, const Coord& end) { init(0, 0, 0, start, end); };
+        Segment(const Coord& start, const Coord& end) { init(0, 0, 0, start, end); };
         Segment(int idx, const Coord& start, const Coord& end) { init(idx, 0, 0, start, end); };
         Segment(int idx, const API_Coord& start, const API_Coord& end) { init(idx, 0, 0, Coord(start), Coord(end)); };
         Segment(int idx, int startIdx, int endIdx, const Coord& start, const Coord& end) { init(idx, startIdx, endIdx, start, end); };
+        //Segment(const Segment &s) { init(s.idx, s.startIdx, s.endIdx, s.GetStart(), s.GetEnd()); };
         //Segment(Sector sect);
         ~Segment();
 
-        Coord *getStart() { return &m_start; };
-        Coord *getEnd() { return &m_end; };
+        const Coord *GetStart() const { return &m_start; };
+        const Coord *GetEnd() const { return &m_end; };
 
-        const Coord midPoint() const;
-        const Segment midPerp() const;
+        const Coord MidPoint() const;
+        const Segment MidPerp() const;
 
-        const double getLength() { return sqrt(pow((m_end.getX() - m_start.getX()), 2) + pow((m_end.getY() - m_start.getY()), 2));  };
+        const double GetLength() const { return sqrt(pow((m_end.GetX() - m_start.GetX()), 2) + pow((m_end.GetY() - m_start.GetY()), 2));  };
         //const Sector toSector();
 
         void SetArc(double angle);
         void SetArc(double angle, const Coord center);
 
-        std::string toString();
+        std::string ToString() const;
     };
 }
 

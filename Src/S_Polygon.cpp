@@ -58,10 +58,14 @@ namespace PolygonReducer {
         }
     }
 
-    S_Polygon::~S_Polygon() {}
+    S_Polygon::~S_Polygon() {
+    }
 
     API_ElementMemo* S_Polygon::getResultMemo()
     {
+        //API_ElementMemo result();
+
+
         return nullptr;
     }
 
@@ -78,7 +82,7 @@ namespace PolygonReducer {
         for (UInt16 i = 0; i < m_segments->GetSize(); i++)
         {
             S::Segment* _s = (*m_segments)[i];
-            result += _s->toString();
+            result += _s->ToString();
         }
 
         return result;
