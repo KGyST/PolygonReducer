@@ -7,6 +7,7 @@
 #include "S_Polyline.hpp"
 #include "Segment.hpp"
 #include "PolygonReducer.hpp"
+#include "Array.hpp"
 #include <string>
 
 namespace PolygonReducer {
