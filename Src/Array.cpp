@@ -1,6 +1,4 @@
-#include "Src/Array.hpp"
-
-
+#include "Array.hpp"
 
 template <class Type>
 Type** S::Array<Type>::ToNeigs() const
@@ -32,3 +30,8 @@ S::Array<Type>& S::Array<Type>::Slice(GS::UIndex start, GS::UIndex end) const
     return &resultArray;
 }
 
+//template <class Type>
+//GS::RandomContainerIterator<S::Array<Type>> end()
+//{
+//    return GS::RandomContainerIterator<S::Array<Type>>(*this, size);
+//}

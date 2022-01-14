@@ -66,18 +66,10 @@ namespace PolygonReducer {
     S_Polygon::~S_Polygon() {
     }
 
-    API_ElementMemo* S_Polygon::getResultMemo()
-    {
-        //API_ElementMemo result();
+    //API_ElementMemo* S_Polygon::getResultMemo()
+    //{
 
-
-        return nullptr;
-    }
-
-    API_ElementMemo* S_Polygon::getOriginalMemo()
-    {
-        return nullptr;
-    }
+    //}
 
     std::string S_Polygon::getGDLcode() {
         using namespace std;

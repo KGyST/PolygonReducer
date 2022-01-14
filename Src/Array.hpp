@@ -11,16 +11,28 @@ namespace S {
 	class Array : public GS::Array<Type>
 	{
 	public:
-		Array(Type**);
+		//typedef GS::RandomContainerIterator<GS::Array<Type>>		 Iterator;
+		//typedef ConstRandomContainerIterator<S::Array>  ConstIterator;
+
+		//typedef RandomContainerReverseIterator<S::Array>		ReverseIterator;
+		//typedef ConstRandomContainerReverseIterator<S::Array>	ConstReverseIterator;
+
+		Array(const Type* const*);														//TODO const Type**
 		~Array() {};
 		Type** ToNeigs() const;
 
 		Array<Type> &Slice(GS::UIndex start, GS::UIndex end) const;
+		//TODO Sort() 
+
+		//Iterator begin();
+		//Iterator end();
 	};
 }
 
+//---------------------------------------------------------------------------
+
 template <class Type>
-S::Array<Type>::Array(Type** p_neigs)
+S::Array<Type>::Array(const Type* const* p_neigs)
 {
 	UInt32 nSel = BMGetHandleSize((GSHandle)p_neigs) / sizeof(Type);
 
@@ -34,5 +46,12 @@ S::Array<Type>::Array(Type** p_neigs)
 		this->Push(_an);
 	}
 }
+
+//template <class Type>
+//S::Array<Type>::Iterator S::Array<Type>::begin()
+//{
+//	//return GS::RandomContainerIterator<S::Array<Type>>(*this, 0);
+//	return GS::Array<Type>.Begin();
+//}
 
 #endif // !S_ARRAY_HPP

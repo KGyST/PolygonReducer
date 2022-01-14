@@ -17,14 +17,13 @@ namespace PolygonReducer {
     private:
         GS::Array <S_Polyline*>* m_polylines;
 
-        int m_pointCount;
+        UINT m_pointCount;
 
     public:
         S_Polygon(const API_ElementMemo* p_memo);
         ~S_Polygon();
 
         API_ElementMemo* getResultMemo();
-        API_ElementMemo* getOriginalMemo();
         std::string getGDLcode();
 
         void setPointCount(const int i_count);

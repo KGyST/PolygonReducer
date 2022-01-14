@@ -147,8 +147,8 @@
     <ClInclude Include="Src\Utils.hpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Array.cpp" />
     <ClCompile Include="Src\APICommon.c" />
+    <ClCompile Include="Src\Array.cpp" />
     <ClCompile Include="Src\Coord.cpp" />
     <ClCompile Include="Src\GDLDialog.cpp" />
     <ClCompile Include="Src\InfoboxPanel.cpp" />
