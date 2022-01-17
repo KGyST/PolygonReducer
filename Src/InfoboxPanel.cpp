@@ -8,13 +8,13 @@
 #include "Utils.hpp"
 
 namespace PolygonReducer {
-	PolygonReducerInfoboxPage::PolygonReducerInfoboxPage(const DG::TabControl& tabControl, TBUI::IAPIToolUIData* puiData) :
-		DG::TabPage(tabControl, 1, ACAPI_GetOwnResModule(), InfoBoxPageId, InvalidResModule),
-		iUIPointNumber	(GetReference(), iUIPointNumberId),
-		sUITest			(GetReference(), sUITestId),
-		GDLButton		(GetReference(), GDLButtonId),
-		SettingsButton	(GetReference(), SettingsButtonId),
-		uiData			(puiData)
+	PolygonReducerInfoboxPage::PolygonReducerInfoboxPage(const DG::TabControl& tabControl, TBUI::IAPIToolUIData* puiData)
+		:	DG::TabPage(tabControl, 1, ACAPI_GetOwnResModule(), InfoBoxPageId, InvalidResModule)
+		,	iUIPointNumber	(GetReference(), iUIPointNumberId)
+		,	sUITest			(GetReference(), sUITestId)
+		,	GDLButton		(GetReference(), GDLButtonId)
+		,	SettingsButton	(GetReference(), SettingsButtonId)
+		,	uiData			(puiData)
 	{
 		iUIPointNumber.SetValue(GetPointNumber());
 		//m_currentPolygon = 
@@ -35,8 +35,10 @@ namespace PolygonReducer {
 		API_SelectionInfo   selectionInfo;
 		API_Neig** selNeigs;
 		GS::Array<API_ElementMemo> memos = *new GS::Array<API_ElementMemo>();
+		GS::Array<API_Guid> guids = *new GS::Array<API_Guid>();
 		GS::Array<API_Coord> coords = *new GS::Array<API_Coord>();
 		GS::Array<INT32> pends = *new GS::Array<INT32>();
+		API_ElementMemo originalMemo;
 
 		err = ACAPI_Selection_Get(&selectionInfo, &selNeigs, true);
 
@@ -50,10 +52,34 @@ namespace PolygonReducer {
 			return 0;
 		}
 
+		API_Elem_Head element = {};
+
 		err = ConvertToGSArray<API_Neig, API_ElementMemo>(selNeigs, &memos, ReturnTrue<API_Neig>, ConvertToMemos);
+		err = ConvertToGSArray<API_Neig, API_Guid>(selNeigs, &guids, ReturnTrue<API_Neig>, NeigToAPIGuid);
 
 		for (unsigned int i = 0; i < memos.GetSize(); i++)
 		{
+			element.guid = guids[i];
+			API_ElementUserData userData = {};
+
+			GSErrCode err = ACAPI_Element_GetUserData(&element, &userData);
+
+			if (err == NoError && userData.dataHdl == nullptr)
+			{
+				originalMemo = memos[i];
+			}
+
+			if (err == NoError && userData.dataHdl != nullptr)
+			{
+				originalMemo = *reinterpret_cast<API_ElementMemo*> (*userData.dataHdl);
+			}
+
+			userData.dataVersion = 1;
+			userData.platformSign = GS::Act_Platform_Sign;
+			userData.flags = APIUserDataFlag_FillWith | APIUserDataFlag_Pickup;
+			userData.dataHdl = BMAllocateHandle(sizeof(originalMemo), ALLOCATE_CLEAR, 0);
+			err = ACAPI_Element_SetUserData(&element, &userData);
+
 			err = ConvertToGSArray<API_Coord, API_Coord>(memos[i].coords, &coords);
 			err = ConvertToGSArray<INT32, INT32>(memos[i].pends, &pends);
 
@@ -64,6 +90,8 @@ namespace PolygonReducer {
 
 		return coords.GetSize() - pends.GetSize();
 	}
+
+	// --- PolygonReducerPageObserver -------------------------------------------------
 
 	void	PolygonReducerPageObserver::APIElementChanged(const TBUI::APIElemDefaultFieldMask& fieldMask) {
 		if (fieldMask.GetRegDataChanged()) {
@@ -116,6 +144,7 @@ namespace PolygonReducer {
 		m_tabPage = NULL;
 	}
 
+	// --- PolygonReducerPage ---------------------------------------------------------
 
 	PolygonReducerPanel::PolygonReducerPanel(Int32 refCon):
 		TBUI::APIToolUIPanel(refCon)

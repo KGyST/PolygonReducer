@@ -141,7 +141,6 @@ static	GSErrCode	__ACENV_CALL	DestroyPageCallback(Int32 refCon, void* /*tabPage*
 
 // -----------------------------------------------------------------------------
 // Entry points to handle ArchiCAD events
-//
 // -----------------------------------------------------------------------------
 
 GSErrCode __ACENV_CALL	MenuCommandHandler(const API_MenuParams* params)

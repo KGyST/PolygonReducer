@@ -1,9 +1,9 @@
 #include "Array.hpp"
 
 template <class Type>
-Type** S::Array<Type>::ToNeigs() const
+Type* S::Array<Type>::ToNeigs() const
 {
-    Type** neigs = BMAllocateHandle(this->GetSize());
+    Type* neigs = BMAllocateHandle(this->GetSize());
     UINT i = 0;
 
     if (neigs != NULL)

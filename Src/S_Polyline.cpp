@@ -5,7 +5,7 @@ using namespace Geometry;
 
 namespace PolygonReducer {
     S_Polyline::S_Polyline(GS::Array<API_Coord>* coords, GS::Array<API_PolyArc>* pars, GS::Array<UInt32>* vertexIDs) {
-        segments = new GS::Array<S::Segment*>;
+        m_segments = new GS::Array<S::Segment*>;
 
         Sector midPerpPrev;
         Coord centerPrev(0, 0);
@@ -43,7 +43,7 @@ namespace PolygonReducer {
         UNUSED_PARAMETER(coords);
         UNUSED_PARAMETER(pars);
         UNUSED_PARAMETER(vertexIDs);
-        UNUSED_PARAMETER(segments);
+        //UNUSED_PARAMETER(segments);
     }
 
     using namespace Geometry;

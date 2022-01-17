@@ -49,6 +49,8 @@ namespace S {
 
         const Coord *GetStart() const { return &m_start; };
         const Coord *GetEnd() const { return &m_end; };
+        const float  GetRad() const { return m_radius; };
+        const double  GetAng() const { return m_angle; };
 
         const Coord MidPoint() const;
         const Segment MidPerp() const;

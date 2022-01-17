@@ -12,14 +12,12 @@ namespace S {
 	{
 	public:
 		//typedef GS::RandomContainerIterator<GS::Array<Type>>		 Iterator;
-		//typedef ConstRandomContainerIterator<S::Array>  ConstIterator;
 
-		//typedef RandomContainerReverseIterator<S::Array>		ReverseIterator;
-		//typedef ConstRandomContainerReverseIterator<S::Array>	ConstReverseIterator;
-
-		Array(const Type* const*);														//TODO const Type**
+		Array(const Type* const*);
+		Array(GS::Array<Type>);
+		Array() {};
 		~Array() {};
-		Type** ToNeigs() const;
+		Type* ToNeigs() const;
 
 		Array<Type> &Slice(GS::UIndex start, GS::UIndex end) const;
 		//TODO Sort() 
@@ -45,6 +43,12 @@ S::Array<Type>::Array(const Type* const* p_neigs)
 
 		this->Push(_an);
 	}
+}
+
+template <class Type>
+S::Array<Type>::Array(GS::Array<Type> a)
+{
+	this = (S::Array)a;
 }
 
 //template <class Type>

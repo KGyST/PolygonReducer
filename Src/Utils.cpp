@@ -1,6 +1,4 @@
 #include "Utils.hpp"
-#include "APICommon.h"
-#include "ACAPinc.h"					// also includes APIdefs.h
 
 
 void TrackPoly(const API_Polygon* poly, const API_ElementMemo* memo)
@@ -23,10 +21,10 @@ void TrackPoly(const API_Polygon* poly, const API_ElementMemo* memo)
 
 bool IsItPolygon(API_Neig p_neig)
 {
-    if (p_neig.neigID == APINeig_PolyLine
-        || p_neig.neigID == APINeig_PolyLineOn
-        || p_neig.neigID == APINeig_Hatch
-        || p_neig.neigID == APINeig_HatchOn
+    if  (    p_neig.neigID == APINeig_PolyLine
+        ||   p_neig.neigID == APINeig_PolyLineOn
+        ||   p_neig.neigID == APINeig_Hatch
+        ||   p_neig.neigID == APINeig_HatchOn
         )
         return true;
 

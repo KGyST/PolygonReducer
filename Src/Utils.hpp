@@ -1,9 +1,10 @@
 #pragma once
+#define ACExtension
+#include "ACAPinc.h"					// also includes APIdefs.h
+#include "APICommon.h"
 #include <APIdefs.h>
 #ifndef UTILS_HPP
 #define UTILS_HPP
-#define ACExtension
-
 
 void TrackPoly(const API_Polygon* poly, const API_ElementMemo* memo);
 

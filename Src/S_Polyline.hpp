@@ -13,9 +13,9 @@ namespace PolygonReducer {
     class S_Polyline
     {
     private:
-        GS::Array <S::Segment*>* segments;
 
     public:
+        GS::Array <S::Segment*>* m_segments;
         S_Polyline(GS::Array<API_Coord>* coords, GS::Array<API_PolyArc>* pars, GS::Array<UInt32>* vertexIDs);
         //S_Polyline(S_Polygon* p_owner, int p_iStart, int p_iEnd);
         ~S_Polyline();

@@ -15,11 +15,15 @@ namespace S {
 		double m_x;
 		double m_y;
 	public:
+		Coord()
+			:	m_x(0.00)
+			,	m_y(0.00) {};
 		Coord(const ::Coord coord);
 		Coord(const API_Coord coord);
 		Coord(const double x, const double y);
-		Coord() : m_x(0.00), m_y(0.00) {};
-		Coord(const Coord& c) : m_x(c.GetX()), m_y(c.GetY()) {};;
+		Coord(const Coord& c)
+			:	m_x(c.GetX())
+			,	m_y(c.GetY()) {};;
 		~Coord() {};
 
 		void SetX(const double x) { m_x = x; };
