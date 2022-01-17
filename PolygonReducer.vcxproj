@@ -135,6 +135,7 @@
     <ClInclude Include="Src\Array.hpp" />
     <ClInclude Include="Src\Coord.hpp" />
     <ClInclude Include="Src\GDLDialog.hpp" />
+    <ClInclude Include="Src\PolygonUserData.hpp" />
     <ClInclude Include="Src\SettingsDialog.hpp" />
     <ClInclude Include="Src\S_Polygon.hpp" />
     <ClInclude Include="Src\InfoboxPanel.hpp" />
@@ -152,6 +153,7 @@
     <ClCompile Include="Src\Coord.cpp" />
     <ClCompile Include="Src\GDLDialog.cpp" />
     <ClCompile Include="Src\InfoboxPanel.cpp" />
+    <ClCompile Include="Src\PolygonUserData.cpp" />
     <ClCompile Include="Src\SettingsDialog.cpp" />
     <ClCompile Include="Src\Utils.cpp" />
     <ClCompile Include="Src\S_Polygon.cpp" />

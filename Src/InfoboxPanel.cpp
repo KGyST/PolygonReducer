@@ -9,12 +9,12 @@
 
 namespace PolygonReducer {
 	PolygonReducerInfoboxPage::PolygonReducerInfoboxPage(const DG::TabControl& tabControl, TBUI::IAPIToolUIData* puiData)
-		:	DG::TabPage(tabControl, 1, ACAPI_GetOwnResModule(), InfoBoxPageId, InvalidResModule)
-		,	iUIPointNumber	(GetReference(), iUIPointNumberId)
-		,	sUITest			(GetReference(), sUITestId)
-		,	GDLButton		(GetReference(), GDLButtonId)
-		,	SettingsButton	(GetReference(), SettingsButtonId)
-		,	uiData			(puiData)
+		:DG::TabPage(tabControl, 1, ACAPI_GetOwnResModule(), InfoBoxPageId, InvalidResModule)
+		,iUIPointNumber	(GetReference(), iUIPointNumberId)
+		,sUITest			(GetReference(), sUITestId)
+		,GDLButton		(GetReference(), GDLButtonId)
+		,SettingsButton	(GetReference(), SettingsButtonId)
+		,uiData			(puiData)
 	{
 		iUIPointNumber.SetValue(GetPointNumber());
 		//m_currentPolygon = 
@@ -64,10 +64,7 @@ namespace PolygonReducer {
 
 			GSErrCode err = ACAPI_Element_GetUserData(&element, &userData);
 
-			if (err == NoError && userData.dataHdl == nullptr)
-			{
-				originalMemo = memos[i];
-			}
+			originalMemo = memos[i];
 
 			if (err == NoError && userData.dataHdl != nullptr)
 			{
@@ -78,6 +75,8 @@ namespace PolygonReducer {
 			userData.platformSign = GS::Act_Platform_Sign;
 			userData.flags = APIUserDataFlag_FillWith | APIUserDataFlag_Pickup;
 			userData.dataHdl = BMAllocateHandle(sizeof(originalMemo), ALLOCATE_CLEAR, 0);
+			*reinterpret_cast<API_ElementMemo*> (*userData.dataHdl) = originalMemo;
+
 			err = ACAPI_Element_SetUserData(&element, &userData);
 
 			err = ConvertToGSArray<API_Coord, API_Coord>(memos[i].coords, &coords);
