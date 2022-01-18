@@ -3,16 +3,17 @@
 
 namespace PolygonReducer {
     S_Polygon::S_Polygon(const API_ElementMemo* p_memo)
-        :   m_polylines (new GS::Array <S_Polyline*>())
-        ,   m_segments  (new GS::Array <S::Segment*>())
+        :   m_polylines (*new GS::Array <S_Polyline*>())
+        ,   m_segments  (*new GS::Array <S::Segment*>())
     {
-        S::Array<S::Segment> _segments ;
+        S::Segment _segment;
+        S::Array<S::Segment> _segments;
+
         S::Array<Int32> _pends(p_memo->pends);
         S::Array<API_Coord> _coords(p_memo->coords);
         S::Array<API_PolyArc> _parcs(p_memo->parcs);
         S::Array<UInt32> _vertexIDs(p_memo->vertexIDs);
 
-        S::Segment _segment;
         int _idx = 0;
 
         for (UInt32 i = 1; i < _coords.GetSize(); i++)
@@ -22,7 +23,7 @@ namespace PolygonReducer {
             S::Segment _segment (_idx++, _vertexIDs[i - 1], _vertexIDs[i], c1, c2);
 
             _segments.Push(_segment);
-            m_segments->Push(&_segment);
+            m_segments.Push(&_segment);
         }
 
         for (UInt32 i = 0; i < _parcs.GetSize(); i++)
@@ -46,7 +47,7 @@ namespace PolygonReducer {
                 _it++;
             }
 
-            m_polylines->Push(new S_Polyline(_coordsFiltered, _parcsFiltered, _vertexIDsFiltered));
+            m_polylines.Push(new S_Polyline(_coordsFiltered, _parcsFiltered, _vertexIDsFiltered));
         }
     }
 
@@ -55,40 +56,41 @@ namespace PolygonReducer {
     }
 
 
-    //API_ElementMemo* S_Polygon::getResultMemo()
-    //{
-    //    API_ElementMemo* _memo{};               //TODO get from selection
-    //    S::Array<API_Coord*> _coords;
-    //    S::Array<API_PolyArc*> _parcs;
-    //    S::Array<Int32*> _pends;
-    //    S::Array<UInt32*> _vertIDs;
+    void S_Polygon::updateMemo(API_ElementMemo* o_memo)
+    {
+        S::Array<API_Coord*> _coords;
+        S::Array<API_PolyArc*> _parcs;
+        S::Array<Int32*> _pends;
+        S::Array<UInt32*> _vertIDs;
 
-    //    _coords.Push(&(*m_segments)[0]->GetStart()->ToAPICoord());
+        API_Coord _ac = m_segments[0]->GetStart()->ToAPICoord();
 
-    //    for (UInt32 i = 1; i < m_polylines->GetSize(); i++)
-    //    {
-    //        S_Polyline* _pl = (*m_polylines)[i];
+        _coords.Push(&_ac);
 
-    //        for (UInt32 i = 1; i < _pl->m_segments->GetSize(); i++)
-    //        {
-    //            S::Segment* _seg = (*m_segments)[i];
-    //            _coords.Push(&_seg->GetEnd()->ToAPICoord());
-    //            if (_seg->GetRad() > EPS)
-    //            {
-    //                API_PolyArc _parc{ 0, 0, _seg->GetAng() };  //TODO indexes
-    //                _parcs.Push(&_parc);
-    //            }
-    //        }
-    //        _pends.Push(0);     //TODO indexes
-    //    }
+        for (UInt32 i = 1; i < m_polylines.GetSize(); i++)
+        {
+            S_Polyline* _pl = m_polylines[i];
 
-    //    _memo->coords = _coords.ToNeigs();
-    //    _memo->parcs = _parcs.ToNeigs();
-    //    _memo->pends = _pends.ToNeigs();
-    //    _memo->vertexIDs = _vertIDs.ToNeigs();
+            for (UInt32 i = 1; i < _pl->m_segments->GetSize(); i++)
+            {
+                S::Segment* _seg = m_segments[i];
+                _ac = _seg->GetEnd()->ToAPICoord();
+                _coords.Push(&_ac);
 
-    //    return _memo;
-    //}
+                if (_seg->GetRad() > EPS)
+                {
+                    API_PolyArc _parc = { 0, 0, _seg->GetAng() };  //TODO indexes
+                    _parcs.Push(&_parc);
+                }
+            }
+            _pends.Push(0);     //TODO indexes
+        }
+
+        o_memo->coords = _coords.ToNeigs();
+        o_memo->parcs = _parcs.ToNeigs();
+        o_memo->pends = _pends.ToNeigs();
+        o_memo->vertexIDs = _vertIDs.ToNeigs();
+    }
 
 
     std::string S_Polygon::getGDLcode() {
@@ -96,9 +98,9 @@ namespace PolygonReducer {
 
         string result = "";
 
-        for (UInt16 i = 0; i < m_segments->GetSize(); i++)
+        for (UInt16 i = 0; i < m_segments.GetSize(); i++)
         {
-            S::Segment* _s = (*m_segments)[i];
+            S::Segment* _s = m_segments[i];
             result += _s->ToString();
         }
 

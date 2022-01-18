@@ -52,17 +52,17 @@ namespace PolygonReducer {
 			return 0;
 		}
 
-		API_Elem_Head element = {};
+		API_Elem_Head elementHead = {};
 
 		err = ConvertToGSArray<API_Neig, API_ElementMemo>(selNeigs, &memos, ReturnTrue<API_Neig>, ConvertToMemos);
 		err = ConvertToGSArray<API_Neig, API_Guid>(selNeigs, &guids, ReturnTrue<API_Neig>, NeigToAPIGuid);
 
 		for (unsigned int i = 0; i < memos.GetSize(); i++)
 		{
-			element.guid = guids[i];
+			elementHead.guid = guids[i];
 			API_ElementUserData userData = {};
 
-			GSErrCode err = ACAPI_Element_GetUserData(&element, &userData);
+			GSErrCode err = ACAPI_Element_GetUserData(&elementHead, &userData);
 
 			originalMemo = memos[i];
 
@@ -77,7 +77,7 @@ namespace PolygonReducer {
 			userData.dataHdl = BMAllocateHandle(sizeof(originalMemo), ALLOCATE_CLEAR, 0);
 			*reinterpret_cast<API_ElementMemo*> (*userData.dataHdl) = originalMemo;
 
-			err = ACAPI_Element_SetUserData(&element, &userData);
+			err = ACAPI_Element_SetUserData(&elementHead, &userData);
 
 			err = ConvertToGSArray<API_Coord, API_Coord>(memos[i].coords, &coords);
 			err = ConvertToGSArray<INT32, INT32>(memos[i].pends, &pends);
@@ -85,6 +85,27 @@ namespace PolygonReducer {
 			S_Polygon* _sp = new S_Polygon(&memos[i]);
 
 			SetCurrentPolygon(_sp);
+
+			_sp->updateMemo(&originalMemo);
+
+			//-----------------------------------------------------
+
+			API_Element         element, mask;
+			element.header = elementHead;
+
+			err = ACAPI_Element_Get(&element);
+			if (err != NoError)
+				return err;
+
+			if (err == NoError) {
+				ACAPI_ELEMENT_MASK_CLEAR(mask);
+				ACAPI_ELEMENT_MASK_SET(mask, API_ElementMemo, coords);
+				ACAPI_ELEMENT_MASK_SET(mask, API_ElementMemo, pends);
+				ACAPI_ELEMENT_MASK_SET(mask, API_ElementMemo, parcs);
+				ACAPI_ELEMENT_MASK_SET(mask, API_ElementMemo, vertexIDs);
+
+				err = ACAPI_Element_Change(&element, &mask, nullptr, 0, true);
+			}
 		}
 
 		return coords.GetSize() - pends.GetSize();

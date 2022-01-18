@@ -4,6 +4,8 @@
 #include "ACAPinc.h"
 #include <APIdefs.h>
 
+//Storing all relevant data 
+
 class PolygonUserData
 {
 private:

@@ -15,7 +15,7 @@ namespace S {
 
 		Array(const Type* const*);
 		Array(GS::Array<Type>);
-		Array() {};
+		Array() {} ;
 		~Array() {};
 		Type* ToNeigs() const;
 
@@ -49,6 +49,21 @@ template <class Type>
 S::Array<Type>::Array(GS::Array<Type> a)
 {
 	this = (S::Array)a;
+}
+
+template <class Type>
+Type* S::Array<Type>::ToNeigs() const
+{
+    Type* neigs = reinterpret_cast<Type*> (BMAllocateHandle(this->GetSize(), ALLOCATE_ACTION, 0));
+    if (neigs != NULL)
+    {
+        for (UINT i = 0; i < this->GetSize(); i++)
+        {
+            neigs[i] = (Type) (*this)[i];
+        }
+    }
+
+    return neigs;
 }
 
 //template <class Type>

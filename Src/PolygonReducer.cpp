@@ -8,9 +8,8 @@
 // [SG compatible] - Yes
 // *****************************************************************************
 
-//API_​ElementUserData
-//ACAPI_Element_SetUserData() 
-//ACAPI_Element_GetUserData()
+//ACAPI_​Element_​ChangeMemo()
+//ACAPI_​Element_​Change() 
 
 // ---------------------------------- Includes ---------------------------------
 
