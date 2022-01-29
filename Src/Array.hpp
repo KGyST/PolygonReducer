@@ -14,7 +14,7 @@ namespace S {
 		//typedef GS::RandomContainerIterator<GS::Array<Type>>		 Iterator;
 
 		Array(const Type* const*);
-		Array(GS::Array<Type>);
+		Array(GS::Array<Type>) {} ;
 		Array() {} ;
 		~Array() {};
 		Type* ToNeigs() const;
@@ -45,11 +45,12 @@ S::Array<Type>::Array(const Type* const* p_neigs)
 	}
 }
 
-template <class Type>
-S::Array<Type>::Array(GS::Array<Type> a)
-{
-	this = (S::Array)a;
-}
+//template <class Type>
+//S::Array<Type>::Array(GS::Array<Type> a)
+//{
+//	S::Array<Type> *_ = &((S::Array<Type>)a);
+//	this = _;
+//}
 
 template <class Type>
 Type* S::Array<Type>::ToNeigs() const
@@ -73,4 +74,4 @@ Type* S::Array<Type>::ToNeigs() const
 //	return GS::Array<Type>.Begin();
 //}
 
-#endif // !S_ARRAY_HPP
+#endif // S_ARRAY_HPP

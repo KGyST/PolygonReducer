@@ -21,13 +21,13 @@ namespace PolygonReducer {
 	protected:
 		enum Controls  {
 			iUIPointNumberId = 2,
-			sUITestId = 3,
+			iUISliderId = 3,
 			SettingsButtonId = 4,
 			GDLButtonId = 5,
 		};
 	
-		DG::IntEdit				iUIPointNumber;
-		DG::TextEdit			sUITest;
+		DG::PosIntEdit			iUIPointNumber;
+		DG::Slider				iSlider;
 		DG::Button				GDLButton;
 		DG::Button				SettingsButton;
 		TBUI::IAPIToolUIData*	uiData;
@@ -38,6 +38,7 @@ namespace PolygonReducer {
 		~PolygonReducerInfoboxPage();
 		void SetCurrentPolygon(S_Polygon* currentPolygon);
 		int GetPointNumber();
+		GSErrCode SetPointNumber(int p_val, int p_max);
 	};
 
 
@@ -45,7 +46,7 @@ namespace PolygonReducer {
 
 	class PolygonReducerPageObserver : 
 		public	DG::TextEditBaseObserver,
-		public	DG::IntEditObserver,
+		public	DG::PosIntEditObserver,
 		public  DG::CompoundItemObserver,
 		public  TBUI::IAPIToolUIDataObserver,
 		public	DG::ButtonItemObserver
@@ -56,9 +57,9 @@ namespace PolygonReducer {
 		//void			GetUserDataFromDefault(WallUserData* data);
 		//void			SetUserDataToDefault(WallUserData* sdata);
 	protected:
-		virtual	void	APIElementChanged(const TBUI::APIElemDefaultFieldMask& fieldMask) override;
-		virtual void	iUIPointNumberChanged(const DG::PosIntEditChangeEvent& ev);
-		virtual void	ButtonClicked(const DG::ButtonClickEvent& ev) override;
+		virtual	void		APIElementChanged(const TBUI::APIElemDefaultFieldMask& fieldMask) override;
+		virtual void		PosIntEditChanged(const DG::PosIntEditChangeEvent& ev);
+		virtual void		ButtonClicked(const DG::ButtonClickEvent& ev) override;
 
 	public:
 		explicit PolygonReducerPageObserver(PolygonReducerInfoboxPage* testPage);

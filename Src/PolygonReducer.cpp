@@ -112,12 +112,10 @@ static	GSErrCode	__ACENV_CALL	CreatePageCallback(Int32 refCon, const void* tabCo
     DG::TabPage** page = reinterpret_cast<DG::TabPage**>(tabPage);
 
     switch (refCon) {
-
-    case InfoBoxPanelRefCon:		if (infoBox != NULL)
-        success = infoBox->CreatePage(*control, reinterpret_cast<TBUI::IAPIToolUIData*>(data), page);
-        break;
-    }
-
+        case InfoBoxPanelRefCon:		if (infoBox != NULL)
+            success = infoBox->CreatePage(*control, reinterpret_cast<TBUI::IAPIToolUIData*>(data), page);
+            break;
+        }
     return (success ? NoError : (GSErrCode)APIERR_GENERAL);
 }
 
@@ -144,11 +142,14 @@ static	GSErrCode	__ACENV_CALL	DestroyPageCallback(Int32 refCon, void* /*tabPage*
 
 GSErrCode __ACENV_CALL	MenuCommandHandler(const API_MenuParams* params)
 {
-    switch (params->menuItemRef.itemIndex) {
-    case 1:		ReducePolygons();				break;
-    }
-
-    return NoError;
+    return ACAPI_CallUndoableCommand("Element Test API Function",
+        [&]() -> GSErrCode {
+            switch (params->menuItemRef.itemIndex) {
+            case 1:		ReducePolygons();				break;
+            }
+        
+            return NoError;
+    });
 }		// DoCommand
 
 

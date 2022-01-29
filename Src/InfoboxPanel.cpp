@@ -6,18 +6,22 @@
 #include "SettingsDialog.hpp"
 #include "PolygonReducer.template.hpp"
 #include "Utils.hpp"
+#include "Array.hpp"
 
 namespace PolygonReducer {
-	PolygonReducerInfoboxPage::PolygonReducerInfoboxPage(const DG::TabControl& tabControl, TBUI::IAPIToolUIData* puiData)
+	PolygonReducerInfoboxPage::PolygonReducerInfoboxPage(const DG::TabControl& tabControl, TBUI::IAPIToolUIData* p_uiData)
 		:DG::TabPage(tabControl, 1, ACAPI_GetOwnResModule(), InfoBoxPageId, InvalidResModule)
 		,iUIPointNumber	(GetReference(), iUIPointNumberId)
-		,sUITest			(GetReference(), sUITestId)
+		,iSlider		(GetReference(), iUISliderId)
 		,GDLButton		(GetReference(), GDLButtonId)
 		,SettingsButton	(GetReference(), SettingsButtonId)
-		,uiData			(puiData)
+		,uiData			(p_uiData)
 	{
-		iUIPointNumber.SetValue(GetPointNumber());
-		//m_currentPolygon = 
+		int _iPoint = GetPointNumber();
+
+		iUIPointNumber.SetValue(_iPoint);
+		DGSetItemMaxLong(InfoBoxPageId, iUISliderId, _iPoint);
+		DGSetItemValLong(InfoBoxPageId, iUISliderId, _iPoint);
 	}
 
 	PolygonReducerInfoboxPage::~PolygonReducerInfoboxPage() {
@@ -27,6 +31,58 @@ namespace PolygonReducer {
 	void PolygonReducerInfoboxPage::SetCurrentPolygon(S_Polygon* currentPolygon)
 	{
 		m_currentPolygon = currentPolygon;
+	}
+
+	GSErrCode PolygonReducerInfoboxPage::SetPointNumber(int i_iVal, int i_iMax)
+	{
+		DGSetItemMaxLong(InfoBoxPageId, iUISliderId, i_iMax);
+		DGSetItemValLong(InfoBoxPageId, iUISliderId, i_iVal);
+
+		GSErrCode           err;
+		API_Neig** selNeigs;
+		GS::Array<API_ElementMemo> memos = *new GS::Array<API_ElementMemo>();
+		GS::Array<API_Guid> guids = *new GS::Array<API_Guid>();
+		API_SelectionInfo   selectionInfo;
+
+		err = ACAPI_Selection_Get(&selectionInfo, &selNeigs, true);
+
+		BMKillHandle((GSHandle*)&selectionInfo.marquee.coords);
+
+		err = ConvertToGSArray<API_Neig, API_ElementMemo>(selNeigs, &memos, ReturnTrue<API_Neig>, ConvertToMemos);
+		err = ConvertToGSArray<API_Neig, API_Guid>(selNeigs, &guids, ReturnTrue<API_Neig>, NeigToAPIGuid);
+
+
+		err = ACAPI_CallUndoableCommand("Element Test API Function",
+		[&]() -> GSErrCode {
+			if (memos.GetSize() == 2)
+			{
+				API_Guid _guid0 = guids[0];
+				API_Guid _guid1 = guids[1];
+
+				API_ElementMemo _memo0 /*= memos[0]*/;
+				API_ElementMemo _memo1 /*= memos[1]*/;
+
+				err = ACAPI_Element_GetMemo(_guid0, &_memo0);
+				err = ACAPI_Element_GetMemo(_guid1, &_memo1);
+
+				API_ElementMemo tmpMemo;
+				BNZeroMemory(&tmpMemo, sizeof(API_ElementMemo));
+				tmpMemo.coords = _memo0.coords;
+				tmpMemo.pends = _memo0.pends;
+				tmpMemo.parcs = _memo0.parcs;
+				tmpMemo.vertexIDs = _memo0.vertexIDs;
+				//tmpMemo.edgeIDs = _memo0.edgeIDs;
+				//tmpMemo.contourIDs = _memo0.contourIDs;
+				//tmpMemo.meshPolyZ = _memo0.meshPolyZ;
+
+				err = ACAPI_Element_ChangeMemo(_guid0, APIMemoMask_Polygon, &tmpMemo);
+				err = ACAPI_Element_ChangeMemo(_guid1, APIMemoMask_Polygon, &tmpMemo);
+			}
+
+			return err;
+		});
+
+		return err;
 	}
 
 	int PolygonReducerInfoboxPage::GetPointNumber()
@@ -59,7 +115,14 @@ namespace PolygonReducer {
 
 		for (unsigned int i = 0; i < memos.GetSize(); i++)
 		{
-			elementHead.guid = guids[i];
+			API_Guid _guid = guids[i];
+			elementHead.guid = _guid;
+
+			API_Element			elem;
+			BNZeroMemory(&elem, sizeof(elem));
+			elem.header.guid = _guid;
+			err = ACAPI_Element_Get(&elem);
+
 			API_ElementUserData userData = {};
 
 			GSErrCode err = ACAPI_Element_GetUserData(&elementHead, &userData);
@@ -90,21 +153,32 @@ namespace PolygonReducer {
 
 			//-----------------------------------------------------
 
-			API_Element         element, mask;
+			API_Element         element;
 			element.header = elementHead;
+			element.header.guid = _guid;
 
 			err = ACAPI_Element_Get(&element);
 			if (err != NoError)
 				return err;
 
 			if (err == NoError) {
-				ACAPI_ELEMENT_MASK_CLEAR(mask);
-				ACAPI_ELEMENT_MASK_SET(mask, API_ElementMemo, coords);
-				ACAPI_ELEMENT_MASK_SET(mask, API_ElementMemo, pends);
-				ACAPI_ELEMENT_MASK_SET(mask, API_ElementMemo, parcs);
-				ACAPI_ELEMENT_MASK_SET(mask, API_ElementMemo, vertexIDs);
 
-				err = ACAPI_Element_Change(&element, &mask, nullptr, 0, true);
+				API_ElementMemo tmpMemo;
+			
+				BNZeroMemory(&tmpMemo, sizeof(API_ElementMemo));
+				API_Coord *_coords = ((S::Array<API_Coord>)coords).ToNeigs();
+				tmpMemo.coords = &_coords;
+				GS::Int32* _pends = ((S::Array<Int32>)pends).ToNeigs();
+				tmpMemo.pends = &_pends;
+
+				//API_Coord* _parcs = ((S::Array<API_Coord>)parcs).ToNeigs();
+				//tmpMemo.parcs = _parcs;
+				//API_Coord* _vertexIDs = ((S::Array<INT32>)vertexIDs).ToNeigs();
+				//tmpMemo.vertexIDs = _vertexIDs;
+
+				API_Guid __guid = *new API_Guid();
+
+				err = ACAPI_Element_ChangeMemo(__guid, APIMemoMask_Polygon, &tmpMemo);
 			}
 		}
 
@@ -121,11 +195,18 @@ namespace PolygonReducer {
 		}
 	}
 
-	void	PolygonReducerPageObserver::iUIPointNumberChanged(const DG::PosIntEditChangeEvent& ev) {
-		UNUSED_PARAMETER(ev);
+	void PolygonReducerPageObserver::PosIntEditChanged(const DG::PosIntEditChangeEvent& ev)
+	{
+		if (ev.GetSource() == &m_tabPage->iUIPointNumber)
+		{
+			int iPointVal = ev.GetSource()->GetValue();
+			int iPointMax = ev.GetSource()->GetMax() ;
+
+			m_tabPage->SetPointNumber(iPointVal, iPointMax);
+		}
 	}
 
-	void	PolygonReducerPageObserver::ButtonClicked(const DG::ButtonClickEvent& ev)
+	void PolygonReducerPageObserver::ButtonClicked(const DG::ButtonClickEvent& ev)
 	{
 		if (ev.GetSource() == &m_tabPage->GDLButton)
 		{
@@ -143,8 +224,6 @@ namespace PolygonReducer {
 			SettingsDialogObserver observer(dialog);
 			dialog->Invoke();
 		}
-
-		UNUSED_PARAMETER(ev);
 	}
 
 	PolygonReducerPageObserver::PolygonReducerPageObserver(PolygonReducerInfoboxPage* testPage) :
