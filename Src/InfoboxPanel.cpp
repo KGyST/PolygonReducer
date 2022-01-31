@@ -57,24 +57,15 @@ namespace PolygonReducer {
 			S_Polygon pgon(&memos[0]);
 			API_ElementMemo mem = pgon.getMemo();
 
-			API_ElementMemo mem2 = memos[0];
-			mem2.parcs = *new API_PolyArc**(mem.parcs);
-			mem2.coords = *new API_Coord **(mem.coords);
+			//API_ElementMemo mem2 = memos[0];
+			//S::Array<Int32> _sa(mem.pends);
+			//S::Array<Int32> _sa2(mem2.pends);
+			//UNUSED_VARIABLE(_sa);
+			//UNUSED_VARIABLE(_sa2);
 
-			//API_Coord** _c4 = mem2.coords;
-			//API_Coord** _c3 = memos[0].coords;
+			//mem.pends = mem2.pends;
 
-			//for (UINT i = 0; i < pgon.m_segments.GetSize(); i++)
-			//{
-			//	API_Coord _c = *_c4[i];
-			//	API_Coord _c2 = *(_c3[i]);
-
-			//	UNUSED_VARIABLE(_c);
-			//	UNUSED_VARIABLE(_c2);
-			//}
-			//mem2.vertexIDs = *new UInt32 **(mem.vertexIDs);
-
-			err = ACAPI_Element_ChangeMemo(_guid0, APIMemoMask_Polygon, &mem2);
+			err = ACAPI_Element_ChangeMemo(_guid0, APIMemoMask_Polygon, &mem);
 
 			return err;
 		});

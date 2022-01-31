@@ -109,7 +109,6 @@ namespace PolygonReducer {
 
     API_ElementMemo S_Polygon::getMemo()
     {
-        API_ElementMemo resultMemo;
         S::Array<API_Coord> _coords;
         S::Array<API_PolyArc> _parcs;
         S::Array<Int32> _pends;
@@ -121,8 +120,8 @@ namespace PolygonReducer {
         _ac = *new API_Coord(m_segments[0].GetStart()->ToAPICoord());
 
         _coords.Push(_ac);
-        _pends.Push(*new Int32(0));
-        _vertIDs.Push(*new UInt32(0));
+        _pends.Push((Int32)0);
+        _vertIDs.Push((UInt32)0);
 
         //for (UInt32 i = 1; i < m_polylines.GetSize(); i++)
         //{
@@ -152,22 +151,24 @@ namespace PolygonReducer {
             _c.SetY(_c.GetY() + 1.00);
             _ac = *new API_Coord(_c.ToAPICoord());
             _coords.Push(_ac);
-            _vertIDs.Push(*new UInt32(i+1));
+            _vertIDs.Push((UInt32)i+1);
             maxId = i+1;
         }
 
-        _pends.Push(*new Int32(m_segments.GetSize() + 1));
-        _vertIDs[0] = *new UInt32(maxId);
+        _vertIDs.Push((UInt32)1);                           //TODO
+        _pends.Push((Int32)m_segments.GetSize() + 1);
+        _vertIDs[0] = (UInt32)maxId;
 
+        API_ElementMemo resultMemo;
         BNZeroMemory(&resultMemo, sizeof(API_ElementMemo));
 
         resultMemo.coords = _coords.ToNeigs();
-        if (_parcs.GetSize() > 0 )
-            resultMemo.parcs = _parcs.ToNeigs();
+        resultMemo.parcs = _parcs.ToNeigs();
         resultMemo.pends = _pends.ToNeigs();
         resultMemo.vertexIDs = _vertIDs.ToNeigs();
 
         return resultMemo;
+
     }
 
 

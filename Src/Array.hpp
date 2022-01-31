@@ -60,12 +60,9 @@ Type** S::Array<Type>::ToNeigs() const
     Type** neigs = reinterpret_cast<Type**> (BMAllocateHandle(_size * sizeof(Type), ALLOCATE_CLEAR, 0));
     if (neigs != NULL)
     {
-		Type _i;
-
         for (UINT i = 0; i < this->GetSize(); i++)
         {
-			_i = (Type)(*this)[i];
-            (*neigs)[i] = _i;
+            (*neigs)[i] = (Type)(*this)[i];
         }
     }
 
