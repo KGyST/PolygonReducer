@@ -33,13 +33,12 @@ namespace PolygonReducer {
 		m_currentPolygon = currentPolygon;
 	}
 
-	GSErrCode PolygonReducerInfoboxPage::SetPointNumber(int i_iVal, int i_iMax)
+	GSErrCode PolygonReducerInfoboxPage::SetPointNumber(int i_iVal/*, int i_iMax*/)
 	{
-		DGSetItemMaxLong(InfoBoxPageId, iUISliderId, i_iMax);
-		DGSetItemValLong(InfoBoxPageId, iUISliderId, i_iVal);
+		UNUSED_PARAMETER(i_iVal);
 
-		GSErrCode           err;
-		API_Neig** selNeigs;
+		GSErrCode   err;
+		API_Neig**	selNeigs;
 		GS::Array<API_ElementMemo> memos = *new GS::Array<API_ElementMemo>();
 		GS::Array<API_Guid> guids = *new GS::Array<API_Guid>();
 		API_SelectionInfo   selectionInfo;
@@ -52,32 +51,30 @@ namespace PolygonReducer {
 		err = ConvertToGSArray<API_Neig, API_Guid>(selNeigs, &guids, ReturnTrue<API_Neig>, NeigToAPIGuid);
 
 
-		err = ACAPI_CallUndoableCommand("Element Test API Function",
+		err = ACAPI_CallUndoableCommand("Optimize polygons",
 		[&]() -> GSErrCode {
-			if (memos.GetSize() == 2)
-			{
-				API_Guid _guid0 = guids[0];
-				API_Guid _guid1 = guids[1];
+			API_Guid _guid0 = guids[0];
+			S_Polygon pgon(&memos[0]);
+			API_ElementMemo mem = pgon.getMemo();
 
-				API_ElementMemo _memo0 /*= memos[0]*/;
-				API_ElementMemo _memo1 /*= memos[1]*/;
+			API_ElementMemo mem2 = memos[0];
+			mem2.parcs = *new API_PolyArc**(mem.parcs);
+			mem2.coords = *new API_Coord **(mem.coords);
 
-				err = ACAPI_Element_GetMemo(_guid0, &_memo0);
-				err = ACAPI_Element_GetMemo(_guid1, &_memo1);
+			//API_Coord** _c4 = mem2.coords;
+			//API_Coord** _c3 = memos[0].coords;
 
-				API_ElementMemo tmpMemo;
-				BNZeroMemory(&tmpMemo, sizeof(API_ElementMemo));
-				tmpMemo.coords = _memo0.coords;
-				tmpMemo.pends = _memo0.pends;
-				tmpMemo.parcs = _memo0.parcs;
-				tmpMemo.vertexIDs = _memo0.vertexIDs;
-				//tmpMemo.edgeIDs = _memo0.edgeIDs;
-				//tmpMemo.contourIDs = _memo0.contourIDs;
-				//tmpMemo.meshPolyZ = _memo0.meshPolyZ;
+			//for (UINT i = 0; i < pgon.m_segments.GetSize(); i++)
+			//{
+			//	API_Coord _c = *_c4[i];
+			//	API_Coord _c2 = *(_c3[i]);
 
-				err = ACAPI_Element_ChangeMemo(_guid0, APIMemoMask_Polygon, &tmpMemo);
-				err = ACAPI_Element_ChangeMemo(_guid1, APIMemoMask_Polygon, &tmpMemo);
-			}
+			//	UNUSED_VARIABLE(_c);
+			//	UNUSED_VARIABLE(_c2);
+			//}
+			//mem2.vertexIDs = *new UInt32 **(mem.vertexIDs);
+
+			err = ACAPI_Element_ChangeMemo(_guid0, APIMemoMask_Polygon, &mem2);
 
 			return err;
 		});
@@ -92,8 +89,12 @@ namespace PolygonReducer {
 		API_Neig** selNeigs;
 		GS::Array<API_ElementMemo> memos = *new GS::Array<API_ElementMemo>();
 		GS::Array<API_Guid> guids = *new GS::Array<API_Guid>();
+
 		GS::Array<API_Coord> coords = *new GS::Array<API_Coord>();
 		GS::Array<INT32> pends = *new GS::Array<INT32>();
+		GS::Array<API_PolyArc> parcs = *new GS::Array<API_PolyArc>();
+		GS::Array<UInt32> vertexIDs = *new GS::Array<UInt32>();
+
 		API_ElementMemo originalMemo;
 
 		err = ACAPI_Selection_Get(&selectionInfo, &selNeigs, true);
@@ -113,6 +114,7 @@ namespace PolygonReducer {
 		err = ConvertToGSArray<API_Neig, API_ElementMemo>(selNeigs, &memos, ReturnTrue<API_Neig>, ConvertToMemos);
 		err = ConvertToGSArray<API_Neig, API_Guid>(selNeigs, &guids, ReturnTrue<API_Neig>, NeigToAPIGuid);
 
+
 		for (unsigned int i = 0; i < memos.GetSize(); i++)
 		{
 			API_Guid _guid = guids[i];
@@ -122,6 +124,8 @@ namespace PolygonReducer {
 			BNZeroMemory(&elem, sizeof(elem));
 			elem.header.guid = _guid;
 			err = ACAPI_Element_Get(&elem);
+
+			//----- Userdata handling------------------------------------------------
 
 			API_ElementUserData userData = {};
 
@@ -142,8 +146,12 @@ namespace PolygonReducer {
 
 			err = ACAPI_Element_SetUserData(&elementHead, &userData);
 
+			//-----/Userdata handling------------------------------------------------
+
 			err = ConvertToGSArray<API_Coord, API_Coord>(memos[i].coords, &coords);
 			err = ConvertToGSArray<INT32, INT32>(memos[i].pends, &pends);
+			err = ConvertToGSArray<API_PolyArc, API_PolyArc>(memos[i].parcs, &parcs);
+			err = ConvertToGSArray<UInt32, UInt32>(memos[i].vertexIDs, &vertexIDs);
 
 			S_Polygon* _sp = new S_Polygon(&memos[i]);
 
@@ -166,15 +174,14 @@ namespace PolygonReducer {
 				API_ElementMemo tmpMemo;
 			
 				BNZeroMemory(&tmpMemo, sizeof(API_ElementMemo));
-				API_Coord *_coords = ((S::Array<API_Coord>)coords).ToNeigs();
-				tmpMemo.coords = &_coords;
-				GS::Int32* _pends = ((S::Array<Int32>)pends).ToNeigs();
-				tmpMemo.pends = &_pends;
-
-				//API_Coord* _parcs = ((S::Array<API_Coord>)parcs).ToNeigs();
-				//tmpMemo.parcs = _parcs;
-				//API_Coord* _vertexIDs = ((S::Array<INT32>)vertexIDs).ToNeigs();
-				//tmpMemo.vertexIDs = _vertexIDs;
+				API_Coord **_coords = ((S::Array<API_Coord>)coords).ToNeigs();
+				tmpMemo.coords = _coords;
+				GS::Int32** _pends = ((S::Array<Int32>)pends).ToNeigs();
+				tmpMemo.pends = _pends;
+				API_PolyArc** _parcs = ((S::Array<API_PolyArc>)parcs).ToNeigs();
+				tmpMemo.parcs = _parcs;
+				UInt32** _vertexIDs = ((S::Array<UInt32>)vertexIDs).ToNeigs();
+				tmpMemo.vertexIDs = _vertexIDs;
 
 				API_Guid __guid = *new API_Guid();
 
@@ -200,9 +207,12 @@ namespace PolygonReducer {
 		if (ev.GetSource() == &m_tabPage->iUIPointNumber)
 		{
 			int iPointVal = ev.GetSource()->GetValue();
-			int iPointMax = ev.GetSource()->GetMax() ;
+			//int iPointMax = ev.GetSource()->GetMax() ;
 
-			m_tabPage->SetPointNumber(iPointVal, iPointMax);
+			//DGSetItemMaxLong(InfoBoxPageId, iUISliderId, iPointVal);
+			//DGSetItemValLong(InfoBoxPageId, iUISliderId, iPointMax);
+
+			m_tabPage->SetPointNumber(iPointVal/*, iPointMax*/);
 		}
 	}
 

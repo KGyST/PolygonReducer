@@ -140,7 +140,9 @@
     <Library Include="$(APIDevKitModules)\VBElemDialogs\Win\VBElemDialogsImp.lib">
       <Filter>Libraries</Filter>
     </Library>
-    <Library Include="$(APIDevKitModules)\Geometry\Win\GeometryImp.LIB" />
+    <Library Include="$(APIDevKitModules)\Geometry\Win\GeometryImp.LIB">
+      <Filter>Libraries</Filter>
+    </Library>
   </ItemGroup>
   <ItemGroup>
     <None Include="Src\PolygonReducer.template.hpp">

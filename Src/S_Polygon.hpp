@@ -23,13 +23,14 @@ namespace PolygonReducer {
         S_Polygon(const API_ElementMemo* p_memo);
         ~S_Polygon();
 
-        void updateMemo(API_ElementMemo* o_memo);
+        void updateMemo(API_ElementMemo* o_memo);   //??WTF
         std::string getGDLcode();
+        API_ElementMemo getMemo();
 
         void setPointCount(const int i_count);
         void setupArcs(void);
 
-        GS::Array <S::Segment*> m_segments;
+        GS::Array <S::Segment> m_segments;
     };
 }
 #endif // !S_POLYGON_HPP

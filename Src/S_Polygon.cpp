@@ -4,11 +4,10 @@
 namespace PolygonReducer {
     S_Polygon::S_Polygon(const API_ElementMemo* p_memo)
         :   m_polylines (*new GS::Array <S_Polyline*>())
-        ,   m_segments  (*new GS::Array <S::Segment*>())
+        ,   m_segments  (*new GS::Array <S::Segment>())
     {
         S::Segment _segment;
-        S::Array<S::Segment> _segments;
-
+        
         S::Array<Int32> _pends(p_memo->pends);
         S::Array<API_Coord> _coords(p_memo->coords);
         S::Array<API_PolyArc> _parcs(p_memo->parcs);
@@ -16,39 +15,38 @@ namespace PolygonReducer {
 
         int _idx = 0;
 
-        for (UInt32 i = 1; i < _coords.GetSize(); i++)
+        for (UInt32 i = 2; i < _coords.GetSize(); i++)
         {
             API_Coord c1 (_coords[i - 1]) ;
             API_Coord c2 (_coords[i]);
             S::Segment _segment (_idx++, _vertexIDs[i - 1], _vertexIDs[i], c1, c2);
 
-            _segments.Push(_segment);
-            m_segments.Push(&_segment);
+            m_segments.Push(_segment);
         }
 
-        for (UInt32 i = 0; i < _parcs.GetSize(); i++)
-        {
-            _segments[_parcs[i].begIndex].SetArc(_parcs[i].arcAngle);
-        }
+        //for (UInt32 i = 0; i < _parcs.GetSize(); i++)
+        //{
+        //    _segments[_parcs[i].begIndex].SetArc(_parcs[i].arcAngle);
+        //}
 
-        for (UInt32 i = 0; i < _pends.GetSize() - 1; i++)
-        {
-            GS::Array<API_Coord> *_coordsFiltered = ArraySlice<API_Coord>(_coords, _pends[i] + 1, _pends[i + 1]);
-            GS::Array<UInt32>    *_vertexIDsFiltered = ArraySlice<UInt32>(_vertexIDs, _pends[i] + 1, _pends[i + 1]);
-            GS::Array<API_PolyArc> *_parcsFiltered = new GS::Array<API_PolyArc>();
+        //for (UInt32 i = 0; i < _pends.GetSize() - 1; i++)
+        //{
+        //    GS::Array<API_Coord> *_coordsFiltered = ArraySlice<API_Coord>(_coords, _pends[i] + 1, _pends[i + 1]);
+        //    GS::Array<UInt32>    *_vertexIDsFiltered = ArraySlice<UInt32>(_vertexIDs, _pends[i] + 1, _pends[i + 1]);
+        //    GS::Array<API_PolyArc> *_parcsFiltered = new GS::Array<API_PolyArc>();
 
-            auto _it = _parcs.Enumerate();
-            while (_it != NULL)
-            {
-                if (_it->begIndex >= _pends[i] && _it->endIndex <= _pends[i + 1])
-                {
-                    _parcsFiltered->Push(*_it);
-                }
-                _it++;
-            }
+        //    auto _it = _parcs.Enumerate();
+        //    while (_it != NULL)
+        //    {
+        //        if (_it->begIndex >= _pends[i] && _it->endIndex <= _pends[i + 1])
+        //        {
+        //            _parcsFiltered->Push(*_it);
+        //        }
+        //        _it++;
+        //    }
 
-            m_polylines.Push(new S_Polyline(_coordsFiltered, _parcsFiltered, _vertexIDsFiltered));
-        }
+        //    m_polylines.Push(new S_Polyline(_coordsFiltered, _parcsFiltered, _vertexIDsFiltered));
+        //}
     }
 
 
@@ -58,14 +56,14 @@ namespace PolygonReducer {
 
     void S_Polygon::updateMemo(API_ElementMemo* o_memo)
     {
-        S::Array<API_Coord*> _coords;
-        S::Array<API_PolyArc*> _parcs;
-        S::Array<Int32*> _pends;
-        S::Array<UInt32*> _vertIDs;
+        S::Array<API_Coord> _coords;
+        S::Array<API_PolyArc> _parcs;
+        S::Array<Int32> _pends;
+        S::Array<UInt32> _vertIDs;
 
-        API_Coord _ac = m_segments[0]->GetStart()->ToAPICoord();
+        API_Coord _ac = m_segments[0].GetStart()->ToAPICoord();
 
-        _coords.Push(&_ac);
+        _coords.Push(_ac);
 
         for (UInt32 i = 1; i < m_polylines.GetSize(); i++)
         {
@@ -73,18 +71,20 @@ namespace PolygonReducer {
 
             for (UInt32 i = 1; i < _pl->m_segments->GetSize(); i++)
             {
-                S::Segment* _seg = m_segments[i];
-                _ac = _seg->GetEnd()->ToAPICoord();
-                _coords.Push(&_ac);
+                S::Segment _seg = m_segments[i];
+                _ac = _seg.GetEnd()->ToAPICoord();
+                _coords.Push(_ac);
 
-                if (_seg->GetRad() > EPS)
+                if (_seg.GetRad() > EPS)
                 {
-                    API_PolyArc _parc = { 0, 0, _seg->GetAng() };  //TODO indexes
-                    _parcs.Push(&_parc);
+                    API_PolyArc _parc = { 0, 0, _seg.GetAng() };  //TODO indexes
+                    _parcs.Push(_parc);
                 }
             }
             _pends.Push(0);     //TODO indexes
         }
+
+        BNZeroMemory(o_memo, sizeof(API_ElementMemo));
 
         o_memo->coords = _coords.ToNeigs();
         o_memo->parcs = _parcs.ToNeigs();
@@ -100,11 +100,74 @@ namespace PolygonReducer {
 
         for (UInt16 i = 0; i < m_segments.GetSize(); i++)
         {
-            S::Segment* _s = m_segments[i];
-            result += _s->ToString();
+            S::Segment _s = m_segments[i];
+            result += _s.ToString();
         }
 
         return result;
+    }
+
+    API_ElementMemo S_Polygon::getMemo()
+    {
+        API_ElementMemo resultMemo;
+        S::Array<API_Coord> _coords;
+        S::Array<API_PolyArc> _parcs;
+        S::Array<Int32> _pends;
+        S::Array<UInt32> _vertIDs;
+
+        API_Coord _ac = *new API_Coord (S::Coord(-1.00, 0.00).ToAPICoord())  ;
+        _coords.Push(_ac);
+
+        _ac = *new API_Coord(m_segments[0].GetStart()->ToAPICoord());
+
+        _coords.Push(_ac);
+        _pends.Push(*new Int32(0));
+        _vertIDs.Push(*new UInt32(0));
+
+        //for (UInt32 i = 1; i < m_polylines.GetSize(); i++)
+        //{
+        //    S_Polyline* _pl = m_polylines[i];
+
+        //    for (UInt32 i = 1; i < _pl->m_segments->GetSize(); i++)
+        //    {
+        //        S::Segment* _seg = m_segments[i];
+        //        _ac = _seg->GetEnd()->ToAPICoord();
+        //        _coords.Push(&_ac);
+
+        //        if (_seg->GetRad() > EPS)
+        //        {
+        //            API_PolyArc _parc = { 0, 0, _seg->GetAng() };  //TODO indexes
+        //            _parcs.Push(&_parc);
+        //        }
+        //    }
+        //    _pends.Push(0);     //TODO indexes
+        //}
+
+        UInt32 maxId = 0;
+
+        for (UInt32 i = 0; i < m_segments.GetSize(); i++)
+        {
+            S::Coord _c = *m_segments[i].GetEnd();
+            _c.SetX(_c.GetX() + 1.00);
+            _c.SetY(_c.GetY() + 1.00);
+            _ac = *new API_Coord(_c.ToAPICoord());
+            _coords.Push(_ac);
+            _vertIDs.Push(*new UInt32(i+1));
+            maxId = i+1;
+        }
+
+        _pends.Push(*new Int32(m_segments.GetSize() + 1));
+        _vertIDs[0] = *new UInt32(maxId);
+
+        BNZeroMemory(&resultMemo, sizeof(API_ElementMemo));
+
+        resultMemo.coords = _coords.ToNeigs();
+        if (_parcs.GetSize() > 0 )
+            resultMemo.parcs = _parcs.ToNeigs();
+        resultMemo.pends = _pends.ToNeigs();
+        resultMemo.vertexIDs = _vertIDs.ToNeigs();
+
+        return resultMemo;
     }
 
 

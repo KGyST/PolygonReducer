@@ -11,13 +11,13 @@ namespace S {
 	class Array : public GS::Array<Type>
 	{
 	public:
-		//typedef GS::RandomContainerIterator<GS::Array<Type>>		 Iterator;
+		//typedef GS::RandomContainerIterator<Array<Type>>		 Iterator;
 
-		Array(const Type* const*);
+		Array(const Type* const* p_neigs, UINT p_startIdx = 0);
 		Array(GS::Array<Type>) {} ;
 		Array() {} ;
 		~Array() {};
-		Type* ToNeigs() const;
+		Type** ToNeigs() const;
 
 		Array<Type> &Slice(GS::UIndex start, GS::UIndex end) const;
 		//TODO Sort() 
@@ -30,15 +30,16 @@ namespace S {
 //---------------------------------------------------------------------------
 
 template <class Type>
-S::Array<Type>::Array(const Type* const* p_neigs)
+S::Array<Type>::Array(const Type* const* p_neigs, UINT p_startIdx)
 {
 	UInt32 nSel = BMGetHandleSize((GSHandle)p_neigs) / sizeof(Type);
-
+	UINT startIdx = p_startIdx <= nSel ? p_startIdx : nSel;
+	
 	//IncreaseCapacity(nSel);
 
 	Type _an;
 
-	for (UINT i = 0; i < nSel; ++i) {
+	for (UINT i = startIdx; i < nSel; ++i) {
 		_an = (*p_neigs)[i];
 
 		this->Push(_an);
@@ -53,14 +54,18 @@ S::Array<Type>::Array(const Type* const* p_neigs)
 //}
 
 template <class Type>
-Type* S::Array<Type>::ToNeigs() const
+Type** S::Array<Type>::ToNeigs() const
 {
-    Type* neigs = reinterpret_cast<Type*> (BMAllocateHandle(this->GetSize(), ALLOCATE_ACTION, 0));
+	UINT _size = this->GetSize();
+    Type** neigs = reinterpret_cast<Type**> (BMAllocateHandle(_size * sizeof(Type), ALLOCATE_CLEAR, 0));
     if (neigs != NULL)
     {
+		Type _i;
+
         for (UINT i = 0; i < this->GetSize(); i++)
         {
-            neigs[i] = (Type) (*this)[i];
+			_i = (Type)(*this)[i];
+            (*neigs)[i] = _i;
         }
     }
 

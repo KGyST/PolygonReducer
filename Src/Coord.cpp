@@ -3,20 +3,20 @@
 double S::Coord::m_eps = 0.01;
 
 S::Coord::Coord(const ::Coord coord)
-	:	m_x(coord.x)
-	,	m_y(coord.y)
+	:m_x(coord.x)
+	,m_y(coord.y)
 {}
 
 
 S::Coord::Coord(const API_Coord coord)
-	:	m_x(coord.x)
-	,	m_y(coord.y)
+	:m_x(coord.x)
+	,m_y(coord.y)
 {}
 
 
 S::Coord::Coord(const double x, const double y)
-	:	m_x(x)
-	,	m_y(y)
+	:m_x(x)
+	,m_y(y)
 {}
 
 

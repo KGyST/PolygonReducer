@@ -38,7 +38,7 @@ namespace PolygonReducer {
 		~PolygonReducerInfoboxPage();
 		void SetCurrentPolygon(S_Polygon* currentPolygon);
 		int GetPointNumber();
-		GSErrCode SetPointNumber(int p_val, int p_max);
+		GSErrCode SetPointNumber(int/* p_val, int p_max*/);
 	};
 
 
