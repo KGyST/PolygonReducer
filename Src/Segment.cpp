@@ -68,6 +68,16 @@ void S::Segment::SetArc(double angle, S::Coord center)
     m_center.SetY(center.GetY());
 }
 
+void S::Segment::SetStart(const Coord& start)
+{
+    m_start = start;
+}
+
+void S::Segment::SetEnd(const Coord& end)
+{
+    m_end = end;
+}
+
 
 std::string S::Segment::ToString() const
 {

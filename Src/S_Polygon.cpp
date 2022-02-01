@@ -2,6 +2,17 @@
 #include "PolygonReducer.template.hpp"
 
 namespace PolygonReducer {
+    void S_Polygon::MoveAllPoints()
+    {
+        for (UINT i = 0; i < m_segments.GetSize(); i++ )
+        {
+            S::Coord _s (*m_segments[i].GetStart());
+            m_segments[i].SetStart(S::Coord(_s.GetX() + 1.00, _s.GetY() + 1.00) );
+            S::Coord _e (*m_segments[i].GetEnd());
+            m_segments[i].SetEnd(S::Coord(_e.GetX() + 1.00, _e.GetY() + 1.00) );
+        }
+    }
+
     S_Polygon::S_Polygon(const API_ElementMemo* p_memo)
         :   m_polylines (*new GS::Array <S_Polyline*>())
         ,   m_segments  (*new GS::Array <S::Segment>())
@@ -14,6 +25,14 @@ namespace PolygonReducer {
         S::Array<UInt32> _vertexIDs(p_memo->vertexIDs);
 
         int _idx = 0;
+
+        if (    _coords[0].x - EPS < 0.00
+            &&  _coords[0].x + EPS > 0.00
+            &&  _coords[0].y - EPS < 0.00
+            &&  _coords[0].y + EPS > 0.00)
+            m_isPolygon = true;
+        else
+            m_isPolygon = false;
 
         for (UInt32 i = 2; i < _coords.GetSize(); i++)
         {
@@ -147,15 +166,15 @@ namespace PolygonReducer {
         for (UInt32 i = 0; i < m_segments.GetSize(); i++)
         {
             S::Coord _c = *m_segments[i].GetEnd();
-            _c.SetX(_c.GetX() + 1.00);
-            _c.SetY(_c.GetY() + 1.00);
+            //_c.SetX(_c.GetX() + 1.00);
+            //_c.SetY(_c.GetY() + 1.00);
             _ac = *new API_Coord(_c.ToAPICoord());
             _coords.Push(_ac);
             _vertIDs.Push((UInt32)i+1);
             maxId = i+1;
         }
 
-        _vertIDs.Push((UInt32)1);                           //TODO
+        _vertIDs.Push((UInt32)1);                               //TODO
         _pends.Push((Int32)m_segments.GetSize() + 1);
         _vertIDs[0] = (UInt32)maxId;
 
@@ -168,7 +187,6 @@ namespace PolygonReducer {
         resultMemo.vertexIDs = _vertIDs.ToNeigs();
 
         return resultMemo;
-
     }
 
 

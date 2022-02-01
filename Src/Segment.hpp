@@ -61,6 +61,9 @@ namespace S {
         void SetArc(double angle);
         void SetArc(double angle, const Coord center);
 
+        void SetStart(const Coord& start);
+        void SetEnd(const Coord& end);
+
         std::string ToString() const;
     };
 }

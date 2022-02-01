@@ -55,17 +55,24 @@ namespace PolygonReducer {
 		[&]() -> GSErrCode {
 			API_Guid _guid0 = guids[0];
 			S_Polygon pgon(&memos[0]);
+
+			pgon.MoveAllPoints();
+
 			API_ElementMemo mem = pgon.getMemo();
 
-			//API_ElementMemo mem2 = memos[0];
-			//S::Array<Int32> _sa(mem.pends);
-			//S::Array<Int32> _sa2(mem2.pends);
-			//UNUSED_VARIABLE(_sa);
-			//UNUSED_VARIABLE(_sa2);
+			//err = ACAPI_Element_ChangeMemo(_guid0, APIMemoMask_Polygon, &mem);
 
-			//mem.pends = mem2.pends;
+			API_Element element, mask;
+			element.header.guid = _guid0;
+			err = ACAPI_Element_Get(&element);
 
-			err = ACAPI_Element_ChangeMemo(_guid0, APIMemoMask_Polygon, &mem);
+			//BNZeroMemory(&element, sizeof(API_Element));
+			//element.header.guid = _guid0;
+
+			ACAPI_ELEMENT_MASK_CLEAR(mask);
+			//ACAPI_ELEMENT_MASK_SET(mask, API_PolyLineType, head);
+
+			err =  ACAPI_Element_Change(&element, &mask, &mem, APIMemoMask_Polygon, true);
 
 			return err;
 		});
@@ -86,7 +93,7 @@ namespace PolygonReducer {
 		GS::Array<API_PolyArc> parcs = *new GS::Array<API_PolyArc>();
 		GS::Array<UInt32> vertexIDs = *new GS::Array<UInt32>();
 
-		API_ElementMemo originalMemo;
+		//API_ElementMemo originalMemo;
 
 		err = ACAPI_Selection_Get(&selectionInfo, &selNeigs, true);
 
@@ -100,7 +107,8 @@ namespace PolygonReducer {
 			return 0;
 		}
 
-		API_Elem_Head elementHead = {};
+		API_Elem_Head elementHead;
+		BNZeroMemory(&elementHead, sizeof(API_Elem_Head));
 
 		err = ConvertToGSArray<API_Neig, API_ElementMemo>(selNeigs, &memos, ReturnTrue<API_Neig>, ConvertToMemos);
 		err = ConvertToGSArray<API_Neig, API_Guid>(selNeigs, &guids, ReturnTrue<API_Neig>, NeigToAPIGuid);
@@ -118,24 +126,24 @@ namespace PolygonReducer {
 
 			//----- Userdata handling------------------------------------------------
 
-			API_ElementUserData userData = {};
+			//API_ElementUserData userData = {};
 
-			GSErrCode err = ACAPI_Element_GetUserData(&elementHead, &userData);
+			//GSErrCode err = ACAPI_Element_GetUserData(&elementHead, &userData);
 
-			originalMemo = memos[i];
+			//originalMemo = memos[i];
 
-			if (err == NoError && userData.dataHdl != nullptr)
-			{
-				originalMemo = *reinterpret_cast<API_ElementMemo*> (*userData.dataHdl);
-			}
+			//if (err == NoError && userData.dataHdl != nullptr)
+			//{
+			//	originalMemo = *reinterpret_cast<API_ElementMemo*> (*userData.dataHdl);
+			//}
 
-			userData.dataVersion = 1;
-			userData.platformSign = GS::Act_Platform_Sign;
-			userData.flags = APIUserDataFlag_FillWith | APIUserDataFlag_Pickup;
-			userData.dataHdl = BMAllocateHandle(sizeof(originalMemo), ALLOCATE_CLEAR, 0);
-			*reinterpret_cast<API_ElementMemo*> (*userData.dataHdl) = originalMemo;
+			//userData.dataVersion = 1;
+			//userData.platformSign = GS::Act_Platform_Sign;
+			//userData.flags = APIUserDataFlag_FillWith | APIUserDataFlag_Pickup;
+			//userData.dataHdl = BMAllocateHandle(sizeof(originalMemo), ALLOCATE_CLEAR, 0);
+			//*reinterpret_cast<API_ElementMemo*> (*userData.dataHdl) = originalMemo;
 
-			err = ACAPI_Element_SetUserData(&elementHead, &userData);
+			//err = ACAPI_Element_SetUserData(&elementHead, &userData);
 
 			//-----/Userdata handling------------------------------------------------
 
@@ -148,11 +156,13 @@ namespace PolygonReducer {
 
 			SetCurrentPolygon(_sp);
 
-			_sp->updateMemo(&originalMemo);
+			//_sp->updateMemo(&originalMemo);
 
 			//-----------------------------------------------------
 
 			API_Element         element;
+			BNZeroMemory(&elementHead, sizeof(API_Elem_Head));
+			BNZeroMemory(&element, sizeof(API_Element));
 			element.header = elementHead;
 			element.header.guid = _guid;
 
