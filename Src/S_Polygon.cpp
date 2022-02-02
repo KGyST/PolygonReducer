@@ -133,7 +133,7 @@ namespace PolygonReducer {
         S::Array<Int32> _pends;
         S::Array<UInt32> _vertIDs;
 
-        API_Coord _ac = *new API_Coord (S::Coord(-1.00, 0.00).ToAPICoord())  ;
+        API_Coord _ac = *new API_Coord (S::Coord(m_isPolygon ? 0.00 : -1.00, 0.00).ToAPICoord());
         _coords.Push(_ac);
 
         _ac = *new API_Coord(m_segments[0].GetStart()->ToAPICoord());

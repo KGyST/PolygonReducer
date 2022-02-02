@@ -41,7 +41,7 @@ namespace PolygonReducer {
         inT** p_neigs,
         GS::Array<outT>* resultArray,
         bool (*funcFilter)(inT) = ReturnTrue<inT>,
-        outT(*funcConverter)(inT) = ConvertToTheSame
+        outT (*funcConverter)(inT) = ConvertToTheSame
     )
         // FIXME nameless functions as default parameters
     {

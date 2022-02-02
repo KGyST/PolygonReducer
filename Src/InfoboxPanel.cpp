@@ -50,7 +50,6 @@ namespace PolygonReducer {
 		err = ConvertToGSArray<API_Neig, API_ElementMemo>(selNeigs, &memos, ReturnTrue<API_Neig>, ConvertToMemos);
 		err = ConvertToGSArray<API_Neig, API_Guid>(selNeigs, &guids, ReturnTrue<API_Neig>, NeigToAPIGuid);
 
-
 		err = ACAPI_CallUndoableCommand("Optimize polygons",
 		[&]() -> GSErrCode {
 			API_Guid _guid0 = guids[0];
@@ -60,17 +59,13 @@ namespace PolygonReducer {
 
 			API_ElementMemo mem = pgon.getMemo();
 
-			//err = ACAPI_Element_ChangeMemo(_guid0, APIMemoMask_Polygon, &mem);
-
 			API_Element element, mask;
+			BNZeroMemory(&element, sizeof(API_Element));
+
 			element.header.guid = _guid0;
 			err = ACAPI_Element_Get(&element);
 
-			//BNZeroMemory(&element, sizeof(API_Element));
-			//element.header.guid = _guid0;
-
 			ACAPI_ELEMENT_MASK_CLEAR(mask);
-			//ACAPI_ELEMENT_MASK_SET(mask, API_PolyLineType, head);
 
 			err =  ACAPI_Element_Change(&element, &mask, &mem, APIMemoMask_Polygon, true);
 
