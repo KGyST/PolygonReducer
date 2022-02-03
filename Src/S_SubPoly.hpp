@@ -10,15 +10,15 @@
 #include "Sector2DData.h"
 
 namespace PolygonReducer {
-    class S_Polyline
+    class S_SubPoly
     {
     private:
 
     public:
-        GS::Array <S::Segment*>* m_segments;
-        S_Polyline(GS::Array<API_Coord>* coords, GS::Array<API_PolyArc>* pars, GS::Array<UInt32>* vertexIDs);
-        //S_Polyline(S_Polygon* p_owner, int p_iStart, int p_iEnd);
-        ~S_Polyline();
+        GS::Array <S::Segment*> m_segments;
+        S_SubPoly(GS::Array<API_Coord>* coords, GS::Array<API_PolyArc>* pars, GS::Array<UInt32>* vertexIDs);
+        S_SubPoly() {};
+        ~S_SubPoly();
     };
 }
 #endif // !S_POLYLINE_HPP

@@ -49,6 +49,8 @@ namespace S {
 
         const Coord *GetStart() const { return &m_start; };
         const Coord *GetEnd() const { return &m_end; };
+        const unsigned int GetStartIdx() const { return m_startIdx; };
+        const unsigned int GetEndIdx() const { return m_endIdx; };
         const float  GetRad() const { return m_radius; };
         const double  GetAng() const { return m_angle; };
 

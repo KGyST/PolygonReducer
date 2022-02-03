@@ -52,9 +52,6 @@
     <ClInclude Include="Src\S_Polygon.hpp">
       <Filter>Source Files\Geometry</Filter>
     </ClInclude>
-    <ClInclude Include="Src\S_Polyline.hpp">
-      <Filter>Source Files\Geometry</Filter>
-    </ClInclude>
     <ClInclude Include="Src\InfoboxPanel.hpp">
       <Filter>Source Files\Gui</Filter>
     </ClInclude>
@@ -79,6 +76,9 @@
     <ClInclude Include="Src\PolygonUserData.hpp">
       <Filter>Source Files\Data</Filter>
     </ClInclude>
+    <ClInclude Include="Src\S_SubPoly.hpp">
+      <Filter>Source Files\Geometry</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Src\APICommon.c">
@@ -88,9 +88,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Src\S_Polygon.cpp">
-      <Filter>Source Files\Geometry</Filter>
-    </ClCompile>
-    <ClCompile Include="Src\S_Polyline.cpp">
       <Filter>Source Files\Geometry</Filter>
     </ClCompile>
     <ClCompile Include="Src\InfoboxPanel.cpp">
@@ -116,6 +113,9 @@
     </ClCompile>
     <ClCompile Include="Src\PolygonUserData.cpp">
       <Filter>Source Files\Data</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\S_SubPoly.cpp">
+      <Filter>Source Files\Geometry</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

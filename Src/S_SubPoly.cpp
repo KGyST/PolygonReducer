@@ -1,11 +1,11 @@
-#include "S_Polyline.hpp"
+#include "S_SubPoly.hpp"
 #include "PolygonReducer.template.hpp"
 
 using namespace Geometry;
 
 namespace PolygonReducer {
-    S_Polyline::S_Polyline(GS::Array<API_Coord>* coords, GS::Array<API_PolyArc>* pars, GS::Array<UInt32>* vertexIDs) {
-        m_segments = new GS::Array<S::Segment*>;
+    S_SubPoly::S_SubPoly(GS::Array<API_Coord>* coords, GS::Array<API_PolyArc>* pars, GS::Array<UInt32>* vertexIDs) {
+        m_segments = *new GS::Array<S::Segment*>;
 
         Sector midPerpPrev;
         Coord centerPrev(0, 0);
@@ -33,7 +33,6 @@ namespace PolygonReducer {
                     //TODO
                 }
 
-
                 firstIdx = i;
             }
             centerPrev = centerThis;
@@ -48,5 +47,5 @@ namespace PolygonReducer {
 
     using namespace Geometry;
 
-    S_Polyline::~S_Polyline() {}
+    S_SubPoly::~S_SubPoly() {}
 }

@@ -4,7 +4,7 @@
 
 #define ACExtension
 #include "ACAPinc.h"					            // also includes APIdefs.h
-#include "S_Polyline.hpp"
+#include "S_SubPoly.hpp"
 #include "Segment.hpp"
 #include "PolygonReducer.hpp"
 #include "Array.hpp"
@@ -15,10 +15,7 @@ namespace PolygonReducer {
     class S_Polygon
     {
     private:
-        GS::Array <S_Polyline*> m_polylines;
-        
         UINT m_pointCount;
-
 
     public:
         S_Polygon(const API_ElementMemo* p_memo);
@@ -36,6 +33,7 @@ namespace PolygonReducer {
         bool m_isPolygon;                           //false if polyline
 
 
+        GS::Array <S_SubPoly> m_subpolys;
         GS::Array <S::Segment> m_segments;
     };
 }
