@@ -34,7 +34,7 @@ namespace PolygonReducer {
 
 
         GS::Array <S_SubPoly> m_subpolys;
-        GS::Array <S::Segment> m_segments;
+        GS::Array <S::Segment*> m_segments;
     };
 }
 #endif // !S_POLYGON_HPP

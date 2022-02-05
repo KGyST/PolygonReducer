@@ -16,6 +16,7 @@ namespace PolygonReducer {
 
     public:
         GS::Array <S::Segment*> m_segments;
+
         S_SubPoly(GS::Array<API_Coord>* coords, GS::Array<API_PolyArc>* pars, GS::Array<UInt32>* vertexIDs);
         S_SubPoly() {};
         ~S_SubPoly();
