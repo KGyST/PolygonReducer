@@ -23,6 +23,11 @@ namespace PolygonReducer {
         S::Array<API_Coord> _coords(p_memo->coords);
         S::Array<API_PolyArc> _parcs(p_memo->parcs);
         S::Array<UInt32> _vertexIDs(p_memo->vertexIDs);
+        GS::HashTable<UInt32, double> _archTable;
+        for (UInt16 i = 0; i < _parcs.GetSize(); i++)
+        {
+            _archTable.Add(_parcs[i].begIndex, _parcs[i].arcAngle);
+        }
 
         int _idx = 0;
 
@@ -41,6 +46,10 @@ namespace PolygonReducer {
                 API_Coord c1(_coords[j]);
                 API_Coord c2(_coords[j+1]);
                 S::Segment *_segment = new S::Segment(_idx++, _vertexIDs[j], _vertexIDs[j+1], c1, c2);
+                if (_archTable.ContainsKey(j))
+                {
+                    _segment->SetArc(_archTable[j]);
+                }
 
                 m_segments.Push(_segment);
                 sp.m_segments.Push(_segment);
@@ -91,12 +100,22 @@ namespace PolygonReducer {
 
             for (UInt32 j = 0; j < sp.m_segments.GetSize(); j++)
             {
-                _coords.Push(sp.m_segments[j]->GetEnd()->ToAPICoord());
-                _vertIDs.Push(sp.m_segments[j]->GetEndIdx());
                 maxId++;
+
+                if (    sp.m_segments[j]->GetAng() < -EPS
+                    ||  sp.m_segments[j]->GetAng() > EPS)
+                {
+                    API_PolyArc _arc;
+                    _arc.arcAngle = sp.m_segments[j]->GetAng();
+                    _arc.begIndex = maxId;
+                    _arc.endIndex = maxId+1;
+                    _parcs.Push(_arc);
+                }
+
+                _coords.Push(sp.m_segments[j]->GetEnd()->ToAPICoord())  ;
+                _vertIDs.Push(sp.m_segments[j]->GetEndIdx());
             }
 
-            //_vertIDs.Push(sp.m_segments[0]->GetStartIdx());
             _pends.Push(++maxId);
         }
 
