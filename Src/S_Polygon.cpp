@@ -2,23 +2,13 @@
 #include "PolygonReducer.template.hpp"
 
 namespace PolygonReducer {
-    void S_Polygon::MoveAllPoints()
-    {
-        for (UINT i = 0; i < m_segments.GetSize(); i++ )
-        {
-            S::Coord _s (*m_segments[i]->GetStart());
-            m_segments[i]->SetStart(S::Coord(_s.GetX() + 1.00, _s.GetY() + 1.00) );
-            S::Coord _e (*m_segments[i]->GetEnd());
-            m_segments[i]->SetEnd(S::Coord(_e.GetX() + 1.00, _e.GetY() + 1.00) );
-        }
-    }
 
     S_Polygon::S_Polygon(const API_ElementMemo* p_memo)
         : m_subpolys()
         , m_segments()
     {
         S::Segment _segment;
-        
+
         S::Array<Int32> _pends(p_memo->pends);
         S::Array<API_Coord> _coords(p_memo->coords);
         S::Array<API_PolyArc> _parcs(p_memo->parcs);
@@ -31,8 +21,8 @@ namespace PolygonReducer {
 
         int _idx = 0;
 
-        if  (   _coords[0].x - EPS < 0.00
-            &&  _coords[0].x + EPS > 0.00)
+        if (_coords[0].x - EPS < 0.00
+            && _coords[0].x + EPS > 0.00)
             m_isPolygon = true;
         else
             m_isPolygon = false;    // Polyline
@@ -44,8 +34,8 @@ namespace PolygonReducer {
             for (UInt32 j = (UInt32)_pends[i - 1] + 1; j < (UInt32)_pends[i]; j++)
             {
                 API_Coord c1(_coords[j]);
-                API_Coord c2(_coords[j+1]);
-                S::Segment *_segment = new S::Segment(_idx++, _vertexIDs[j], _vertexIDs[j+1], c1, c2);
+                API_Coord c2(_coords[j + 1]);
+                S::Segment* _segment = new S::Segment(_idx++, _vertexIDs[j], _vertexIDs[j + 1], c1, c2);
                 if (_archTable.ContainsKey(j))
                 {
                     _segment->SetArc(_archTable[j]);
@@ -71,12 +61,13 @@ namespace PolygonReducer {
 
         for (UInt16 i = 0; i < m_segments.GetSize(); i++)
         {
-            S::Segment *_s = m_segments[i];
+            S::Segment* _s = m_segments[i];
             result += _s->ToString();
         }
 
         return result;
     }
+
 
     API_ElementMemo S_Polygon::getMemo()
     {
@@ -85,7 +76,7 @@ namespace PolygonReducer {
         S::Array<Int32> _pends;
         S::Array<UInt32> _vertIDs;
 
-        API_Coord _ac = *new API_Coord (S::Coord(m_isPolygon ? 0.00 : -1.00, 0.00).ToAPICoord());
+        API_Coord _ac = *new API_Coord(S::Coord(m_isPolygon ? 0.00 : -1.00, 0.00).ToAPICoord());
         _coords.Push(_ac);
 
         UInt32 maxId = 0;
@@ -96,23 +87,23 @@ namespace PolygonReducer {
         {
             S_SubPoly sp = m_subpolys[i];
             _coords.Push(sp.m_segments[0]->GetStart()->ToAPICoord());
-            _vertIDs.Push(sp.m_segments[0]->GetStartIdx() );
+            _vertIDs.Push(sp.m_segments[0]->GetStartIdx());
 
             for (UInt32 j = 0; j < sp.m_segments.GetSize(); j++)
             {
                 maxId++;
 
-                if (    sp.m_segments[j]->GetAng() < -EPS
-                    ||  sp.m_segments[j]->GetAng() > EPS)
+                if (sp.m_segments[j]->GetAng() < -EPS
+                    || sp.m_segments[j]->GetAng() > EPS)
                 {
                     API_PolyArc _arc;
                     _arc.arcAngle = sp.m_segments[j]->GetAng();
                     _arc.begIndex = maxId;
-                    _arc.endIndex = maxId+1;
+                    _arc.endIndex = maxId + 1;
                     _parcs.Push(_arc);
                 }
 
-                _coords.Push(sp.m_segments[j]->GetEnd()->ToAPICoord())  ;
+                _coords.Push(sp.m_segments[j]->GetEnd()->ToAPICoord());
                 _vertIDs.Push(sp.m_segments[j]->GetEndIdx());
             }
 
@@ -139,9 +130,20 @@ namespace PolygonReducer {
     }
 
 
-    void S_Polygon::setupArcs(void)
-        //going through segments and unify them as arcs if they are so
+    USize S_Polygon::getPointCount()
     {
+        return m_segments.GetSize();
+    }
+
+
+    void S_Polygon::MoveAllPoints()
+    {
+        for (UINT i = 0; i < m_segments.GetSize(); i++)
+        {
+            S::Coord _s(*m_segments[i]->GetStart());
+            m_segments[i]->SetStart(S::Coord(_s.GetX() + 1.00, _s.GetY() + 1.00));
+            S::Coord _e(*m_segments[i]->GetEnd());
+            m_segments[i]->SetEnd(S::Coord(_e.GetX() + 1.00, _e.GetY() + 1.00));
+        }
     }
 }
-

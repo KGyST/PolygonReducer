@@ -49,7 +49,8 @@ namespace PolygonReducer {
 		public	DG::PosIntEditObserver,
 		public  DG::CompoundItemObserver,
 		public  TBUI::IAPIToolUIDataObserver,
-		public	DG::ButtonItemObserver
+		public	DG::ButtonItemObserver,
+		public	DG::BarControlObserver
 	{
 	private:
 		PolygonReducerInfoboxPage* m_tabPage;
@@ -60,6 +61,7 @@ namespace PolygonReducer {
 		virtual	void		APIElementChanged(const TBUI::APIElemDefaultFieldMask& fieldMask) override;
 		virtual void		PosIntEditChanged(const DG::PosIntEditChangeEvent& ev);
 		virtual void		ButtonClicked(const DG::ButtonClickEvent& ev) override;
+		virtual void		BarControlChanged(const DG::BarControlChangeEvent& ev) override;
 
 	public:
 		explicit PolygonReducerPageObserver(PolygonReducerInfoboxPage* testPage);
