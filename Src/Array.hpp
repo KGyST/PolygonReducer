@@ -22,8 +22,8 @@ namespace S {
 		Array<Type> &Slice(GS::UIndex start, GS::UIndex end) const;
 		//Array<Type>* Sort(void (*funcSort)());
 
-		typename GS::Array<Type>::ConstIterator begin(void);
-		typename GS::Array<Type>::ConstIterator end(void);
+		typename S::Array<Type>::ConstIterator begin(void);
+		typename S::Array<Type>::ConstIterator end(void);
 	};
 }
 
@@ -70,15 +70,15 @@ Type** S::Array<Type>::ToNeigs() const
 }
 
 template <class Type>
-inline typename GS::Array<Type>::ConstIterator begin(void)
+inline typename S::Array<Type>::ConstIterator S::Array<Type>::begin(void)
 {
-	return GS::Array<Type>::ConstIterator(*this, 0);
+	return ConstIterator(*this, 0);
 }
 
 template <class Type>
-inline typename GS::Array<Type>::ConstIterator end(void)
+inline typename S::Array<Type>::ConstIterator S::Array<Type>::end(void)
 {
-	return GS::Array<Type>::ConstIterator(*this, size);
+	return ConstIterator(*this, this->GetSize() );
 }
 
 #endif // S_ARRAY_HPP

@@ -15,11 +15,10 @@ namespace PolygonReducer {
         S::Array<UInt32> _vertexIDs(p_memo->vertexIDs);
         GS::HashTable<UInt32, double> _archTable;
 
-        //for (auto _parc : _parcs)
-        //for each (API_PolyArc _parc in _parcs)
-        for (UInt16 i = 0; i < _parcs.GetSize(); i++)
+        //for (API_PolyArc _parc : _parcs)
+        for each (API_PolyArc _parc in _parcs)
         {
-            _archTable.Add(_parcs[i].begIndex, _parcs[i].arcAngle);
+            _archTable.Add(_parc.begIndex, _parc.arcAngle);
         }
 
         int _idx = 0;
