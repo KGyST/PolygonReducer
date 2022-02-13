@@ -11,7 +11,7 @@ namespace S {
 	class Array : public GS::Array<Type>
 	{
 	public:
-		//typedef GS::RandomContainerIterator<Array<Type>>		 Iterator;
+		//typedef GS::RandomContainerIterator<typename Array<Type>>		 Iterator;
 
 		Array(const Type* const* p_neigs, UINT p_startIdx = 0);
 		Array(GS::Array<Type>) {} ;
@@ -20,10 +20,10 @@ namespace S {
 		Type** ToNeigs() const;
 
 		Array<Type> &Slice(GS::UIndex start, GS::UIndex end) const;
-		//TODO Sort() 
+		//Array<Type>* Sort(void (*funcSort)());
 
-		//Iterator begin();
-		//Iterator end();
+		typename GS::Array<Type>::ConstIterator begin(void);
+		typename GS::Array<Type>::ConstIterator end(void);
 	};
 }
 
@@ -69,11 +69,16 @@ Type** S::Array<Type>::ToNeigs() const
     return neigs;
 }
 
-//template <class Type>
-//S::Array<Type>::Iterator S::Array<Type>::begin()
-//{
-//	//return GS::RandomContainerIterator<S::Array<Type>>(*this, 0);
-//	return GS::Array<Type>.Begin();
-//}
+template <class Type>
+inline typename GS::Array<Type>::ConstIterator begin(void)
+{
+	return GS::Array<Type>::ConstIterator(*this, 0);
+}
+
+template <class Type>
+inline typename GS::Array<Type>::ConstIterator end(void)
+{
+	return GS::Array<Type>::ConstIterator(*this, size);
+}
 
 #endif // S_ARRAY_HPP

@@ -59,6 +59,7 @@ namespace PolygonReducer {
 
 			API_Element element, mask;
 			BNZeroMemory(&element, sizeof(API_Element));
+			BNZeroMemory(&mask, sizeof(API_Element));
 
 			element.header.guid = guids[0];
 			err = ACAPI_Element_Get(&element);

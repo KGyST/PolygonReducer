@@ -24,6 +24,9 @@
     <Filter Include="Source Files\Data">
       <UniqueIdentifier>{d78c5166-2d80-438e-a518-bcc4a8e86de0}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Utils">
+      <UniqueIdentifier>{7ec265d0-cb1a-4eec-83ce-2b0ba3e5ca78}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="RFIX.WIN\$(ProjectName).rc2">
@@ -61,9 +64,6 @@
     <ClInclude Include="Src\SettingsDialog.hpp">
       <Filter>Source Files\Gui</Filter>
     </ClInclude>
-    <ClInclude Include="Src\Utils.hpp">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="Src\Coord.hpp">
       <Filter>Source Files\Geometry</Filter>
     </ClInclude>
@@ -78,6 +78,9 @@
     </ClInclude>
     <ClInclude Include="Src\S_SubPoly.hpp">
       <Filter>Source Files\Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Utils.hpp">
+      <Filter>Source Files\Utils</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -99,9 +102,6 @@
     <ClCompile Include="Src\SettingsDialog.cpp">
       <Filter>Source Files\Gui</Filter>
     </ClCompile>
-    <ClCompile Include="Src\Utils.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Src\Coord.cpp">
       <Filter>Source Files\Geometry</Filter>
     </ClCompile>
@@ -116,6 +116,9 @@
     </ClCompile>
     <ClCompile Include="Src\S_SubPoly.cpp">
       <Filter>Source Files\Geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Utils.cpp">
+      <Filter>Source Files\Utils</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
