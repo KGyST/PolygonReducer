@@ -91,3 +91,4 @@ std::string S::Segment::ToString() const
     return result;
 }
 
+//bool S::Segment::operator()(S::Segment *s1, S::Segment *s2) { return s1->GetLength() < s2->GetLength() ; }

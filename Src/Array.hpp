@@ -14,13 +14,14 @@ namespace S {
 		//typedef GS::RandomContainerIterator<typename Array<Type>>		 Iterator;
 
 		Array(const Type* const* p_neigs, UINT p_startIdx = 0);
+		//TODO Array(const Type* const* p_neigs, bool (*funcFilter)(inT), outT(*funcConverter)(inT));
 		Array(GS::Array<Type>) {} ;
 		Array() {} ;
 		~Array() {};
 		Type** ToNeigs() const;
 
 		Array<Type> &Slice(GS::UIndex start, GS::UIndex end) const;
-		//Array<Type>* Sort(void (*funcSort)());
+		//void Sort(GS::UIndex start, GS::UIndex end, bool (*funcSort)());
 
 		typename S::Array<Type>::ConstIterator begin(void);
 		typename S::Array<Type>::ConstIterator end(void);
@@ -35,7 +36,7 @@ S::Array<Type>::Array(const Type* const* p_neigs, UINT p_startIdx)
 	UInt32 nSel = BMGetHandleSize((GSHandle)p_neigs) / sizeof(Type);
 	UINT startIdx = p_startIdx <= nSel ? p_startIdx : nSel;
 	
-	//IncreaseCapacity(nSel);
+	SetSize(nSel);
 
 	Type _an;
 
@@ -45,13 +46,6 @@ S::Array<Type>::Array(const Type* const* p_neigs, UINT p_startIdx)
 		this->Push(_an);
 	}
 }
-
-//template <class Type>
-//S::Array<Type>::Array(GS::Array<Type> a)
-//{
-//	S::Array<Type> *_ = &((S::Array<Type>)a);
-//	this = _;
-//}
 
 template <class Type>
 Type** S::Array<Type>::ToNeigs() const
@@ -80,5 +74,6 @@ inline typename S::Array<Type>::ConstIterator S::Array<Type>::end(void)
 {
 	return ConstIterator(*this, this->GetSize() );
 }
+
 
 #endif // S_ARRAY_HPP

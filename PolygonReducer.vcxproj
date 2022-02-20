@@ -51,7 +51,7 @@
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
-      <AdditionalIncludeDirectories>$(BoostLib);$(APIDevKitSupport)\Inc;$(APIDevKitModules)\GSRoot;$(APIDevKitModules)\GSUtils;$(APIDevKitModules)\DGLib;$(APIDevKitModules)\Geometry;$(APIDevKitModules)\InputOutput;$(APIDevKitModules)\UCLib;$(APIDevKitModules)\VBElemDialogs;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(BoostLib);$(APIDevKitSupport)\Inc;$(APIDevKitModules)\GSRoot;$(APIDevKitModules)\GSRoot\STL\imp;$(APIDevKitModules)\GSUtils;$(APIDevKitModules)\DGLib;$(APIDevKitModules)\Geometry;$(APIDevKitModules)\InputOutput;$(APIDevKitModules)\UCLib;$(APIDevKitModules)\VBElemDialogs;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <WarningLevel>Level4</WarningLevel>

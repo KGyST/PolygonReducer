@@ -1,8 +1,9 @@
+#include "Algorithms.hpp"
+//#include "GSRoot.hpp"
 #include "S_Polygon.hpp"
 #include "PolygonReducer.template.hpp"
 
 namespace PolygonReducer {
-
     S_Polygon::S_Polygon(const API_ElementMemo* p_memo)
         : m_subpolys()
         , m_segments()
@@ -15,7 +16,7 @@ namespace PolygonReducer {
         S::Array<UInt32> _vertexIDs(p_memo->vertexIDs);
         GS::HashTable<UInt32, double> _archTable;
 
-        //for (API_PolyArc _parc : _parcs)
+        //for (auto _parc : _parcs)
         for each (API_PolyArc _parc in _parcs)
         {
             _archTable.Add(_parc.begIndex, _parc.arcAngle);
@@ -23,8 +24,8 @@ namespace PolygonReducer {
 
         int _idx = 0;
 
-        if (_coords[0].x - EPS < 0.00
-            && _coords[0].x + EPS > 0.00)
+        if  (   _coords[0].x - EPS < 0.00
+            &&  _coords[0].x + EPS > 0.00)
             m_isPolygon = true;
         else
             m_isPolygon = false;    // Polyline
@@ -46,6 +47,9 @@ namespace PolygonReducer {
                 m_segments.Push(_segment);
                 sp.m_segments.Push(_segment);
             }
+
+            S_SubPoly sp2(sp);
+            GS::Sort(sp2.m_segments.Begin(), sp2.m_segments.End(), [](S::Segment* s1, S::Segment* s2) -> bool {return s1->GetLength() > s2->GetLength(); });
 
             m_subpolys.Push(sp);
         }

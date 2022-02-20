@@ -1,6 +1,5 @@
 #include "Utils.hpp"
 
-
 void TrackPoly(const API_Polygon* poly, const API_ElementMemo* memo)
 {
     int         j, i, begInd, endInd, arcInd;

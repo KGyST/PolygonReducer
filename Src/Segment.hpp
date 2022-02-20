@@ -25,8 +25,8 @@ namespace S {
         //unsigned int nxtIdx;
         unsigned int    m_startIdx;  // vertexID
         unsigned int    m_endIdx;    // vertexID
-        Segment*        m_previous;
-        Segment*        m_next;
+        Segment* m_previous;
+        Segment* m_next;
         bool            m_startPoint;        // Is it a start of a subcontour
 
         Coord           m_center;
@@ -47,8 +47,8 @@ namespace S {
         //Segment(Sector sect);
         ~Segment();
 
-        const Coord *GetStart() const { return &m_start; };
-        const Coord *GetEnd() const { return &m_end; };
+        const Coord* GetStart() const { return &m_start; };
+        const Coord* GetEnd() const { return &m_end; };
         const unsigned int GetStartIdx() const { return m_startIdx; };
         const unsigned int GetEndIdx() const { return m_endIdx; };
         const float  GetRad() const { return m_radius; };
@@ -57,7 +57,7 @@ namespace S {
         const Coord MidPoint() const;
         const Segment MidPerp() const;
 
-        const double GetLength() const { return sqrt(pow((m_end.GetX() - m_start.GetX()), 2) + pow((m_end.GetY() - m_start.GetY()), 2));  };
+        const double GetLength() const { return sqrt(pow((m_end.GetX() - m_start.GetX()), 2) + pow((m_end.GetY() - m_start.GetY()), 2)); };
         //const Sector toSector();
 
         void SetArc(double angle);
@@ -67,6 +67,8 @@ namespace S {
         void SetEnd(const Coord& end);
 
         std::string ToString() const;
+
+        //bool S::Segment::operator()(S::Segment *s1, S::Segment *s2);
     };
 }
 
