@@ -3,6 +3,9 @@
 #include "S_Polygon.hpp"
 #include "PolygonReducer.template.hpp"
 
+#include "Algorithms.hpp"
+
+
 namespace PolygonReducer {
     S_Polygon::S_Polygon(const API_ElementMemo* p_memo)
         : m_subpolys()
@@ -50,6 +53,12 @@ namespace PolygonReducer {
 
             S_SubPoly sp2(sp);
             GS::Sort(sp2.m_segments.Begin(), sp2.m_segments.End(), [](S::Segment* s1, S::Segment* s2) -> bool {return s1->GetLength() > s2->GetLength(); });
+            for each (auto s in sp2.m_segments)
+            {
+                auto l = s->GetLength() ;
+                l = l + 1;
+                UNUSED_VARIABLE(l);
+            }
 
             m_subpolys.Push(sp);
         }

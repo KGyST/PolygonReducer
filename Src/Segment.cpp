@@ -91,4 +91,15 @@ std::string S::Segment::ToString() const
     return result;
 }
 
+const double S::Segment::GetLength() const
+{
+    if  (   m_angle > -EPS
+        &&  m_angle <  EPS)
+        return sqrt(pow((m_end.GetX() - m_start.GetX()), 2) + pow((m_end.GetY() - m_start.GetY()), 2));
+    else
+        return m_radius * m_angle;
+    }
+    
+
+
 //bool S::Segment::operator()(S::Segment *s1, S::Segment *s2) { return s1->GetLength() < s2->GetLength() ; }

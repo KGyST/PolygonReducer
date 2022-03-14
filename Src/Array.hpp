@@ -36,7 +36,7 @@ S::Array<Type>::Array(const Type* const* p_neigs, UINT p_startIdx)
 	UInt32 nSel = BMGetHandleSize((GSHandle)p_neigs) / sizeof(Type);
 	UINT startIdx = p_startIdx <= nSel ? p_startIdx : nSel;
 	
-	SetSize(nSel);
+	SetCapacity(nSel);
 
 	Type _an;
 
