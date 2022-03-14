@@ -1,8 +1,10 @@
 #include "S_Polygon.hpp"
 #include "PolygonReducer.template.hpp"
 
-namespace PolygonReducer {
+#include "Algorithms.hpp"
 
+
+namespace PolygonReducer {
     S_Polygon::S_Polygon(const API_ElementMemo* p_memo)
         : m_subpolys()
         , m_segments()
@@ -23,8 +25,8 @@ namespace PolygonReducer {
 
         int _idx = 0;
 
-        if (_coords[0].x - EPS < 0.00
-            && _coords[0].x + EPS > 0.00)
+        if  (   _coords[0].x - EPS < 0.00
+            &&  _coords[0].x + EPS > 0.00)
             m_isPolygon = true;
         else
             m_isPolygon = false;    // Polyline
@@ -45,6 +47,15 @@ namespace PolygonReducer {
 
                 m_segments.Push(_segment);
                 sp.m_segments.Push(_segment);
+            }
+
+            S_SubPoly sp2(sp);
+            GS::Sort(sp2.m_segments.Begin(), sp2.m_segments.End(), [](S::Segment* s1, S::Segment* s2) -> bool {return s1->GetLength() > s2->GetLength(); });
+            for each (auto s in sp2.m_segments)
+            {
+                auto l = s->GetLength() ;
+                l = l + 1;
+                UNUSED_VARIABLE(l);
             }
 
             m_subpolys.Push(sp);

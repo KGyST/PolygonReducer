@@ -57,7 +57,7 @@ namespace S {
         const Coord MidPoint() const;
         const Segment MidPerp() const;
 
-        const double GetLength() const { return sqrt(pow((m_end.GetX() - m_start.GetX()), 2) + pow((m_end.GetY() - m_start.GetY()), 2));  };
+        const double GetLength() const;
         //const Sector toSector();
 
         void SetArc(double angle);
