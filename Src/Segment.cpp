@@ -45,7 +45,7 @@ void S::Segment::SetArc(double angle)
     Coord _end (m_end.GetX(), m_end.GetY());
     double _halfAngle = angle / 2;
 
-    ::Coord rotEnd = RotCoord(_start.ToCoord(), _end.ToCoord(), sin(_halfAngle), cos(_halfAngle));
+    ::Coord rotEnd   = RotCoord(_start.ToCoord(), _end.ToCoord(), sin(_halfAngle), cos(_halfAngle));
     ::Coord rotStart = RotCoord(_end.ToCoord(), _start.ToCoord(), sin(-_halfAngle), cos(-_halfAngle));
 
     Sector lin1 = SetSector(_start.ToCoord(), rotEnd);
@@ -59,6 +59,7 @@ void S::Segment::SetArc(double angle)
 
     m_center.SetX(xc.x);
     m_center.SetY(xc.y);
+    m_radius = (float) Dist(xc, _start);
 }
 
 
@@ -67,6 +68,7 @@ void S::Segment::SetArc(double angle, S::Coord center)
     m_angle = angle;
     m_center.SetX(center.GetX());
     m_center.SetY(center.GetY());
+    //TODO m_radius
 }
 
 void S::Segment::SetStart(const Coord& start)

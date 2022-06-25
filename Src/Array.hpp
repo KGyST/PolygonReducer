@@ -21,7 +21,7 @@ namespace S {
 		Type** ToNeigs() const;
 
 		Array<Type> &Slice(GS::UIndex start, GS::UIndex end) const;
-		//void Sort(GS::UIndex start, GS::UIndex end, bool (*funcSort)());
+		void Sort(GS::UIndex start, GS::UIndex end, bool (*funcSort)());
 
 		typename S::Array<Type>::ConstIterator begin(void);
 		typename S::Array<Type>::ConstIterator end(void);
