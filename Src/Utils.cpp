@@ -42,8 +42,6 @@ API_ElementMemo ConvertToMemos(API_Neig p_neig)
 
     GSErrCode err = ACAPI_Element_GetMemo(_guid, &_memo);
 
-    UNUSED_VARIABLE(err);
-
     return _memo;
 }
 

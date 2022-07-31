@@ -38,11 +38,6 @@ namespace PolygonReducer {
             centerPrev = centerThis;
             midPerpPrev = midPerpThis;
         }
-
-        UNUSED_PARAMETER(coords);
-        UNUSED_PARAMETER(pars);
-        UNUSED_PARAMETER(vertexIDs);
-        //UNUSED_PARAMETER(segments);
     }
 
     using namespace Geometry;

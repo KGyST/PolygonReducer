@@ -8,8 +8,6 @@ namespace PolygonReducer {
     template <class inT>
     bool ReturnTrue(inT p_inObj)
     {
-        UNUSED_PARAMETER(p_inObj);
-
         return true;
     }
 

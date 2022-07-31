@@ -53,12 +53,11 @@ namespace PolygonReducer {
 
             S_SubPoly sp2(sp);
             GS::Sort(sp2.m_segments.Begin(), sp2.m_segments.End(), [](S::Segment* s1, S::Segment* s2) -> bool {return s1->GetLength() > s2->GetLength(); });
-            sp2.m_segments.Sort(0, sp2.m_segments.GetSize(), [](S::Segment* s1, S::Segment* s2) -> bool {return s1->GetLength() > s2->GetLength(); });
+            //sp2.m_segments.Sort(0, sp2.m_segments.GetSize(), [](S::Segment* s1, S::Segment* s2) -> bool {return s1->GetLength() > s2->GetLength(); });
             for each (auto s in sp2.m_segments)
             {
                 auto l = s->GetLength() ;
                 l = l + 1;
-                UNUSED_VARIABLE(l);
             }
 
             m_subpolys.Push(sp);
@@ -142,7 +141,6 @@ namespace PolygonReducer {
 
     void S_Polygon::setPointCount(const int i_count)
     {
-        UNUSED_PARAMETER(i_count);
     }
 
 
