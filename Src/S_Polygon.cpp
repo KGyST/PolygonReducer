@@ -36,6 +36,7 @@ namespace PolygonReducer {
         for (UInt32 i = 1; i < _pends.GetSize(); i++)
         {
             S_SubPoly sp;
+            //S::Segment* _sPrev=nullptr;
 
             for (UInt32 j = (UInt32)_pends[i - 1] + 1; j < (UInt32)_pends[i]; j++)
             {
@@ -47,13 +48,26 @@ namespace PolygonReducer {
                     _segment->SetArc(_archTable[j]);
                 }
 
+                //if (_sPrev)
+                //{
+                //    _segment->SetPrev(_sPrev);
+                //    _sPrev->SetNext(_segment);
+                //}
+
                 m_segments.Push(_segment);
                 sp.m_segments.Push(_segment);
+
+                //_sPrev = _segment;
             }
+
+            //auto _iLast = sp.m_segments.GetSize() - 1;
+            //sp.m_segments[0]->SetPrev(sp.m_segments[_iLast]);
+            //sp.m_segments[_iLast]->SetNext(sp.m_segments[0]);
 
             S_SubPoly sp2(sp);
             GS::Sort(sp2.m_segments.Begin(), sp2.m_segments.End(), [](S::Segment* s1, S::Segment* s2) -> bool {return s1->GetLength() > s2->GetLength(); });
             //sp2.m_segments.Sort(0, sp2.m_segments.GetSize(), [](S::Segment* s1, S::Segment* s2) -> bool {return s1->GetLength() > s2->GetLength(); });
+
             for each (auto s in sp2.m_segments)
             {
                 auto l = s->GetLength() ;
@@ -139,8 +153,65 @@ namespace PolygonReducer {
     }
 
 
-    void S_Polygon::setPointCount(const int i_count)
+    void S_Polygon::removeShortestEdge()
     {
+        S::Array <S::Segment*> newSegments(m_segments);
+
+        GS::Sort(m_segments.Begin(), m_segments.End(), [](S::Segment* s1, S::Segment* s2) -> bool {return s1->GetLength() < s2->GetLength(); });
+
+        S::Segment* shortestSegment = m_segments[0];
+        S::Segment* _prevSeg = shortestSegment->GetPrev();
+        S::Segment* _nextSeg = shortestSegment->GetNext();
+
+        //S::Segment* segmentToDelete = m_segments[0];
+
+        //newSegments.Delete(0);
+
+        intersectSegments( _prevSeg, _nextSeg);
+
+        _prevSeg->SetEndIdx(shortestSegment->GetEndIdx() );
+        _nextSeg->SetStartIdx(shortestSegment->GetEndIdx());
+
+        GS::Sort(newSegments.Begin(), newSegments.End(), [](S::Segment* s1, S::Segment* s2) -> bool {return s1->GetIdx() < s2->GetIdx(); });
+
+        //m_segments = newSegments;
+        m_segments.DeleteFirst(shortestSegment);
+
+        GS::Sort(m_segments.Begin(), m_segments.End(), [](S::Segment* s1, S::Segment* s2) -> bool {return s1->GetIdx() < s2->GetIdx(); });
+
+        for (UINT i = 0; i< m_subpolys.GetSize(); i++ )
+        {
+            m_subpolys[i].m_segments.DeleteFirst(shortestSegment);
+        }
+    }
+
+
+    void S_Polygon::intersectSegments(S::Segment * io_prev, S::Segment * io_next)
+    {
+        using namespace Geometry;
+
+        Sector lin1 = SetSector(io_prev->GetStart()->ToCoord(), io_prev->GetEnd()->ToCoord());
+        Sector lin2 = SetSector(io_next->GetStart()->ToCoord(), io_next->GetEnd()->ToCoord());
+
+        ::Coord xc(0, 0);
+
+        double eps = 0, radEps = 0;
+
+        XLinesEps(lin1, lin2, &xc, eps, radEps);
+
+        io_prev->SetEnd(xc);
+        io_next->SetStart(xc);
+        io_prev->SetNext(io_next);
+        io_next->SetPrev(io_prev);
+    } 
+
+
+    void S_Polygon::setPointCount(const unsigned int i_count)
+    {
+        for (UINT i = getPointCount(); i > i_count; i--)
+        {
+            removeShortestEdge();
+        }
     }
 
 

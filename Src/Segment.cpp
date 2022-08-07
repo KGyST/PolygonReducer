@@ -17,6 +17,15 @@ void S::Segment::init(int idx, int startIdx, int endIdx, const S::Coord& p_start
     m_angle = 0.00;
 }
 
+//S::Segment::Segment(int idx, int startIdx, int endIdx, const Coord& start, const Coord& end, Segment* prev, Segment* next)
+//    :m_idx(idx)
+//    ,m_startIdx(startIdx)
+//    ,m_endIdx(endIdx)
+//    ,m_start(start)
+//    ,m_end(end)
+//    ,m_previous(prev)
+//    ,m_next(next)
+
 
 S::Segment::~Segment()
 {
@@ -24,11 +33,13 @@ S::Segment::~Segment()
 
 const S::Coord S::Segment::MidPoint() const
 {
+    //TODO arc
     return Coord((m_start.GetX() + m_end.GetX())/2, (m_start.GetY() + m_end.GetY())/2);
 }
 
 const S::Segment S::Segment::MidPerp() const
 {
+    //TODO arc
     ::Coord _start = m_start.ToCoord();
     ::Coord _midPoint = MidPoint().ToCoord();
     ::Coord _rotEnd = RotCoord(&_midPoint, &_start, 1.00, 0.00);
@@ -59,7 +70,7 @@ void S::Segment::SetArc(double angle)
 
     m_center.SetX(xc.x);
     m_center.SetY(xc.y);
-    m_radius = (float) Dist(xc, _start);
+    m_radius = (float) Dist(xc, _start.ToCoord() );
 }
 
 
@@ -71,15 +82,15 @@ void S::Segment::SetArc(double angle, S::Coord center)
     //TODO m_radius
 }
 
-void S::Segment::SetStart(const Coord& start)
-{
-    m_start = start;
-}
-
-void S::Segment::SetEnd(const Coord& end)
-{
-    m_end = end;
-}
+//void S::Segment::SetStart(const Coord& start)
+//{
+//    m_start = start;
+//}
+//
+//void S::Segment::SetEnd(const Coord& end)
+//{
+//    m_end = end;
+//}
 
 
 std::string S::Segment::ToString() const
@@ -99,7 +110,7 @@ const double S::Segment::GetLength() const
         &&  m_angle <  EPS)
         return sqrt(pow((m_end.GetX() - m_start.GetX()), 2) + pow((m_end.GetY() - m_start.GetY()), 2));
     else
-        return m_radius * m_angle;
+        return abs(m_radius * m_angle);
     }
     
 

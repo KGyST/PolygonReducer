@@ -20,7 +20,7 @@ S::Coord::Coord(const double x, const double y)
 {}
 
 
-bool S::Coord::operator==(Coord anotherCoord) const
+bool S::Coord::operator==(const Coord anotherCoord) const
 {
 	return	m_x - m_eps < anotherCoord.x
 		&&	m_x + m_eps > anotherCoord.x

@@ -1,6 +1,6 @@
 #pragma once
-#ifndef POLYGON_REDUCER_TPP
-#define POLYGON_REDUCER_TPP
+#ifndef POLYGON_REDUCER_TEMPLATE_HPP
+#define POLYGON_REDUCER_TEMPLATE_HPP
 
 // To be removed ------------------------------
 namespace PolygonReducer {
@@ -62,4 +62,4 @@ namespace PolygonReducer {
         return 0;
     }
 }
-#endif // !POLYGON_REDUCER_TPP
+#endif // !POLYGON_REDUCER_TEMPLATE_HPP

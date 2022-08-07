@@ -16,6 +16,7 @@ namespace S {
 		Array(const Type* const* p_neigs, UINT p_startIdx = 0);
 		//TODO Array(const Type* const* p_neigs, bool (*funcFilter)(inT), outT(*funcConverter)(inT));
 		Array(GS::Array<Type>) {} ;
+		//Array(S::Array<Type>) {} ;
 		Array() {} ;
 		~Array() {};
 		Type** ToNeigs() const;

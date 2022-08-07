@@ -52,14 +52,14 @@ namespace PolygonReducer {
 		[&]() -> GSErrCode {
 			S_Polygon pgon(&memos[0]);
 
-			pgon.MoveAllPoints();
-			pgon.setPointCount(i_iPoint);
+			//pgon.MoveAllPoints();
+			//pgon.setPointCount(i_iPoint);
 
 			API_ElementMemo mem = pgon.getMemo();
 
 			API_Element element, mask;
 			BNZeroMemory(&element, sizeof(API_Element));
-			BNZeroMemory(&mask, sizeof(API_Element));
+			//BNZeroMemory(&mask, sizeof(API_Element));
 
 			element.header.guid = guids[0];
 			err = ACAPI_Element_Get(&element);
