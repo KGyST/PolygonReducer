@@ -52,7 +52,7 @@ namespace PolygonReducer {
 		[&]() -> GSErrCode {
 			S_Polygon pgon(&memos[0]);
 
-			//pgon.MoveAllPoints();
+			pgon.MoveAllPoints();
 			//pgon.setPointCount(i_iPoint);
 
 			API_ElementMemo mem = pgon.getMemo();
