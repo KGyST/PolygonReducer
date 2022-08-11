@@ -36,43 +36,50 @@ namespace PolygonReducer {
         for (UInt32 i = 1; i < _pends.GetSize(); i++)
         {
             S_SubPoly sp;
-            //S::Segment* _sPrev=nullptr;
+            S::Segment* _sPrev=nullptr;
+            S::Segment* _segment = nullptr;
 
             for (UInt32 j = (UInt32)_pends[i - 1] + 1; j < (UInt32)_pends[i]; j++)
             {
                 API_Coord c1(_coords[j]);
                 API_Coord c2(_coords[j + 1]);
-                S::Segment* _segment = new S::Segment(_idx++, _vertexIDs[j], _vertexIDs[j + 1], c1, c2);
+                _segment = new S::Segment(_idx++, _vertexIDs[j], _vertexIDs[j + 1], c1, c2);
                 if (_archTable.ContainsKey(j))
                 {
                     _segment->SetArc(_archTable[j]);
                 }
 
-                //if (_sPrev)
-                //{
-                //    _segment->SetPrev(_sPrev);
-                //    _sPrev->SetNext(_segment);
-                //}
+                if (_sPrev)
+                {
+                    _segment->SetPrev(_sPrev);
+                    _sPrev->SetNext(_segment);
+                }
 
                 m_segments.Push(_segment);
                 sp.m_segments.Push(_segment);
 
-                //_sPrev = _segment;
+                _sPrev = _segment;
+            }
+
+            if (_segment)
+            {
+                m_segments[0]->SetPrev(_segment);
+                _segment->SetNext(m_segments[0]);
             }
 
             //auto _iLast = sp.m_segments.GetSize() - 1;
             //sp.m_segments[0]->SetPrev(sp.m_segments[_iLast]);
             //sp.m_segments[_iLast]->SetNext(sp.m_segments[0]);
 
-            S_SubPoly sp2(sp);
-            GS::Sort(sp2.m_segments.Begin(), sp2.m_segments.End(), [](S::Segment* s1, S::Segment* s2) -> bool {return s1->GetLength() > s2->GetLength(); });
+            //S_SubPoly sp2(sp);
+            //GS::Sort(sp2.m_segments.Begin(), sp2.m_segments.End(), [](S::Segment* s1, S::Segment* s2) -> bool {return s1->GetLength() > s2->GetLength(); });
             //sp2.m_segments.Sort(0, sp2.m_segments.GetSize(), [](S::Segment* s1, S::Segment* s2) -> bool {return s1->GetLength() > s2->GetLength(); });
 
-            for each (auto s in sp2.m_segments)
-            {
-                auto l = s->GetLength() ;
-                l = l + 1;
-            }
+            //for each (auto s in sp2.m_segments)
+            //{
+            //    auto l = s->GetLength() ;
+            //    l = l + 1;
+            //}
 
             m_subpolys.Push(sp);
         }
@@ -80,6 +87,8 @@ namespace PolygonReducer {
 
 
     S_Polygon::~S_Polygon() {
+        for each (auto seg in m_segments)
+            delete seg;
     }
 
 
@@ -105,8 +114,9 @@ namespace PolygonReducer {
         S::Array<Int32> _pends;
         S::Array<UInt32> _vertIDs;
 
-        API_Coord _ac = *new API_Coord(S::Coord(m_isPolygon ? 0.00 : -1.00, 0.00).ToAPICoord());    //1st coord special
-        _coords.Push(_ac);
+        API_Coord* _ac = new API_Coord(S::Coord(m_isPolygon ? 0.00 : -1.00, 0.00).ToAPICoord());    //1st coord special
+        _coords.Push(*_ac);
+        delete _ac;
 
         UInt32 maxId = 0;
         _pends.Push(0);
@@ -120,10 +130,11 @@ namespace PolygonReducer {
 
             for (UInt32 j = 0; j < sp.m_segments.GetSize(); j++)
             {
-                maxId++;
+                _coords.Push(sp.m_segments[j]->GetEnd()->ToAPICoord());
+                _vertIDs.Push(++maxId);
 
-                if (sp.m_segments[j]->GetAng() < -EPS
-                    || sp.m_segments[j]->GetAng() > EPS)
+                if  (   sp.m_segments[j]->GetAng() < -EPS
+                    ||  sp.m_segments[j]->GetAng() >  EPS)
                 {
                     API_PolyArc _arc;
                     _arc.arcAngle = sp.m_segments[j]->GetAng();
@@ -131,9 +142,6 @@ namespace PolygonReducer {
                     _arc.endIndex = maxId + 1;
                     _parcs.Push(_arc);
                 }
-
-                _coords.Push(sp.m_segments[j]->GetEnd()->ToAPICoord());
-                _vertIDs.Push(sp.m_segments[j]->GetEndIdx());
             }
 
             _pends.Push(++maxId);

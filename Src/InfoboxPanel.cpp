@@ -61,10 +61,15 @@ namespace PolygonReducer {
 			BNZeroMemory(&element, sizeof(API_Element));
 			//BNZeroMemory(&mask, sizeof(API_Element));
 
+			//ACAPI_ELEMENT_MASK_CLEAR(mask);
+			//ACAPI_ELEMENT_MASK_SET(mask, API_PolyLineType, poly);
+			//element.polyLine.poly.nSubPolys = 1;
+
 			element.header.guid = guids[0];
 			err = ACAPI_Element_Get(&element);
 
 			err =  ACAPI_Element_Change(&element, &mask, &mem, APIMemoMask_Polygon, true);
+			//err =  ACAPI_Element_ChangeMemo(guids[0], APIMemoMask_Polygon, &mem);
 
 			return err;
 		});
