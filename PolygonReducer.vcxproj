@@ -118,13 +118,13 @@
     <ClInclude Include="Src\GDLDialog.hpp" />
     <ClInclude Include="Src\PolygonUserData.hpp" />
     <ClInclude Include="Src\SettingsDialog.hpp" />
-    <ClInclude Include="Src\S_Polygon.hpp" />
+    <ClInclude Include="Src\Polygon.hpp" />
     <ClInclude Include="Src\InfoboxPanel.hpp" />
     <ClInclude Include="Src\PolygonReducer.hpp" />
     <ClInclude Include="Src\PolygonReducer_Resource.h" />
     <ClInclude Include="Src\APIEnvir.h" />
     <ClInclude Include="Src\APICommon.h" />
-    <ClInclude Include="Src\S_SubPoly.hpp" />
+    <ClInclude Include="Src\SubPolygon.hpp" />
     <ClInclude Include="Src\Segment.hpp" />
     <ClInclude Include="Src\Utils.hpp" />
   </ItemGroup>
@@ -137,9 +137,9 @@
     <ClCompile Include="Src\PolygonUserData.cpp" />
     <ClCompile Include="Src\SettingsDialog.cpp" />
     <ClCompile Include="Src\Utils.cpp" />
-    <ClCompile Include="Src\S_Polygon.cpp" />
+    <ClCompile Include="Src\Polygon.cpp" />
     <ClCompile Include="Src\PolygonReducer.cpp" />
-    <ClCompile Include="Src\S_SubPoly.cpp" />
+    <ClCompile Include="Src\SubPolygon.cpp" />
     <ClCompile Include="Src\Segment.cpp" />
   </ItemGroup>
   <ItemGroup>

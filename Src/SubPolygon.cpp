@@ -1,11 +1,11 @@
-#include "S_SubPoly.hpp"
+#include "SubPolygon.hpp"
 #include "PolygonReducer.template.hpp"
 
 using namespace Geometry;
 
-namespace PolygonReducer {
-    S_SubPoly::S_SubPoly(GS::Array<API_Coord>* coords, GS::Array<API_PolyArc>* pars, GS::Array<UInt32>* vertexIDs) {
-        m_segments = *new GS::Array<S::Segment*>;
+namespace S {
+    SubPolygon::SubPolygon(Array<API_Coord>* coords, Array<API_PolyArc>* pars, Array<UInt32>* vertexIDs) {
+        m_segments = *new Array<Segment*>;
 
         Sector midPerpPrev;
         Coord centerPrev(0, 0);
@@ -15,7 +15,7 @@ namespace PolygonReducer {
 
         for(UInt16 i = 1; i < coords->GetSize(); i++)
         {
-            S::Segment s((*coords)[i-1], (*coords)[i]);
+            Segment s((*coords)[i-1], (*coords)[i]);
 
             Coord* _halfPoint = new Coord((s.GetStart()->GetX() + s.GetEnd()->GetX())/2, (s.GetStart()->GetY() + s.GetEnd()->GetY()) / 2);
             Coord* _start = new Coord(s.GetStart()->GetX(), s.GetStart()->GetY());
@@ -42,5 +42,5 @@ namespace PolygonReducer {
 
     using namespace Geometry;
 
-    S_SubPoly::~S_SubPoly() {}
+    SubPolygon::~SubPolygon() {}
 }

@@ -7,7 +7,7 @@
 #include "IAPIToolUIData.hpp"
 #include "APIToolUIPanel.hpp"
 #include "PolygonReducer.hpp"
-#include "S_Polygon.hpp"
+#include "Polygon.hpp"
 
 namespace PolygonReducer {
 
@@ -31,12 +31,12 @@ namespace PolygonReducer {
 		DG::Button				GDLButton;
 		DG::Button				SettingsButton;
 		TBUI::IAPIToolUIData*	uiData;
-		S_Polygon*				m_currentPolygon;
+		S::Polygon*				m_currentPolygon;
 
 	public:
 		PolygonReducerInfoboxPage(const DG::TabControl& tabControl, TBUI::IAPIToolUIData* puiData);
 		~PolygonReducerInfoboxPage();
-		void SetCurrentPolygon(S_Polygon* currentPolygon);
+		void SetCurrentPolygon(S::Polygon* currentPolygon);
 		int GetPointNumber();
 		GSErrCode SetPointNumber(int/* p_val, int p_max*/);
 	};

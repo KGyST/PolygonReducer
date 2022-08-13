@@ -26,8 +26,7 @@
 #include "APICommon.h"
 
 #include "Utils.hpp"
-#include "S_Polygon.hpp"
-#include "S_Polygon.hpp"
+#include "Polygon.hpp"
 
 #include "PolygonReducer_Resource.h"
 #include "InfoboxPanel.hpp"

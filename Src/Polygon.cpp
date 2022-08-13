@@ -1,22 +1,22 @@
 #include "Algorithms.hpp"
 //#include "GSRoot.hpp"
-#include "S_Polygon.hpp"
+#include "Polygon.hpp"
 #include "PolygonReducer.template.hpp"
 
 #include "Algorithms.hpp"
 
 
-namespace PolygonReducer {
-    S_Polygon::S_Polygon(const API_ElementMemo* p_memo)
+namespace S {
+    Polygon::Polygon(const API_ElementMemo* p_memo)
         : m_subpolys()
         , m_segments()
     {
-        S::Segment _segment;
+        Segment _segment;
 
-        S::Array<Int32> _pends(p_memo->pends);
-        S::Array<API_Coord> _coords(p_memo->coords);
-        S::Array<API_PolyArc> _parcs(p_memo->parcs);
-        S::Array<UInt32> _vertexIDs(p_memo->vertexIDs);
+        Array<Int32> _pends(p_memo->pends);
+        Array<API_Coord> _coords(p_memo->coords);
+        Array<API_PolyArc> _parcs(p_memo->parcs);
+        Array<UInt32> _vertexIDs(p_memo->vertexIDs);
         GS::HashTable<UInt32, double> _archTable;
 
         //for (auto _parc : _parcs)
@@ -35,15 +35,15 @@ namespace PolygonReducer {
 
         for (UInt32 i = 1; i < _pends.GetSize(); i++)
         {
-            S_SubPoly sp;
-            S::Segment* _sPrev=nullptr;
-            S::Segment* _segment = nullptr;
+            SubPolygon sp;
+            Segment* _sPrev=nullptr;
+            Segment* _segment = nullptr;
 
             for (UInt32 j = (UInt32)_pends[i - 1] + 1; j < (UInt32)_pends[i]; j++)
             {
                 API_Coord c1(_coords[j]);
                 API_Coord c2(_coords[j + 1]);
-                _segment = new S::Segment(_idx++, _vertexIDs[j], _vertexIDs[j + 1], c1, c2);
+                _segment = new Segment(_idx++, _vertexIDs[j], _vertexIDs[j + 1], c1, c2);
                 if (_archTable.ContainsKey(j))
                 {
                     _segment->SetArc(_archTable[j]);
@@ -86,20 +86,20 @@ namespace PolygonReducer {
     }
 
 
-    S_Polygon::~S_Polygon() {
+    Polygon::~Polygon() {
         for each (auto seg in m_segments)
             delete seg;
     }
 
 
-    std::string S_Polygon::getGDLcode() {
+    std::string Polygon::getGDLcode() {
         using namespace std;
 
         string result = "";
 
         for (UInt16 i = 0; i < m_segments.GetSize(); i++)
         {
-            S::Segment* _s = m_segments[i];
+            Segment* _s = m_segments[i];
             result += _s->ToString();
         }
 
@@ -107,14 +107,14 @@ namespace PolygonReducer {
     }
 
 
-    API_ElementMemo S_Polygon::getMemo()
+    API_ElementMemo Polygon::getMemo()
     {
-        S::Array<API_Coord> _coords;
-        S::Array<API_PolyArc> _parcs;
-        S::Array<Int32> _pends;
-        S::Array<UInt32> _vertIDs;
+        Array<API_Coord> _coords;
+        Array<API_PolyArc> _parcs;
+        Array<Int32> _pends;
+        Array<UInt32> _vertIDs;
 
-        API_Coord* _ac = new API_Coord(S::Coord(m_isPolygon ? 0.00 : -1.00, 0.00).ToAPICoord());    //1st coord special
+        API_Coord* _ac = new API_Coord(Coord(m_isPolygon ? 0.00 : -1.00, 0.00).ToAPICoord());    //1st coord special
         _coords.Push(*_ac);
         delete _ac;
 
@@ -124,7 +124,7 @@ namespace PolygonReducer {
 
         for (UInt32 i = 0; i < m_subpolys.GetSize(); i++)
         {
-            S_SubPoly sp = m_subpolys[i];
+            SubPolygon sp = m_subpolys[i];
             _coords.Push(sp.m_segments[0]->GetStart()->ToAPICoord());
             _vertIDs.Push(sp.m_segments[0]->GetStartIdx());
 
@@ -161,15 +161,15 @@ namespace PolygonReducer {
     }
 
 
-    void S_Polygon::removeShortestEdge()
+    void Polygon::removeShortestEdge()
     {
-        S::Array <S::Segment*> newSegments(m_segments);
+        Array <Segment*> newSegments(m_segments);
 
-        GS::Sort(m_segments.Begin(), m_segments.End(), [](S::Segment* s1, S::Segment* s2) -> bool {return s1->GetLength() < s2->GetLength(); });
+        GS::Sort(m_segments.Begin(), m_segments.End(), [](Segment* s1, Segment* s2) -> bool {return s1->GetLength() < s2->GetLength(); });
 
-        S::Segment* shortestSegment = m_segments[0];
-        S::Segment* _prevSeg = shortestSegment->GetPrev();
-        S::Segment* _nextSeg = shortestSegment->GetNext();
+        Segment* shortestSegment = m_segments[0];
+        Segment* _prevSeg = shortestSegment->GetPrev();
+        Segment* _nextSeg = shortestSegment->GetNext();
 
         //S::Segment* segmentToDelete = m_segments[0];
 
@@ -180,12 +180,12 @@ namespace PolygonReducer {
         _prevSeg->SetEndIdx(shortestSegment->GetEndIdx() );
         _nextSeg->SetStartIdx(shortestSegment->GetEndIdx());
 
-        GS::Sort(newSegments.Begin(), newSegments.End(), [](S::Segment* s1, S::Segment* s2) -> bool {return s1->GetIdx() < s2->GetIdx(); });
+        GS::Sort(newSegments.Begin(), newSegments.End(), [](Segment* s1, Segment* s2) -> bool {return s1->GetIdx() < s2->GetIdx(); });
 
         //m_segments = newSegments;
         m_segments.DeleteFirst(shortestSegment);
 
-        GS::Sort(m_segments.Begin(), m_segments.End(), [](S::Segment* s1, S::Segment* s2) -> bool {return s1->GetIdx() < s2->GetIdx(); });
+        GS::Sort(m_segments.Begin(), m_segments.End(), [](Segment* s1, Segment* s2) -> bool {return s1->GetIdx() < s2->GetIdx(); });
 
         for (UINT i = 0; i< m_subpolys.GetSize(); i++ )
         {
@@ -194,7 +194,7 @@ namespace PolygonReducer {
     }
 
 
-    void S_Polygon::intersectSegments(S::Segment * io_prev, S::Segment * io_next)
+    void Polygon::intersectSegments(Segment * io_prev, Segment * io_next)
     {
         using namespace Geometry;
 
@@ -214,7 +214,7 @@ namespace PolygonReducer {
     } 
 
 
-    void S_Polygon::setPointCount(const unsigned int i_count)
+    void Polygon::setPointCount(const unsigned int i_count)
     {
         for (UINT i = getPointCount(); i > i_count; i--)
         {
@@ -223,20 +223,20 @@ namespace PolygonReducer {
     }
 
 
-    USize S_Polygon::getPointCount()
+    USize Polygon::getPointCount()
     {
         return m_segments.GetSize();
     }
 
 
-    void S_Polygon::MoveAllPoints()
+    void Polygon::MoveAllPoints()
     {
         for (UINT i = 0; i < m_segments.GetSize(); i++)
         {
-            S::Coord _s(*m_segments[i]->GetStart());
-            m_segments[i]->SetStart(S::Coord(_s.GetX() + 1.00, _s.GetY() + 1.00));
-            S::Coord _e(*m_segments[i]->GetEnd());
-            m_segments[i]->SetEnd(S::Coord(_e.GetX() + 1.00, _e.GetY() + 1.00));
+            Coord _s(*m_segments[i]->GetStart());
+            m_segments[i]->SetStart(Coord(_s.GetX() + 1.00, _s.GetY() + 1.00));
+            Coord _e(*m_segments[i]->GetEnd());
+            m_segments[i]->SetEnd(Coord(_e.GetX() + 1.00, _e.GetY() + 1.00));
         }
     }
 }
