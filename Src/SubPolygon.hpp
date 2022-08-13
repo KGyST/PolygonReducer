@@ -9,17 +9,17 @@
 #include "Point2DData.h"
 #include "Sector2DData.h"
 
-namespace PolygonReducer {
-    class S_SubPoly
+namespace S {
+    class SubPolygon
     {
     private:
 
     public:
-        S::Array <S::Segment*> m_segments;
+        S::Array <Segment*> m_segments;
 
-        S_SubPoly(GS::Array<API_Coord>* coords, GS::Array<API_PolyArc>* pars, GS::Array<UInt32>* vertexIDs);
-        S_SubPoly() {};
-        ~S_SubPoly();
+        SubPolygon(Array<API_Coord>* coords, Array<API_PolyArc>* pars, Array<UInt32>* vertexIDs);
+        SubPolygon() {};
+        ~SubPolygon();
     };
 }
 #endif // !S_POLYLINE_HPP

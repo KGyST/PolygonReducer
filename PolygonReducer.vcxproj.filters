@@ -52,9 +52,6 @@
     <ClInclude Include="Src\PolygonReducer_Resource.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="Src\S_Polygon.hpp">
-      <Filter>Source Files\Geometry</Filter>
-    </ClInclude>
     <ClInclude Include="Src\InfoboxPanel.hpp">
       <Filter>Source Files\Gui</Filter>
     </ClInclude>
@@ -76,11 +73,14 @@
     <ClInclude Include="Src\PolygonUserData.hpp">
       <Filter>Source Files\Data</Filter>
     </ClInclude>
-    <ClInclude Include="Src\S_SubPoly.hpp">
-      <Filter>Source Files\Geometry</Filter>
-    </ClInclude>
     <ClInclude Include="Src\Utils.hpp">
       <Filter>Source Files\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Polygon.hpp">
+      <Filter>Source Files\Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\SubPolygon.hpp">
+      <Filter>Source Files\Geometry</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -89,9 +89,6 @@
     </ClCompile>
     <ClCompile Include="Src\PolygonReducer.cpp">
       <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Src\S_Polygon.cpp">
-      <Filter>Source Files\Geometry</Filter>
     </ClCompile>
     <ClCompile Include="Src\InfoboxPanel.cpp">
       <Filter>Source Files\Gui</Filter>
@@ -114,11 +111,14 @@
     <ClCompile Include="Src\PolygonUserData.cpp">
       <Filter>Source Files\Data</Filter>
     </ClCompile>
-    <ClCompile Include="Src\S_SubPoly.cpp">
-      <Filter>Source Files\Geometry</Filter>
-    </ClCompile>
     <ClCompile Include="Src\Utils.cpp">
       <Filter>Source Files\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Polygon.cpp">
+      <Filter>Source Files\Geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\SubPolygon.cpp">
+      <Filter>Source Files\Geometry</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -28,7 +28,7 @@ namespace PolygonReducer {
 		uiData = NULL;
 	}
 
-	void PolygonReducerInfoboxPage::SetCurrentPolygon(S_Polygon* currentPolygon)
+	void PolygonReducerInfoboxPage::SetCurrentPolygon(S::Polygon* currentPolygon)
 	{
 		m_currentPolygon = currentPolygon;
 	}
@@ -50,7 +50,7 @@ namespace PolygonReducer {
 
 		err = ACAPI_CallUndoableCommand("Optimize polygons",
 		[&]() -> GSErrCode {
-			S_Polygon pgon(&memos[0]);
+			S::Polygon pgon(&memos[0]);
 
 			pgon.MoveAllPoints();
 			//pgon.setPointCount(i_iPoint);
@@ -135,7 +135,7 @@ namespace PolygonReducer {
 
 		for (unsigned int i = 0; i < memos.GetSize(); i++)
 		{
-			S_Polygon pgon(&memos[i]);
+			S::Polygon pgon(&memos[i]);
 
 			iPoints += (UINT16)pgon.getPointCount();
 		}
