@@ -1,4 +1,5 @@
 #pragma once
+#pragma once
 #ifndef S_POLYGON_HPP
 #define S_POLYGON_HPP
 
@@ -9,6 +10,7 @@
 #include "PolygonReducer.hpp"
 #include "Array.hpp"
 #include <string>
+
 
 namespace S {
     class Polygon

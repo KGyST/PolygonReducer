@@ -163,13 +163,13 @@ namespace S {
 
     void Polygon::removeShortestEdge()
     {
-        S::Array <S::Segment*> newSegments(m_segments);
+        Array <Segment*> newSegments(m_segments);
 
-        GS::Sort(m_segments.Begin(), m_segments.End(), [](S::Segment* s1, S::Segment* s2) -> bool {return s1->GetLength() < s2->GetLength(); });
+        GS::Sort(m_segments.Begin(), m_segments.End(), [](Segment* s1, Segment* s2) -> bool {return s1->GetLength() < s2->GetLength(); });
 
-        S::Segment* shortestSegment = m_segments[0];
-        S::Segment* _prevSeg = shortestSegment->GetPrev();
-        S::Segment* _nextSeg = shortestSegment->GetNext();
+        Segment* shortestSegment = m_segments[0];
+        Segment* _prevSeg = shortestSegment->GetPrev();
+        Segment* _nextSeg = shortestSegment->GetNext();
 
         //S::Segment* segmentToDelete = m_segments[0];
 
@@ -180,12 +180,12 @@ namespace S {
         _prevSeg->SetEndIdx(shortestSegment->GetEndIdx() );
         _nextSeg->SetStartIdx(shortestSegment->GetEndIdx());
 
-        GS::Sort(newSegments.Begin(), newSegments.End(), [](S::Segment* s1, S::Segment* s2) -> bool {return s1->GetIdx() < s2->GetIdx(); });
+        GS::Sort(newSegments.Begin(), newSegments.End(), [](Segment* s1, Segment* s2) -> bool {return s1->GetIdx() < s2->GetIdx(); });
 
         //m_segments = newSegments;
         m_segments.DeleteFirst(shortestSegment);
 
-        GS::Sort(m_segments.Begin(), m_segments.End(), [](S::Segment* s1, S::Segment* s2) -> bool {return s1->GetIdx() < s2->GetIdx(); });
+        GS::Sort(m_segments.Begin(), m_segments.End(), [](Segment* s1, Segment* s2) -> bool {return s1->GetIdx() < s2->GetIdx(); });
 
         for (UINT i = 0; i< m_subpolys.GetSize(); i++ )
         {

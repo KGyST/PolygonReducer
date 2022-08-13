@@ -7,6 +7,7 @@
 #include "ACAPinc.h"					// also includes APIdefs.h
 #include "Point2D.hpp"
 
+
 namespace S {
 	class Coord : public ::Coord
 	{

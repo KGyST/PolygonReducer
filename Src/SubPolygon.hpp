@@ -15,7 +15,7 @@ namespace S {
     private:
 
     public:
-        S::Array <Segment*> m_segments;
+        Array <Segment*> m_segments;
 
         SubPolygon(Array<API_Coord>* coords, Array<API_PolyArc>* pars, Array<UInt32>* vertexIDs);
         SubPolygon() {};
