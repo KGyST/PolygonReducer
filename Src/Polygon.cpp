@@ -11,7 +11,7 @@ namespace S {
         : m_subpolys()
         , m_segments()
     {
-        Segment _segment;
+        //Segment _segment;
 
         Array<Int32> _pends(p_memo->pends);
         Array<API_Coord> _coords(p_memo->coords);
@@ -35,7 +35,7 @@ namespace S {
 
         for (UInt32 i = 1; i < _pends.GetSize(); i++)
         {
-            SubPolygon sp;
+            SubPolygon* _sp = new SubPolygon;
             Segment* _sPrev=nullptr;
             Segment* _segment = nullptr;
 
@@ -56,7 +56,7 @@ namespace S {
                 }
 
                 m_segments.Push(_segment);
-                sp.m_segments.Push(_segment);
+                _sp->m_segments.Push(_segment);
 
                 _sPrev = _segment;
             }
@@ -81,14 +81,17 @@ namespace S {
             //    l = l + 1;
             //}
 
-            m_subpolys.Push(sp);
+            m_subpolys.Push(_sp);
         }
     }
 
 
     Polygon::~Polygon() {
-        for each (auto seg in m_segments)
-            delete seg;
+        for each (Segment* _seg in m_segments)
+            delete _seg;
+
+        for each (SubPolygon * _sp in m_subpolys)
+            delete _sp;
     }
 
 
@@ -97,9 +100,8 @@ namespace S {
 
         string result = "";
 
-        for (UInt16 i = 0; i < m_segments.GetSize(); i++)
+        for each (Segment* _s in m_segments)
         {
-            Segment* _s = m_segments[i];
             result += _s->ToString();
         }
 
@@ -118,36 +120,49 @@ namespace S {
         _coords.Push(*_ac);
         delete _ac;
 
-        UInt32 maxId = 0;
+        UInt32 maxId = 0/*, id = 0*/;
         _pends.Push(0);
         _vertIDs.Push(0);
 
-        for (UInt32 i = 0; i < m_subpolys.GetSize(); i++)
+        for each (SubPolygon* sp in m_subpolys)
         {
-            SubPolygon sp = m_subpolys[i];
-            _coords.Push(sp.m_segments[0]->GetStart()->ToAPICoord());
-            _vertIDs.Push(sp.m_segments[0]->GetStartIdx());
-
-            for (UInt32 j = 0; j < sp.m_segments.GetSize(); j++)
+            _coords.Push(sp->m_segments[0]->GetStart()->ToAPICoord());
+            UInt32 iFirstSegmentIdx = ++maxId;
+            //UInt32 iFirstSegmentIdx = sp->m_segments[0]->GetStartIdx();
+            _vertIDs.Push(iFirstSegmentIdx);
+            //maxId = sp->m_segments[0]->GetStartIdx() > maxId ? sp->m_segments[0]->GetStartIdx() : maxId;
+            
+            for each (Segment* _segment in sp->m_segments)
             {
-                _coords.Push(sp.m_segments[j]->GetEnd()->ToAPICoord());
-                _vertIDs.Push(++maxId);
+                //++id;
 
-                if  (   sp.m_segments[j]->GetAng() < -EPS
-                    ||  sp.m_segments[j]->GetAng() >  EPS)
+                if  (   _segment->GetAng() < -EPS
+                    ||  _segment->GetAng() >  EPS)
                 {
                     API_PolyArc _arc;
-                    _arc.arcAngle = sp.m_segments[j]->GetAng();
+                    _arc.arcAngle = _segment->GetAng();
                     _arc.begIndex = maxId;
+                    //_arc.begIndex = _segment->GetStartIdx();
                     _arc.endIndex = maxId + 1;
+                    //_arc.endIndex = _segment->GetEndIdx();
                     _parcs.Push(_arc);
                 }
+
+                _vertIDs.Push(maxId++);
+                //_vertIDs.Push(_segment->GetEndIdx() );
+                //maxId = _segment->GetEndIdx() > maxId ? _segment->GetEndIdx() : maxId;
+                _coords.Push(_segment->GetEnd()->ToAPICoord());
             }
 
-            _pends.Push(++maxId);
+            _pends.Push(maxId);
+            //_pends.Push(id+1);
+
+            //_vertIDs.Push(iFirstSegmentIdx);
+            //_coords.DeleteLast();
+            //_coords.Push(_coords[iFirstSegmentIdx]);
         }
 
-        _vertIDs[0] = (UInt32)maxId;
+        _vertIDs[0] = maxId;
 
         API_ElementMemo resultMemo;
         BNZeroMemory(&resultMemo, sizeof(API_ElementMemo));
@@ -171,10 +186,6 @@ namespace S {
         Segment* _prevSeg = shortestSegment->GetPrev();
         Segment* _nextSeg = shortestSegment->GetNext();
 
-        //S::Segment* segmentToDelete = m_segments[0];
-
-        //newSegments.Delete(0);
-
         intersectSegments( _prevSeg, _nextSeg);
 
         _prevSeg->SetEndIdx(shortestSegment->GetEndIdx() );
@@ -182,15 +193,7 @@ namespace S {
 
         GS::Sort(newSegments.Begin(), newSegments.End(), [](Segment* s1, Segment* s2) -> bool {return s1->GetIdx() < s2->GetIdx(); });
 
-        //m_segments = newSegments;
-        m_segments.DeleteFirst(shortestSegment);
-
-        GS::Sort(m_segments.Begin(), m_segments.End(), [](Segment* s1, Segment* s2) -> bool {return s1->GetIdx() < s2->GetIdx(); });
-
-        for (UINT i = 0; i< m_subpolys.GetSize(); i++ )
-        {
-            m_subpolys[i].m_segments.DeleteFirst(shortestSegment);
-        }
+        removeSegment(shortestSegment);
     }
 
 
@@ -229,14 +232,35 @@ namespace S {
     }
 
 
+    void Polygon::removeSegment(Segment* i_segment)
+    {
+        m_segments.DeleteAll(i_segment);
+        for each (SubPolygon* _subPoly in m_subpolys)
+        {
+            _subPoly->RemoveSegment(i_segment);
+        }
+
+        delete i_segment;
+    }
+
+
+    // Only for testning
     void Polygon::MoveAllPoints()
     {
-        for (UINT i = 0; i < m_segments.GetSize(); i++)
+        for each (SubPolygon* _sp in m_subpolys)
         {
-            Coord _s(*m_segments[i]->GetStart());
-            m_segments[i]->SetStart(Coord(_s.GetX() + 1.00, _s.GetY() + 1.00));
-            Coord _e(*m_segments[i]->GetEnd());
-            m_segments[i]->SetEnd(Coord(_e.GetX() + 1.00, _e.GetY() + 1.00));
+            for each (Segment * _seg in _sp->m_segments)
+            {
+                Coord _s(*_seg->GetStart());
+                _seg->SetStart(Coord(_s.GetX() + 1.00, _s.GetY() + 1.00));
+                Coord _e(*_seg->GetEnd());
+                _seg->SetEnd(Coord(_e.GetX() + 1.00, _e.GetY() + 1.00));
+            }
         }
     }
+
+    // --------------- TODO ---------------
+
+    // Writing in relevant memo as original user data if not present already
+    void SetUserdata(){}
 }

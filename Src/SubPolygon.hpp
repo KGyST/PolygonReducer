@@ -20,6 +20,8 @@ namespace S {
         SubPolygon(Array<API_Coord>* coords, Array<API_PolyArc>* pars, Array<UInt32>* vertexIDs);
         SubPolygon() {};
         ~SubPolygon();
+
+        inline void RemoveSegment(Segment* i_segment) { m_segments.DeleteAll(i_segment); }
     };
 }
 #endif // !S_POLYLINE_HPP

@@ -25,9 +25,9 @@ namespace S {
 	bool Coord::operator==(const Coord anotherCoord) const
 	{
 		return	m_x - m_eps < anotherCoord.x
-			&& m_x + m_eps > anotherCoord.x
-			&& m_y - m_eps < anotherCoord.y
-			&& m_y + m_eps > anotherCoord.y;
+			&&	m_x + m_eps > anotherCoord.x
+			&&	m_y - m_eps < anotherCoord.y
+			&&	m_y + m_eps > anotherCoord.y;
 	}
 
 

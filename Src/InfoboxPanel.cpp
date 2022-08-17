@@ -52,24 +52,28 @@ namespace PolygonReducer {
 		[&]() -> GSErrCode {
 			S::Polygon pgon(&memos[0]);
 
-			pgon.MoveAllPoints();
-			//pgon.setPointCount(i_iPoint);
+			//pgon.MoveAllPoints();
+			pgon.setPointCount(i_iPoint);
 
 			API_ElementMemo mem = pgon.getMemo();
 
 			API_Element element, mask;
 			BNZeroMemory(&element, sizeof(API_Element));
-			//BNZeroMemory(&mask, sizeof(API_Element));
-
-			//ACAPI_ELEMENT_MASK_CLEAR(mask);
-			//ACAPI_ELEMENT_MASK_SET(mask, API_PolyLineType, poly);
-			//element.polyLine.poly.nSubPolys = 1;
-
+			
 			element.header.guid = guids[0];
 			err = ACAPI_Element_Get(&element);
 
+			API_Polygon poly ;
+			poly.nCoords = BMGetHandleSize((GSHandle)mem.coords) / sizeof(API_Coord) - 1;
+			poly.nSubPolys = BMGetHandleSize((GSHandle)mem.pends) / sizeof(Int32) - 1;
+			poly.nArcs = BMGetHandleSize((GSHandle)mem.parcs) / sizeof(API_PolyArc);
+			
+			if (pgon.m_isPolygon)
+				element.hatch.poly = poly;
+			else
+				element.polyLine.poly = poly;
+
 			err =  ACAPI_Element_Change(&element, &mask, &mem, APIMemoMask_Polygon, true);
-			//err =  ACAPI_Element_ChangeMemo(guids[0], APIMemoMask_Polygon, &mem);
 
 			return err;
 		});

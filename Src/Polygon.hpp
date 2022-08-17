@@ -21,8 +21,9 @@ namespace S {
     private:
         UINT m_pointCount;
         void removeShortestEdge();
+        void removeSegment(Segment* i_segment);
 
-        //void SetUserdata();
+        void SetUserdata();                               //TODO
 
     public:
         Polygon(const API_ElementMemo* p_memo);
@@ -41,8 +42,8 @@ namespace S {
         void intersectSegments( Segment* io_prev,  Segment* io_next);  // Intersect two segments
 
 
-        Array <SubPolygon> m_subpolys;           // Subpolygons, like contour or holes
-        Array <Segment*> m_segments;          // Segments: arcs or edges
+        Array <SubPolygon*> m_subpolys;           // Subpolygons, like contour or holes
+        Array <Segment*> m_segments;             // Segments: arcs or edges
     };
 }
 #endif // !S_POLYGON_HPP
