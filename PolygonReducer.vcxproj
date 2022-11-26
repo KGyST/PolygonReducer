@@ -1,10 +1,10 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup Label="UserMacros">
-    <APIDevKitRoot>D:\Git\archicad-buildsupport\AC19\API</APIDevKitRoot>
+    <APIDevKitRoot>D:\Git\support\archicad-buildsupport\AC19\API</APIDevKitRoot>
     <APIDevKitSupport>$(APIDevKitRoot)\Support</APIDevKitSupport>
     <APIDevKitModules>$(APIDevKitSupport)\Modules</APIDevKitModules>
-    <BoostLib>D:\Letöltések\boost_1_78_0</BoostLib>
+    <BoostLib>D:\Git\support\boost_1_78_0</BoostLib>
   </PropertyGroup>
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|x64">
