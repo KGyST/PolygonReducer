@@ -25,13 +25,15 @@
 #include "basicgeometry.h"
 #include "APICommon.h"
 
-#include "Utils.hpp"
+#include "S_Utils.hpp"
 #include "Polygon.hpp"
 
 #include "PolygonReducer_Resource.h"
 #include "InfoboxPanel.hpp"
 #include "PolygonReducer.template.hpp"			//templated functions' definitions
 //#include "PolygonReducer.hpp"
+
+#include "../BoostTestTest.h"
 
 using namespace PolygonReducer;
 // MUST NOT BE IN NAMESPACE

@@ -1,10 +1,10 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup Label="UserMacros">
-    <APIDevKitRoot>D:\Git\archicad-buildsupport\AC19\API</APIDevKitRoot>
+    <APIDevKitRoot>D:\Git\support\archicad-buildsupport\AC19\API</APIDevKitRoot>
     <APIDevKitSupport>$(APIDevKitRoot)\Support</APIDevKitSupport>
     <APIDevKitModules>$(APIDevKitSupport)\Modules</APIDevKitModules>
-    <BoostLib>D:\Letöltések\boost_1_78_0</BoostLib>
+    <BoostLib>D:\Git\support\boost_1_78_0</BoostLib>
   </PropertyGroup>
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|x64">
@@ -79,7 +79,7 @@
       <ImportLibrary>
       </ImportLibrary>
       <LinkDLL>true</LinkDLL>
-      <IgnoreAllDefaultLibraries>true</IgnoreAllDefaultLibraries>
+      <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
       <AdditionalOptions>/export:GetExportedFuncAddrs,%401 /export:SetImportedFuncAddrs,%402 %(AdditionalOptions)</AdditionalOptions>
     </Link>
   </ItemDefinitionGroup>
@@ -91,12 +91,13 @@
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <BrowseInformation>false</BrowseInformation>
-      <DisableSpecificWarnings>4100;4189;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <DisableSpecificWarnings>4100;4101;4189;%(DisableSpecificWarnings)</DisableSpecificWarnings>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>$(OutDir)$(ProjectName).pdb</ProgramDatabaseFile>
       <AdditionalDependencies>msvcrtd.lib;msvcprtd.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <IgnoreSpecificDefaultLibraries Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">stlport_vc7</IgnoreSpecificDefaultLibraries>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)'=='Release'">
@@ -113,6 +114,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="BoostTestTest.h" />
     <ClInclude Include="Src\Array.hpp" />
     <ClInclude Include="Src\Coord.hpp" />
     <ClInclude Include="Src\GDLDialog.hpp" />
@@ -126,7 +128,7 @@
     <ClInclude Include="Src\APICommon.h" />
     <ClInclude Include="Src\SubPolygon.hpp" />
     <ClInclude Include="Src\Segment.hpp" />
-    <ClInclude Include="Src\Utils.hpp" />
+    <ClInclude Include="Src\S_Utils.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Src\APICommon.c" />
@@ -136,7 +138,7 @@
     <ClCompile Include="Src\InfoboxPanel.cpp" />
     <ClCompile Include="Src\PolygonUserData.cpp" />
     <ClCompile Include="Src\SettingsDialog.cpp" />
-    <ClCompile Include="Src\Utils.cpp" />
+    <ClCompile Include="Src\S_Utils.cpp" />
     <ClCompile Include="Src\Polygon.cpp" />
     <ClCompile Include="Src\PolygonReducer.cpp" />
     <ClCompile Include="Src\SubPolygon.cpp" />

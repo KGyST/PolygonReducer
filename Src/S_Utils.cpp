@@ -1,4 +1,4 @@
-#include "Utils.hpp"
+#include "S_Utils.hpp"
 
 void TrackPoly(const API_Polygon* poly, const API_ElementMemo* memo)
 {
@@ -48,4 +48,9 @@ API_ElementMemo ConvertToMemos(API_Neig p_neig)
 API_Coord** ConvertToCoords(API_ElementMemo p_memo)
 {
     return p_memo.coords;
+}
+
+__declspec(dllexport) bool boolTest()
+{
+    return true;
 }

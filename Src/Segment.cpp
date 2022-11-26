@@ -114,7 +114,12 @@ namespace S {
             return abs(m_radius * m_angle);
     }
 
-
+    const ::Sector Segment::ToSector() const {
+        Sector _s ;
+        _s.c1 = m_start.ToCoord();
+        _s.c2 = m_end.ToCoord();
+        return _s;
+    };
 
     //bool Segment::operator()(Segment *s1, Segment *s2) { return s1->GetLength() < s2->GetLength() ; }
 

@@ -7,22 +7,22 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "PolygonReducer", "PolygonRe
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{53E48C56-637D-4AC5-B9E9-5F3DFE06963E}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Test", "..\BoostTest\Tests\Test.vcxproj", "{6DE1FEBE-1865-4A84-830D-D3A5DDBEAC2E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
-		Debug|x86 = Debug|x86
 		Release|x64 = Release|x64
-		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{2DAA4BB9-98C8-4099-9E81-977C5ACB7D38}.Debug|x64.ActiveCfg = Debug|x64
 		{2DAA4BB9-98C8-4099-9E81-977C5ACB7D38}.Debug|x64.Build.0 = Debug|x64
-		{2DAA4BB9-98C8-4099-9E81-977C5ACB7D38}.Debug|x86.ActiveCfg = Debug|Win32
-		{2DAA4BB9-98C8-4099-9E81-977C5ACB7D38}.Debug|x86.Build.0 = Debug|Win32
 		{2DAA4BB9-98C8-4099-9E81-977C5ACB7D38}.Release|x64.ActiveCfg = Release|x64
 		{2DAA4BB9-98C8-4099-9E81-977C5ACB7D38}.Release|x64.Build.0 = Release|x64
-		{2DAA4BB9-98C8-4099-9E81-977C5ACB7D38}.Release|x86.ActiveCfg = Release|Win32
-		{2DAA4BB9-98C8-4099-9E81-977C5ACB7D38}.Release|x86.Build.0 = Release|Win32
+		{6DE1FEBE-1865-4A84-830D-D3A5DDBEAC2E}.Debug|x64.ActiveCfg = Debug|x64
+		{6DE1FEBE-1865-4A84-830D-D3A5DDBEAC2E}.Debug|x64.Build.0 = Debug|x64
+		{6DE1FEBE-1865-4A84-830D-D3A5DDBEAC2E}.Release|x64.ActiveCfg = Release|x64
+		{6DE1FEBE-1865-4A84-830D-D3A5DDBEAC2E}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

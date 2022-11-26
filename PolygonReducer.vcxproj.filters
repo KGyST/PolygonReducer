@@ -73,14 +73,17 @@
     <ClInclude Include="Src\PolygonUserData.hpp">
       <Filter>Source Files\Data</Filter>
     </ClInclude>
-    <ClInclude Include="Src\Utils.hpp">
-      <Filter>Source Files\Utils</Filter>
-    </ClInclude>
     <ClInclude Include="Src\Polygon.hpp">
       <Filter>Source Files\Geometry</Filter>
     </ClInclude>
     <ClInclude Include="Src\SubPolygon.hpp">
       <Filter>Source Files\Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\S_Utils.hpp">
+      <Filter>Source Files\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="BoostTestTest.h">
+      <Filter>Source Files\Utils</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -111,14 +114,14 @@
     <ClCompile Include="Src\PolygonUserData.cpp">
       <Filter>Source Files\Data</Filter>
     </ClCompile>
-    <ClCompile Include="Src\Utils.cpp">
-      <Filter>Source Files\Utils</Filter>
-    </ClCompile>
     <ClCompile Include="Src\Polygon.cpp">
       <Filter>Source Files\Geometry</Filter>
     </ClCompile>
     <ClCompile Include="Src\SubPolygon.cpp">
       <Filter>Source Files\Geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\S_Utils.cpp">
+      <Filter>Source Files\Utils</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

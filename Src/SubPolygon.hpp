@@ -17,11 +17,14 @@ namespace S {
     public:
         Array <Segment*> m_segments;
 
-        SubPolygon(Array<API_Coord>* coords, Array<API_PolyArc>* pars, Array<UInt32>* vertexIDs);
+        SubPolygon(UInt32 iStart, UInt32 iEnd, Array<API_Coord>& coords, Array<API_PolyArc>& parcs, Array<UInt32>& vertexIDs, Array<Segment*>& o_segments);
         SubPolygon() {};
         ~SubPolygon();
 
         inline void RemoveSegment(Segment* i_segment) { m_segments.DeleteAll(i_segment); }
+        void CreateArcsFromPolys();
+        void CreatePolysFromArcs();
+
     };
 }
 #endif // !S_POLYLINE_HPP

@@ -4,13 +4,13 @@
 namespace S {
 	double S::Coord::m_eps = 0.01;
 
-	Coord::Coord(const ::Coord coord)
+	Coord::Coord(const ::Coord& coord)
 		:m_x(coord.x)
 		, m_y(coord.y)
 	{}
 
 
-	Coord::Coord(const API_Coord coord)
+	Coord::Coord(const API_Coord& coord)
 		: m_x(coord.x)
 		, m_y(coord.y)
 	{}
@@ -22,12 +22,12 @@ namespace S {
 	{}
 
 
-	bool Coord::operator==(const Coord anotherCoord) const
+	bool Coord::operator==(const Coord& otherCoord) const
 	{
-		return	m_x - m_eps < anotherCoord.x
-			&&	m_x + m_eps > anotherCoord.x
-			&&	m_y - m_eps < anotherCoord.y
-			&&	m_y + m_eps > anotherCoord.y;
+		return	m_x - m_eps < otherCoord.GetX() 
+			&&	m_x + m_eps > otherCoord.GetX()
+			&&	m_y - m_eps < otherCoord.GetY()
+			&&	m_y + m_eps > otherCoord.GetY();
 	}
 
 

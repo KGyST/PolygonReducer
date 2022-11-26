@@ -16,69 +16,56 @@ namespace S {
         Array<Int32> _pends(p_memo->pends);
         Array<API_Coord> _coords(p_memo->coords);
         Array<API_PolyArc> _parcs(p_memo->parcs);
-        Array<UInt32> _vertexIDs(p_memo->vertexIDs);
-        GS::HashTable<UInt32, double> _archTable;
+        Array<UInt32> _vertexIDs(p_memo->vertexIDs);        // Maybe not needed
+        GS::HashTable<UInt32, double> _arcTable;
 
         //for (auto _parc : _parcs)
         for each (API_PolyArc _parc in _parcs)
         {
-            _archTable.Add(_parc.begIndex, _parc.arcAngle);
+            _arcTable.Add(_parc.begIndex, _parc.arcAngle);
         }
 
         int _idx = 0;
 
         if  (   _coords[0].x - EPS < 0.00
             &&  _coords[0].x + EPS > 0.00)
-            m_isPolygon = true;
+            m_isPolygon = true;     // Hatch
         else
             m_isPolygon = false;    // Polyline
 
         for (UInt32 i = 1; i < _pends.GetSize(); i++)
         {
-            SubPolygon* _sp = new SubPolygon;
-            Segment* _sPrev=nullptr;
-            Segment* _segment = nullptr;
+            SubPolygon* _sp = new SubPolygon(_pends[i - 1], _pends[i], _coords, _parcs, _vertexIDs, m_segments) ;
 
-            for (UInt32 j = (UInt32)_pends[i - 1] + 1; j < (UInt32)_pends[i]; j++)
-            {
-                API_Coord c1(_coords[j]);
-                API_Coord c2(_coords[j + 1]);
-                _segment = new Segment(_idx++, _vertexIDs[j], _vertexIDs[j + 1], c1, c2);
-                if (_archTable.ContainsKey(j))
-                {
-                    _segment->SetArc(_archTable[j]);
-                }
+            //Segment* _sPrev=nullptr;
+            //Segment* _segment = nullptr;
 
-                if (_sPrev)
-                {
-                    _segment->SetPrev(_sPrev);
-                    _sPrev->SetNext(_segment);
-                }
-
-                m_segments.Push(_segment);
-                _sp->m_segments.Push(_segment);
-
-                _sPrev = _segment;
-            }
-
-            if (_segment)
-            {
-                m_segments[0]->SetPrev(_segment);
-                _segment->SetNext(m_segments[0]);
-            }
-
-            //auto _iLast = sp.m_segments.GetSize() - 1;
-            //sp.m_segments[0]->SetPrev(sp.m_segments[_iLast]);
-            //sp.m_segments[_iLast]->SetNext(sp.m_segments[0]);
-
-            //S_SubPoly sp2(sp);
-            //GS::Sort(sp2.m_segments.Begin(), sp2.m_segments.End(), [](S::Segment* s1, S::Segment* s2) -> bool {return s1->GetLength() > s2->GetLength(); });
-            //sp2.m_segments.Sort(0, sp2.m_segments.GetSize(), [](S::Segment* s1, S::Segment* s2) -> bool {return s1->GetLength() > s2->GetLength(); });
-
-            //for each (auto s in sp2.m_segments)
+            //for (UInt32 j = (UInt32)_pends[i - 1] + 1; j < (UInt32)_pends[i]; j++)
             //{
-            //    auto l = s->GetLength() ;
-            //    l = l + 1;
+            //    API_Coord c1(_coords[j]);
+            //    API_Coord c2(_coords[j + 1]);
+            //    _segment = new Segment(_idx++, _vertexIDs[j], _vertexIDs[j + 1], c1, c2);
+            //    if (_arcTable.ContainsKey(j))
+            //    {
+            //        _segment->SetArc(_arcTable[j]);
+            //    }
+
+            //    if (_sPrev)
+            //    {
+            //        _segment->SetPrev(_sPrev);
+            //        _sPrev->SetNext(_segment);
+            //    }
+
+            //    m_segments.Push(_segment);
+            //    _sp->m_segments.Push(_segment);
+
+            //    _sPrev = _segment;
+            //}
+
+            //if (_segment)
+            //{
+            //    m_segments[0]->SetPrev(_segment);
+            //    _segment->SetNext(m_segments[0]);
             //}
 
             m_subpolys.Push(_sp);
@@ -120,7 +107,7 @@ namespace S {
         _coords.Push(*_ac);
         delete _ac;
 
-        UInt32 maxId = 0/*, id = 0*/;
+        UInt32 maxId = 0;
         _pends.Push(0);
         _vertIDs.Push(0);
 
@@ -128,38 +115,25 @@ namespace S {
         {
             _coords.Push(sp->m_segments[0]->GetStart()->ToAPICoord());
             UInt32 iFirstSegmentIdx = ++maxId;
-            //UInt32 iFirstSegmentIdx = sp->m_segments[0]->GetStartIdx();
             _vertIDs.Push(iFirstSegmentIdx);
-            //maxId = sp->m_segments[0]->GetStartIdx() > maxId ? sp->m_segments[0]->GetStartIdx() : maxId;
             
             for each (Segment* _segment in sp->m_segments)
             {
-                //++id;
-
                 if  (   _segment->GetAng() < -EPS
                     ||  _segment->GetAng() >  EPS)
                 {
                     API_PolyArc _arc;
                     _arc.arcAngle = _segment->GetAng();
                     _arc.begIndex = maxId;
-                    //_arc.begIndex = _segment->GetStartIdx();
                     _arc.endIndex = maxId + 1;
-                    //_arc.endIndex = _segment->GetEndIdx();
                     _parcs.Push(_arc);
                 }
 
                 _vertIDs.Push(maxId++);
-                //_vertIDs.Push(_segment->GetEndIdx() );
-                //maxId = _segment->GetEndIdx() > maxId ? _segment->GetEndIdx() : maxId;
                 _coords.Push(_segment->GetEnd()->ToAPICoord());
             }
 
             _pends.Push(maxId);
-            //_pends.Push(id+1);
-
-            //_vertIDs.Push(iFirstSegmentIdx);
-            //_coords.DeleteLast();
-            //_coords.Push(_coords[iFirstSegmentIdx]);
         }
 
         _vertIDs[0] = maxId;

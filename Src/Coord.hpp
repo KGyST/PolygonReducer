@@ -19,8 +19,8 @@ namespace S {
 		Coord()
 			:	m_x(0.00)
 			,	m_y(0.00) {};
-		Coord(const ::Coord coord);
-		Coord(const API_Coord coord);
+		Coord(const ::Coord& coord);
+		Coord(const API_Coord& coord);
 		Coord(const double x, const double y);
 		Coord(const Coord& c)
 			:	m_x(c.GetX())
@@ -35,7 +35,8 @@ namespace S {
 		const double GetY(void) const { return m_y; };
 		const double GetEps(void) const { return m_eps; };
 
-		bool operator== (Coord anotherCoord) const;
+		bool operator== (const Coord& otherCoord) const;
+		inline bool operator!= (const Coord& otherCoord) const { return !(*this == otherCoord);};
 
 		::Coord ToCoord() const;
 		API_Coord ToAPICoord() const;

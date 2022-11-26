@@ -5,7 +5,7 @@
 #include "GDLDialog.hpp"
 #include "SettingsDialog.hpp"
 #include "PolygonReducer.template.hpp"
-#include "Utils.hpp"
+#include "S_Utils.hpp"
 #include "Array.hpp"
 
 namespace PolygonReducer {
@@ -52,7 +52,7 @@ namespace PolygonReducer {
 		[&]() -> GSErrCode {
 			S::Polygon pgon(&memos[0]);
 
-			//pgon.MoveAllPoints();
+			//pgon.MoveAllPoints();			// Just for testing
 			pgon.setPointCount(i_iPoint);
 
 			API_ElementMemo mem = pgon.getMemo();

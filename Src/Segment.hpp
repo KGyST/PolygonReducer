@@ -27,6 +27,8 @@ namespace S {
         Segment*        m_previous;
         Segment*        m_next;
         bool            m_startPoint;       // Is it a start of a subcontour
+        bool            m_isDeleted;        // An already deleted segment
+        bool            m_isAdded;          // An added segment for temporarily connecting points
         //For arcs:
         Coord           m_center;
         double          m_angle;
@@ -60,7 +62,7 @@ namespace S {
         const Segment MidPerp() const;
 
         const double GetLength() const;
-        //const Sector toSector();
+        const ::Sector ToSector() const;
 
         void SetArc(double angle);
         void SetArc(double angle, const Coord center);

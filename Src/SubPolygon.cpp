@@ -1,46 +1,121 @@
 #include "SubPolygon.hpp"
 #include "PolygonReducer.template.hpp"
 
+#include "GenArc2DData.h"
+
 using namespace Geometry;
 
 namespace S {
-    SubPolygon::SubPolygon(Array<API_Coord>* coords, Array<API_PolyArc>* pars, Array<UInt32>* vertexIDs) {
+    //SubPolygon::SubPolygon(Array<API_Coord>* coords, Array<API_PolyArc>* parcs, Array<UInt32>* vertexIDs) {
+    SubPolygon::SubPolygon
+        (UInt32                 i_iStart
+        ,UInt32                 i_iEnd
+        ,Array<API_Coord>&      i_coords
+        ,Array<API_PolyArc>&    i_parcs
+        ,Array<UInt32>&         i_vertexIDs
+        ,Array<Segment*>&       o_segments)
+    {
         m_segments = *new Array<Segment*>;
 
-        Sector midPerpPrev;
-        Coord centerPrev(0, 0);
-        Coord centerThis(0, 0);
-        UINT firstIdx = 0;
-        //double aPrev, aThis;
+        double aPrev, aThis;
+        UInt16 _idx = 0;
+        Segment* _sPrev = nullptr;
+        Segment* _segment = nullptr;
+        GS::HashTable<UInt32, double> _arcTable;
 
-        for(UInt16 i = 1; i < coords->GetSize(); i++)
+        //for (auto _parc : _parcs)
+        for each (API_PolyArc _parc in i_parcs)
         {
-            Segment s((*coords)[i-1], (*coords)[i]);
+            _arcTable.Add(_parc.begIndex, _parc.arcAngle);
+        }
 
-            Coord* _halfPoint = new Coord((s.GetStart()->GetX() + s.GetEnd()->GetX())/2, (s.GetStart()->GetY() + s.GetEnd()->GetY()) / 2);
-            Coord* _start = new Coord(s.GetStart()->GetX(), s.GetStart()->GetY());
-            Coord _rotEnd = RotCoord(_halfPoint, _start, 1.00, 0.00);
-            double eps = 0, radEps = 0;
+        for (UInt32 i = i_iStart + 1; i < i_iEnd + 1; i++)
+        {
+            API_Coord c1(i_coords[i]);
+            API_Coord c2(i_coords[i + 1]);
+            _segment = new Segment(_idx++, i_vertexIDs[i], i_vertexIDs[i + 1], c1, c2);
 
-            Sector midPerpThis = SetSector(*_halfPoint, _rotEnd);
-            XLinesEps(midPerpPrev, midPerpThis, &centerThis, eps, radEps);
+            if (_arcTable.ContainsKey(i))
+            {
+                _segment->SetArc(_arcTable[i]);
+            }
+
+            if (_sPrev)
+            {
+                _segment->SetPrev(_sPrev);
+                _sPrev->SetNext(_segment);
+            }
+
+            m_segments.Push(_segment);
+            o_segments.Push(_segment);
+
+            _sPrev = _segment;
+        }
+
+        if (_segment)
+        {
+            m_segments[0]->SetPrev(_segment);
+            _segment->SetNext(m_segments[0]);
+        }
+
+        CreateArcsFromPolys();
+    }
+
+    SubPolygon::~SubPolygon() {}
+
+    // TODO---------------------------------------------
+
+    void SubPolygon::CreateArcsFromPolys() 
+    {
+        Sector midPerpThis, midPerpPrev;
+        Coord centerPrev, centerThis;
+        ::Coord _c;
+        UINT firstIdx = 0;
+        Segment* segPrev = nullptr;
+        Segment* segFirst = nullptr;
+        double eps = 0, radEps = 0;
+
+        Segment* s;
+        midPerpPrev = m_segments[0]->MidPerp().ToSector();
+        midPerpThis = m_segments[1]->MidPerp().ToSector();
+        XLinesEps(midPerpPrev, midPerpThis, &_c, eps, radEps);
+        centerPrev = Coord(_c);
+        midPerpPrev = midPerpThis;
+        segPrev = m_segments[1];
+
+        for (UInt16 _i = 2; _i <= m_segments.GetSize(); _i++ )
+        {
+            s = m_segments[_i];
+            midPerpThis = s->MidPerp().ToSector();
+            XLinesEps(midPerpPrev, midPerpThis, &_c, eps, radEps);
+            centerThis = Coord(_c);
 
             if (centerThis != centerPrev)
             {
-                if (i > firstIdx + 1)
+                if (segFirst != nullptr && segFirst != segPrev)
                 {
-                    //(*segments)[firstIdx]->SetArc(0, centerPrev);
-                    //TODO
+                    double orifi = 1.00, _angle;
+                    long arcFlag;
+                    Int32 ind = 0;
+                    ::Coord _1 = segFirst->GetStart()->ToCoord()   ;
+                    ::Coord _2 = s->GetEnd()->ToCoord();
+
+                    GetViewAngle(&centerPrev, &_1, &_2,
+                        orifi, ind, &_angle);
+
+                    s->SetArc(_angle, centerPrev);
                 }
 
-                firstIdx = i;
+                firstIdx = s->GetIdx();
+                centerPrev = centerThis;
+                segFirst = s;
             }
-            centerPrev = centerThis;
+            
             midPerpPrev = midPerpThis;
+            segPrev = s;
         }
     }
 
-    using namespace Geometry;
-
-    SubPolygon::~SubPolygon() {}
+    void SubPolygon::CreatePolysFromArcs() {}
 }
+
