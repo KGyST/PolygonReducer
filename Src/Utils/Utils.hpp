@@ -1,7 +1,7 @@
 #pragma once
 #define ACExtension
 #include "ACAPinc.h"					// also includes APIdefs.h
-#include "APICommon.h"
+#include "../APICommon.h"
 #include <APIdefs.h>
 
 #ifndef UTILS_HPP

@@ -1,5 +1,5 @@
 #include "Segment.hpp"
-#include "APICommon.h"
+#include "../APICommon.h"
 
 #include <boost/format.hpp>
 

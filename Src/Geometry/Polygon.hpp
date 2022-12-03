@@ -7,7 +7,7 @@
 #include "ACAPinc.h"					            // also includes APIdefs.h
 #include "SubPolygon.hpp"
 #include "Segment.hpp"
-#include "PolygonReducer.hpp"
+#include "../PolygonReducer.hpp"
 #include "Array.hpp"
 #include <string>
 

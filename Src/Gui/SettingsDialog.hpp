@@ -9,7 +9,7 @@
 
 // ---------------------------------- Includes ---------------------------------
 #include	"DGModule.hpp"
-#include "PolygonReducer_Resource.h"
+#include "../PolygonReducer_Resource.h"
 
 // --- Class declaration: SEttingsDialog -------------------------------------
 

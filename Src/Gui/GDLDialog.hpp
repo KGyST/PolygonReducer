@@ -9,8 +9,8 @@
 
 // ---------------------------------- Includes ---------------------------------
 #include <string>
-#include	"DGModule.hpp"
-#include "PolygonReducer_Resource.h"
+#include "DGModule.hpp"
+#include "../PolygonReducer_Resource.h"
 #include "IAPIToolUIData.hpp"
 
 

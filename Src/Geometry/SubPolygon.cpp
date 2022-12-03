@@ -1,5 +1,5 @@
 #include "SubPolygon.hpp"
-#include "PolygonReducer.template.hpp"
+#include "../PolygonReducer.template.hpp"
 
 using namespace Geometry;
 

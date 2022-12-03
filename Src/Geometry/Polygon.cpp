@@ -1,7 +1,6 @@
 #include "Algorithms.hpp"
-//#include "GSRoot.hpp"
 #include "Polygon.hpp"
-#include "PolygonReducer.template.hpp"
+#include "../PolygonReducer.template.hpp"
 
 #include "Algorithms.hpp"
 

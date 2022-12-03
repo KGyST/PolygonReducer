@@ -25,11 +25,11 @@
 #include "basicgeometry.h"
 #include "APICommon.h"
 
-#include "Utils.hpp"
-#include "Polygon.hpp"
+#include "Utils/Utils.hpp"
+#include "Geometry/Polygon.hpp"
 
 #include "PolygonReducer_Resource.h"
-#include "InfoboxPanel.hpp"
+#include "Gui/InfoboxPanel.hpp"
 #include "PolygonReducer.template.hpp"			//templated functions' definitions
 //#include "PolygonReducer.hpp"
 

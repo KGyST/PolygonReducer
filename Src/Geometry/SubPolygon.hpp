@@ -5,9 +5,8 @@
 #define ACExtension
 #include "ACAPinc.h"					// also includes APIdefs.h
 #include "Segment.hpp"
-//#include "S_Polygon.hpp"
-#include "Point2DData.h"
 #include "Sector2DData.h"
+#include "../Containers/Array.hpp"
 
 namespace S {
     class SubPolygon

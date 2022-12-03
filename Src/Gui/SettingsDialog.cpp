@@ -4,7 +4,7 @@
 
 // ---------------------------------- Includes ---------------------------------
 
-#include	"APIEnvir.h"
+#include	"../APIEnvir.h"
 #include	"ACAPinc.h"
 
 #include	"SettingsDialog.hpp"

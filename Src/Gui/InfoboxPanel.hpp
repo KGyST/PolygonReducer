@@ -6,8 +6,8 @@
 #include "DGModule.hpp"
 #include "IAPIToolUIData.hpp"
 #include "APIToolUIPanel.hpp"
-#include "PolygonReducer.hpp"
-#include "Polygon.hpp"
+#include "../PolygonReducer.hpp"
+#include "../Geometry/Polygon.hpp"
 
 namespace PolygonReducer {
 

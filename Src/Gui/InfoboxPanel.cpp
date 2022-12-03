@@ -1,11 +1,11 @@
 #include "InfoboxPanel.hpp"
-#include "PolygonReducer_Resource.h"
-#include "APIEnvir.h"
+#include "../PolygonReducer_Resource.h"
+#include "../APIEnvir.h"
 #include "ACAPinc.h"
 #include "GDLDialog.hpp"
 #include "SettingsDialog.hpp"
-#include "PolygonReducer.template.hpp"
-#include "Utils.hpp"
+#include "../PolygonReducer.template.hpp"
+#include "../Utils/Utils.hpp"
 #include "Array.hpp"
 
 namespace PolygonReducer {
