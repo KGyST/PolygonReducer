@@ -52,36 +52,37 @@
     <ClInclude Include="Src\PolygonReducer_Resource.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="Src\InfoboxPanel.hpp">
-      <Filter>Source Files\Gui</Filter>
-    </ClInclude>
-    <ClInclude Include="Src\GDLDialog.hpp">
-      <Filter>Source Files\Gui</Filter>
-    </ClInclude>
-    <ClInclude Include="Src\SettingsDialog.hpp">
-      <Filter>Source Files\Gui</Filter>
-    </ClInclude>
-    <ClInclude Include="Src\Coord.hpp">
+    <ClInclude Include="Src\Geometry\Coord.hpp">
       <Filter>Source Files\Geometry</Filter>
     </ClInclude>
-    <ClInclude Include="Src\Segment.hpp">
+    <ClInclude Include="Src\Geometry\Segment.hpp">
       <Filter>Source Files\Geometry</Filter>
     </ClInclude>
-    <ClInclude Include="Src\Array.hpp">
-      <Filter>Source Files\Containers</Filter>
+    <ClInclude Include="Src\Geometry\SubPolygon.hpp">
+      <Filter>Source Files\Geometry</Filter>
     </ClInclude>
-    <ClInclude Include="Src\PolygonUserData.hpp">
+    <ClInclude Include="Src\Geometry\Polygon.hpp">
+      <Filter>Source Files\Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Data\PolygonUserData.hpp">
       <Filter>Source Files\Data</Filter>
     </ClInclude>
-    <ClInclude Include="Src\Utils.hpp">
+    <ClInclude Include="Src\Containers\Array.hpp">
+      <Filter>Source Files\Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Gui\GDLDialog.hpp">
+      <Filter>Source Files\Gui</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Gui\SettingsDialog.hpp">
+      <Filter>Source Files\Gui</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Gui\InfoboxPanel.hpp">
+      <Filter>Source Files\Gui</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Utils\Utils.hpp">
       <Filter>Source Files\Utils</Filter>
     </ClInclude>
-    <ClInclude Include="Src\Polygon.hpp">
-      <Filter>Source Files\Geometry</Filter>
-    </ClInclude>
-    <ClInclude Include="Src\SubPolygon.hpp">
-      <Filter>Source Files\Geometry</Filter>
-    </ClInclude>
+    <ClInclude Include="Src\Geometry\GeometryHelpers.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Src\APICommon.c">
@@ -90,35 +91,38 @@
     <ClCompile Include="Src\PolygonReducer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Src\InfoboxPanel.cpp">
-      <Filter>Source Files\Gui</Filter>
-    </ClCompile>
-    <ClCompile Include="Src\GDLDialog.cpp">
-      <Filter>Source Files\Gui</Filter>
-    </ClCompile>
-    <ClCompile Include="Src\SettingsDialog.cpp">
-      <Filter>Source Files\Gui</Filter>
-    </ClCompile>
-    <ClCompile Include="Src\Coord.cpp">
+    <ClCompile Include="Src\Geometry\Coord.cpp">
       <Filter>Source Files\Geometry</Filter>
     </ClCompile>
-    <ClCompile Include="Src\Segment.cpp">
+    <ClCompile Include="Src\Geometry\Segment.cpp">
       <Filter>Source Files\Geometry</Filter>
     </ClCompile>
-    <ClCompile Include="Src\Array.cpp">
-      <Filter>Source Files\Containers</Filter>
+    <ClCompile Include="Src\Geometry\SubPolygon.cpp">
+      <Filter>Source Files\Geometry</Filter>
     </ClCompile>
-    <ClCompile Include="Src\PolygonUserData.cpp">
+    <ClCompile Include="Src\Geometry\Polygon.cpp">
+      <Filter>Source Files\Geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Data\PolygonUserData.cpp">
       <Filter>Source Files\Data</Filter>
     </ClCompile>
-    <ClCompile Include="Src\Utils.cpp">
+    <ClCompile Include="Src\Containers\Array.cpp">
+      <Filter>Source Files\Containers</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Gui\GDLDialog.cpp">
+      <Filter>Source Files\Gui</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Gui\SettingsDialog.cpp">
+      <Filter>Source Files\Gui</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Gui\InfoboxPanel.cpp">
+      <Filter>Source Files\Gui</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Utils\Utils.cpp">
       <Filter>Source Files\Utils</Filter>
     </ClCompile>
-    <ClCompile Include="Src\Polygon.cpp">
-      <Filter>Source Files\Geometry</Filter>
-    </ClCompile>
-    <ClCompile Include="Src\SubPolygon.cpp">
-      <Filter>Source Files\Geometry</Filter>
+    <ClCompile Include="Src\Geometry\GeometryHelpers.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

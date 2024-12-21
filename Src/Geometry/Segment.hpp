@@ -60,7 +60,7 @@ namespace S {
         const Segment MidPerp() const;
 
         const double GetLength() const;
-        //const Sector toSector();
+        const Sector toSector() const;
 
         void SetArc(double angle);
         void SetArc(double angle, const Coord center);

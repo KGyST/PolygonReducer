@@ -2,8 +2,6 @@
 #include "Polygon.hpp"
 #include "../PolygonReducer.template.hpp"
 
-#include "Algorithms.hpp"
-
 
 namespace S {
     Polygon::Polygon(const API_ElementMemo* p_memo)

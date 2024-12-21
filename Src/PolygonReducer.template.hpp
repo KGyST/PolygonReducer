@@ -61,5 +61,26 @@ namespace PolygonReducer {
 
         return 0;
     }
+
+    template <class inT, class outT>
+    GSErrCode ConvertToGSArray(
+        GS::Array<inT>* p_neigs,
+        GS::Array<outT>* resultArray,
+        bool (*funcFilter)(inT) = ReturnTrue<inT>,
+        outT (*funcConverter)(inT) = ConvertToTheSame
+    )
+    {
+        try {
+            for each(inT _neig in p_neigs) {
+                if (funcFilter(_neig))
+                    resultArray->Push(funcConverter(_neig);
+            }
+        }
+        catch (...) {
+            return 1;
+        }
+
+        return 0;
+    }
 }
 #endif // !POLYGON_REDUCER_TEMPLATE_HPP

@@ -1,18 +1,20 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <PropertyGroup Label="UserMacros">
-    <APIDevKitRoot>D:\Git\support\archicad-buildsupport\AC19\API</APIDevKitRoot>
-    <APIDevKitSupport>$(APIDevKitRoot)\Support</APIDevKitSupport>
-    <APIDevKitModules>$(APIDevKitSupport)\Modules</APIDevKitModules>
-    <BoostLib>D:\Git\support\boost_1_78_0</BoostLib>
-  </PropertyGroup>
   <ItemGroup Label="ProjectConfigurations">
-    <ProjectConfiguration Include="Debug|x64">
-      <Configuration>Debug</Configuration>
+    <ProjectConfiguration Include="Debug 19|x64">
+      <Configuration>Debug 19</Configuration>
       <Platform>x64</Platform>
     </ProjectConfiguration>
-    <ProjectConfiguration Include="Release|x64">
-      <Configuration>Release</Configuration>
+    <ProjectConfiguration Include="Release 19|x64">
+      <Configuration>Release 19</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug 27|x64">
+      <Configuration>Debug 27</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release 27|x64">
+      <Configuration>Release 27</Configuration>
       <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
@@ -20,13 +22,43 @@
     <ProjectGuid>{2DAA4BB9-98C8-4099-9E81-977C5ACB7D38}</ProjectGuid>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
-  <PropertyGroup Condition="'$(Configuration)'=='Debug'" Label="Configuration">
+  <PropertyGroup Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)'=='Debug 19'" Label="Configuration">
+    <ACVersion>19</ACVersion>
+    <BuildType>Debug</BuildType>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)'=='Release 19'" Label="Configuration">
+    <ACVersion>19</ACVersion>
+    <BuildType>Release</BuildType>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)'=='Debug 27'" Label="Configuration">
+    <ACVersion>27</ACVersion>
+    <BuildType>Debug</BuildType>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)'=='Release 27'" Label="Configuration">
+    <ACVersion>27</ACVersion>
+    <BuildType>Release</BuildType>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(ACVersion)'=='19'" Label="Configuration">
     <PlatformToolset>Windows7.1SDK</PlatformToolset>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)'=='Release'" Label="Configuration">
-    <ConfigurationType>DynamicLibrary</ConfigurationType>
-    <PlatformToolset>Windows7.1SDK</PlatformToolset>
+  <PropertyGroup Condition="'$(ACVersion)'=='27'" Label="Configuration">
+    <PlatformToolset>v142</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(BuildType)'=='Debug'" Label="Configuration">
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(BuildType)'=='Release'" Label="Configuration">
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Label="UserMacros">
+    <APIDevKitRoot>E:\Git\support\archicad-buildsupport\AC$(ACVersion)\API</APIDevKitRoot>
+    <APIDevKitSupport>$(APIDevKitRoot)\Support</APIDevKitSupport>
+    <APIDevKitModules>$(APIDevKitSupport)\Modules</APIDevKitModules>
+    <BoostLib>E:\Git\support\boost_1_78_0</BoostLib>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
@@ -38,15 +70,9 @@
     <Import Project="$(LocalAppData)\Microsoft\VisualStudio\10.0\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(LocalAppData)\Microsoft\VisualStudio\10.0\Microsoft.Cpp.$(Platform).user.props')" />
   </ImportGroup>
   <PropertyGroup>
-    <IntDir>$(PlatformName)\$(ConfigurationName)\</IntDir>
-    <OutDir>$(PlatformName)\$(ConfigurationName)\</OutDir>
+    <IntDir>Build\$(Configuration)\</IntDir>
+    <OutDir>Build\$(Configuration)\</OutDir>
     <TargetExt>.apx</TargetExt>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)'=='Debug'">
-    <LinkIncremental>true</LinkIncremental>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)'=='Release'">
-    <LinkIncremental>false</LinkIncremental>
   </PropertyGroup>
   <ItemDefinitionGroup>
     <ClCompile>
@@ -55,7 +81,7 @@
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <WarningLevel>Level4</WarningLevel>
       <TreatWarningAsError>true</TreatWarningAsError>
-      <PreprocessorDefinitions>_ITERATOR_DEBUG_LEVEL=0;_DEBUG;_STLP_DONT_FORCE_MSVC_LIB_NAME;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>ACVER=$(ACVersion);_STLP_DONT_FORCE_MSVC_LIB_NAME;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <StringPooling>true</StringPooling>
       <MinimalRebuild>false</MinimalRebuild>
       <BufferSecurityCheck>true</BufferSecurityCheck>
@@ -83,7 +109,7 @@
       <AdditionalOptions>/export:GetExportedFuncAddrs,%401 /export:SetImportedFuncAddrs,%402 %(AdditionalOptions)</AdditionalOptions>
     </Link>
   </ItemDefinitionGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)'=='Debug'">
+  <ItemDefinitionGroup Condition="'$(BuildType)'=='Debug'">
     <ClCompile>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>_ITERATOR_DEBUG_LEVEL=0;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -99,7 +125,7 @@
       <AdditionalDependencies>msvcrtd.lib;msvcprtd.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)'=='Release'">
+  <ItemDefinitionGroup Condition="'$(BuildType)'=='Release'">
     <ClCompile>
       <Optimization>MaxSpeed</Optimization>
       <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -112,56 +138,65 @@
       <AdditionalDependencies>msvcrt.lib;msvcprt.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(ACVersion)'=='19'">
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(ACVersion)'=='27'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>$(APIDevKitModules)\CADInfrastructureBase;$(APIDevKitModules)\Graphix;$(APIDevKitModules)\RS;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+  </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="Src\Array.hpp" />
-    <ClInclude Include="Src\Coord.hpp" />
-    <ClInclude Include="Src\GDLDialog.hpp" />
-    <ClInclude Include="Src\PolygonUserData.hpp" />
-    <ClInclude Include="Src\SettingsDialog.hpp" />
-    <ClInclude Include="Src\Polygon.hpp" />
-    <ClInclude Include="Src\InfoboxPanel.hpp" />
+    <ClInclude Include="Src\Containers\Array.hpp" />
+    <ClInclude Include="Src\Geometry\Coord.hpp" />
+    <ClInclude Include="Src\Geometry\GeometryHelpers.hpp" />
+    <ClInclude Include="Src\Gui\GDLDialog.hpp" />
+    <ClInclude Include="Src\Data\PolygonUserData.hpp" />
+    <ClInclude Include="Src\Gui\SettingsDialog.hpp" />
+    <ClInclude Include="Src\Geometry\Polygon.hpp" />
+    <ClInclude Include="Src\Gui\InfoboxPanel.hpp" />
     <ClInclude Include="Src\PolygonReducer.hpp" />
     <ClInclude Include="Src\PolygonReducer_Resource.h" />
     <ClInclude Include="Src\APIEnvir.h" />
     <ClInclude Include="Src\APICommon.h" />
-    <ClInclude Include="Src\SubPolygon.hpp" />
-    <ClInclude Include="Src\Segment.hpp" />
-    <ClInclude Include="Src\Utils.hpp" />
+    <ClInclude Include="Src\Geometry\SubPolygon.hpp" />
+    <ClInclude Include="Src\Geometry\Segment.hpp" />
+    <ClInclude Include="Src\Utils\Utils.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Src\APICommon.c" />
-    <ClCompile Include="Src\Array.cpp" />
-    <ClCompile Include="Src\Coord.cpp" />
-    <ClCompile Include="Src\GDLDialog.cpp" />
-    <ClCompile Include="Src\InfoboxPanel.cpp" />
-    <ClCompile Include="Src\PolygonUserData.cpp" />
-    <ClCompile Include="Src\SettingsDialog.cpp" />
-    <ClCompile Include="Src\Utils.cpp" />
-    <ClCompile Include="Src\Polygon.cpp" />
+    <ClCompile Include="Src\Containers\Array.cpp" />
+    <ClCompile Include="Src\Geometry\Coord.cpp" />
+    <ClCompile Include="Src\Geometry\GeometryHelpers.cpp" />
+    <ClCompile Include="Src\Gui\GDLDialog.cpp" />
+    <ClCompile Include="Src\Gui\InfoboxPanel.cpp" />
+    <ClCompile Include="Src\Data\PolygonUserData.cpp" />
+    <ClCompile Include="Src\Gui\SettingsDialog.cpp" />
+    <ClCompile Include="Src\Utils\Utils.cpp" />
+    <ClCompile Include="Src\Geometry\Polygon.cpp" />
     <ClCompile Include="Src\PolygonReducer.cpp" />
-    <ClCompile Include="Src\SubPolygon.cpp" />
-    <ClCompile Include="Src\Segment.cpp" />
+    <ClCompile Include="Src\Geometry\SubPolygon.cpp" />
+    <ClCompile Include="Src\Geometry\Segment.cpp" />
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="RFIX\$(ProjectName)Fix.grc">
       <FileType>Document</FileType>
-      <Command>"$(APIDevKitSupport)\Tools\Win\ResConv.exe" -m r -D WINDOWS -T W -q utf8 1252 -i "RFIX\$(ProjectName)Fix.grc" -p "RFIX\Images" -D _DEBUG -o "$(ConfigurationName)\$(ProjectName)Fix.grc.rc2"</Command>
+      <Command>"$(APIDevKitSupport)\Tools\Win\ResConv.exe" -m r -D WINDOWS -T W -q utf8 1252 -i "RFIX\$(ProjectName)Fix.grc" -p "RFIX\Images" -D _DEBUG -o "$(OutDir)\RO\$(ProjectName)Fix.grc.rc2"</Command>
       <Message>Compiling the non-localized GRC file...</Message>
-      <Outputs>$(ConfigurationName)\$(ProjectName)Fix.grc.rc2;%(Outputs)</Outputs>
+      <Outputs>$(OutDir)\RO\$(ProjectName)Fix.grc.rc2;%(Outputs)</Outputs>
     </CustomBuild>
     <CustomBuild Include="RINT\$(ProjectName).grc">
       <FileType>Document</FileType>
-      <Command>"$(APIDevKitSupport)\Tools\Win\ResConv.exe" -m r -D WINDOWS -T W -q utf8 1252 -i "RINT\$(ProjectName).grc" -D _DEBUG -o "$(ConfigurationName)\$(ProjectName).grc.rc2"</Command>
+      <Command>"$(APIDevKitSupport)\Tools\Win\ResConv.exe" -m r -D WINDOWS -T W -q utf8 1252 -i "RINT\$(ProjectName).grc" -D _DEBUG -o "$(OutDir)\RO\$(ProjectName).grc.rc2"</Command>
       <Message>Compiling the localized GRC file...</Message>
-      <Outputs>$(ConfigurationName)\$(ProjectName).grc.rc2;%(Outputs)</Outputs>
+      <Outputs>$(OutDir)\RO\$(ProjectName).grc.rc2;%(Outputs)</Outputs>
     </CustomBuild>
     <CustomBuild Include="RFIX.WIN\$(ProjectName).rc2">
       <FileType>RC</FileType>
-      <Command>rc /i "$(APIDevKitSupport)\Inc" /i "$(APIDevKitModules)\DGLib" /i "$(ConfigurationName)" /d _DEBUG /fo"$(OutDir)$(ProjectName).res" "RFIX.WIN\$(ProjectName).rc2"</Command>
+      <Command>rc /i "$(APIDevKitSupport)\Inc" /i "$(APIDevKitModules)\DGLib" /i "$(OutDir)\RO" /d _DEBUG /fo"$(OutDir)$(ProjectName).res" "RFIX.WIN\$(ProjectName).rc2"</Command>
       <Message>Compiling the RC2 file...</Message>
       <Outputs>$(OutDir)$(ProjectName).res;%(Outputs)</Outputs>
-      <AdditionalInputs>$(ConfigurationName)\$(ProjectName).grc.rc2;$(ConfigurationName)\$(ProjectName)Fix.grc.rc2;%(AdditionalInputs)</AdditionalInputs>
-      <Command>rc /i "$(APIDevKitSupport)\Inc" /i ".\Src" /i "$(APIDevKitModules)\DGLib" /i "$(ConfigurationName)" /d _DEBUG /fo"$(OutDir)$(ProjectName).res" "RFIX.WIN\$(ProjectName).rc2"</Command>
+      <AdditionalInputs>$(OutDir)\RO\$(ProjectName).grc.rc2;$(OutDir)\RO\$(ProjectName)Fix.grc.rc2;%(AdditionalInputs)</AdditionalInputs>
+      <Command>rc /i "$(APIDevKitSupport)\Inc" /i ".\Src" /i "$(APIDevKitModules)\DGLib" /i "$(OutDir)\RO" /d _DEBUG /fo"$(OutDir)$(ProjectName).res" "RFIX.WIN\$(ProjectName).rc2"</Command>
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>

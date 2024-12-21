@@ -19,7 +19,12 @@
 #include <algorithm>
 #include <numeric>
 
+#if ACVER == 19
 #include "RS.hpp"
+#else
+#include "RSInit.hpp"
+#include "ACAPI_MigrationHeader.hpp"
+#endif
 #include "APIEnvir.h"
 #include "ACAPinc.h"					// also includes APIdefs.h
 #include "basicgeometry.h"
@@ -65,12 +70,17 @@ static void		ReducePolygons(void)
 {
     GSErrCode           err;
     API_SelectionInfo   selectionInfo;
+#if ACVER ==19
     API_Neig** selNeigs;
+#else
+    GS::Array<API_Neig>* selNeigs;
+#endif
     GS::Array<API_Neig> indxs = *new GS::Array<API_Neig>();
     GS::Array<API_Guid> inds = *new GS::Array<API_Guid>();
     GS::Array<API_ElementMemo> memos = *new GS::Array<API_ElementMemo>();
     GS::Array<API_Coord> coords = *new GS::Array<API_Coord>();
 
+#if ACVER ==19
     err = ACAPI_Selection_Get(&selectionInfo, &selNeigs, true);
 
     BMKillHandle((GSHandle*)&selectionInfo.marquee.coords);
@@ -84,7 +94,21 @@ static void		ReducePolygons(void)
     }
 
     err = ConvertToGSArray<API_Neig, API_ElementMemo>(selNeigs, &memos, ReturnTrue<API_Neig>, ConvertToMemos);
+#else
+    err = ACAPI_Selection_Get(&selectionInfo, selNeigs, true);
 
+    BMKillHandle((GSHandle*)&selectionInfo.marquee.coords);
+
+    if (err == APIERR_NOSEL)
+        err = NoError;
+
+    if (err != NoError) {
+        BMKillHandle((GSHandle*)&selNeigs);
+        return;
+    }
+
+    err = ConvertToGSArray<API_Neig, API_ElementMemo>(selNeigs, &memos, ReturnTrue<API_Neig>, ConvertToMemos);
+#endif
     for (unsigned int i = 0; i < memos.GetSize(); i++)
     {
         err = ConvertToGSArray<API_Coord, API_Coord>(memos[i].coords, &coords);
@@ -166,9 +190,13 @@ API_AddonType	__ACENV_CALL	CheckEnvironment(API_EnvirParams* envir)
 {
     if (envir->serverInfo.serverApplication != APIAppl_ArchiCADID)
         return APIAddon_DontRegister;
-
+#if ACVER == 19
     ACAPI_Resource_GetLocStr(envir->addOnInfo.name, 32000, 1);
     ACAPI_Resource_GetLocStr(envir->addOnInfo.description, 32000, 2);
+#else
+    RSGetIndString(&envir->addOnInfo.name, 32000, 1, ACAPI_GetOwnResModule());
+    RSGetIndString(&envir->addOnInfo.description, 32000, 2, ACAPI_GetOwnResModule());
+#endif
 
     return APIAddon_Preload;
 }		/* CheckEnvironment */

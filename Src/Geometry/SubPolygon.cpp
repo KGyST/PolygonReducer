@@ -4,38 +4,42 @@
 using namespace Geometry;
 
 namespace S {
-    SubPolygon::SubPolygon(Array<API_Coord>* coords, Array<API_PolyArc>* pars, Array<UInt32>* vertexIDs) {
-        m_segments = *new Array<Segment*>;
+    SubPolygon::SubPolygon(Array<API_Coord>* coords, Array<API_PolyArc>* pars, Array<UInt32>* vertexIDs)
+        //m_segments({}) 
+    {
+        Coord *centerPrev = NULL;
+        Coord pointPrev = (*coords)[0], pointThis;
 
-        Sector midPerpPrev;
-        Coord centerPrev(0, 0);
-        Coord centerThis(0, 0);
+        Coord centerThis;
         UINT firstIdx = 0;
-        //double aPrev, aThis;
+        double eps = 0, radEps = 0;
+
+        const Segment s((*coords)[0], (*coords)[1]);
+        Sector midPerpPrev = s.MidPerp().toSector();
 
         for(UInt16 i = 1; i < coords->GetSize(); i++)
         {
-            Segment s((*coords)[i-1], (*coords)[i]);
+            pointThis = (*coords)[i];
+            Segment s(pointPrev, pointThis);
 
-            Coord* _halfPoint = new Coord((s.GetStart()->GetX() + s.GetEnd()->GetX())/2, (s.GetStart()->GetY() + s.GetEnd()->GetY()) / 2);
-            Coord* _start = new Coord(s.GetStart()->GetX(), s.GetStart()->GetY());
-            Coord _rotEnd = RotCoord(_halfPoint, _start, 1.00, 0.00);
-            double eps = 0, radEps = 0;
+            const Sector midPerpThis = s.MidPerp().toSector();
 
-            Sector midPerpThis = SetSector(*_halfPoint, _rotEnd);
             XLinesEps(midPerpPrev, midPerpThis, &centerThis, eps, radEps);
 
-            if (centerThis != centerPrev)
+            if (centerPrev != NULL && centerThis != *centerPrev)
             {
                 if (i > firstIdx + 1)
                 {
+                    Segment newSeg(pointPrev, pointThis);
+
                     //(*segments)[firstIdx]->SetArc(0, centerPrev);
                     //TODO
                 }
 
                 firstIdx = i;
             }
-            centerPrev = centerThis;
+
+            *centerPrev = centerThis;
             midPerpPrev = midPerpThis;
         }
     }

@@ -114,6 +114,11 @@ namespace S {
             return abs(m_radius * m_angle);
     }
 
+    const Sector Segment::toSector() const
+    {
+        return SetSector(m_start, m_end);
+    }
+
 
 
     //bool Segment::operator()(Segment *s1, Segment *s2) { return s1->GetLength() < s2->GetLength() ; }
