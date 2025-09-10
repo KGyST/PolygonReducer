@@ -2,19 +2,22 @@
 #ifndef POLYGON_REDUCER_TEMPLATE_HPP
 #define POLYGON_REDUCER_TEMPLATE_HPP
 
+#if ACVER == 27
+#include	"AC27.hpp"
+#endif
+
 // To be removed ------------------------------
 namespace PolygonReducer {
-
-    template <class inT>
-    bool ReturnTrue(inT p_inObj)
+    template <class i_T>
+    bool ReturnTrue(i_T const &i_inObj)
     {
         return true;
     }
 
     template <class T>
-    T ConvertToTheSame(T p_obj)
+    T ConvertToTheSame(T const &i_obj)
     {
-        return p_obj;
+        return i_obj;
     }
 
 ///To be removed ------------------------------
@@ -34,25 +37,25 @@ namespace PolygonReducer {
         return result;
     }
 
-    template <class inT, class outT>
+    template <class i_T, class o_T>
     GSErrCode ConvertToGSArray(
-        inT** p_neigs,
-        GS::Array<outT>* resultArray,
-        bool (*funcFilter)(inT) = ReturnTrue<inT>,
-        outT (*funcConverter)(inT) = ConvertToTheSame
+        i_T** i_neigs,
+        GS::Array<o_T>* o_resultArray,
+        bool (*funcFilter)(i_T const &) = ReturnTrue<i_T>,
+        o_T (*funcConverter)(i_T const &) = ConvertToTheSame<i_T>
     )
         // FIXME nameless functions as default parameters
     {
-        UInt32 nSel = BMGetHandleSize((GSHandle)p_neigs) / sizeof(inT);
+        UInt32 nSel = BMGetHandleSize((GSHandle)i_neigs) / sizeof(i_T);
 
-        inT _an;
+        i_T _an;
 
         try {
             for (UInt32 ii = 0; ii < nSel; ++ii) {
-                _an = (*p_neigs)[ii];
+                _an = (*i_neigs)[ii];
 
                 if (funcFilter(_an))
-                    resultArray->Push(funcConverter(_an));
+                    o_resultArray->Push(funcConverter(_an));
             }
         }
         catch (...) {
@@ -62,18 +65,18 @@ namespace PolygonReducer {
         return 0;
     }
 
-    template <class inT, class outT>
+    template <class i_T, class o_T>
     GSErrCode ConvertToGSArray(
-        GS::Array<inT>* p_neigs,
-        GS::Array<outT>* resultArray,
-        bool (*funcFilter)(inT) = ReturnTrue<inT>,
-        outT (*funcConverter)(inT) = ConvertToTheSame
+        GS::Array<i_T>* i_neigs,
+        GS::Array<o_T>* o_resultArray,
+        bool (*i_funcFilter)(i_T const &) = ReturnTrue<i_T>,
+        o_T (*i_funcConverter)(i_T const &) = ConvertToTheSame<i_T>
     )
     {
         try {
-            for each(inT _neig in p_neigs) {
-                if (funcFilter(_neig))
-                    resultArray->Push(funcConverter(_neig);
+            for (i_T _neig: *i_neigs) {
+                if (i_funcFilter(_neig))
+                    o_resultArray->Push(i_funcConverter(_neig));
             }
         }
         catch (...) {

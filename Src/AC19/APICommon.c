@@ -23,6 +23,10 @@
 #include	"ACAPinc.h"
 #include	"APICommon.h"
 
+#if ACVER == 27
+#include "ACAPI_MigrationHeader.hpp"
+#endif
+
 
 #define USE_DEBUG_WINDOW	1
 

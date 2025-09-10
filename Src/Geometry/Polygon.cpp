@@ -1,3 +1,5 @@
+#include "APIEnvir.h"
+
 #include "Algorithms.hpp"
 #include "Polygon.hpp"
 #include "../PolygonReducer.template.hpp"
@@ -198,8 +200,13 @@ namespace S {
     {
         using namespace Geometry;
 
+#if ACVER == 19
         Sector lin1 = SetSector(io_prev->GetStart()->ToCoord(), io_prev->GetEnd()->ToCoord());
         Sector lin2 = SetSector(io_next->GetStart()->ToCoord(), io_next->GetEnd()->ToCoord());
+#else
+        Sector lin1{ io_prev->GetStart()->ToCoord(), io_prev->GetEnd()->ToCoord() };
+        Sector lin2{ io_next->GetStart()->ToCoord(), io_next->GetEnd()->ToCoord() };
+#endif
 
         ::Coord xc(0, 0);
 

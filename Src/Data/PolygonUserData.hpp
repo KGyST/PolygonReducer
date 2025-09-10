@@ -1,6 +1,8 @@
 #ifndef POLYGONUSERDATA_HPP
 #define POLYGONUSERDATA_HPP
 #define ACExtension
+
+#include "APIEnvir.h"
 #include "ACAPinc.h"
 #include <APIdefs.h>
 

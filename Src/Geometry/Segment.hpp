@@ -4,6 +4,7 @@
 #define S_SEGMENT_HPP
 
 #define ACExtension
+#include "APIEnvir.h"
 #include "ACAPinc.h"					// also includes APIdefs.h
 #include "Point2DData.h"
 #include "Sector2DData.h"

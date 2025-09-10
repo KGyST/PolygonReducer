@@ -13,23 +13,20 @@
 
 // ---------------------------------- Includes ---------------------------------
 
-#define ACExtension
+#include "APIEnvir.h"
+#include "ACAPinc.h"					// also includes APIdefs.h
+#if ACVER == 19
+#include "AC19/APICommon.h"
+#else
+#include "AC27/APICommon.h"
+#endif
+
 #include <stdio.h>
 #include <string>
 #include <algorithm>
 #include <numeric>
 
-#if ACVER == 19
-#include "RS.hpp"
-#else
-#include "RSInit.hpp"
-#include "ACAPI_MigrationHeader.hpp"
-#endif
-#include "APIEnvir.h"
-#include "ACAPinc.h"					// also includes APIdefs.h
 #include "basicgeometry.h"
-#include "APICommon.h"
-
 #include "Utils/Utils.hpp"
 #include "Geometry/Polygon.hpp"
 
@@ -37,6 +34,10 @@
 #include "Gui/InfoboxPanel.hpp"
 #include "PolygonReducer.template.hpp"			//templated functions' definitions
 //#include "PolygonReducer.hpp"
+
+#if ACVER == 27
+#include	"AC27.hpp"
+#endif
 
 using namespace PolygonReducer;
 // MUST NOT BE IN NAMESPACE
@@ -70,17 +71,14 @@ static void		ReducePolygons(void)
 {
     GSErrCode           err;
     API_SelectionInfo   selectionInfo;
-#if ACVER ==19
-    API_Neig** selNeigs;
-#else
-    GS::Array<API_Neig>* selNeigs;
-#endif
     GS::Array<API_Neig> indxs = *new GS::Array<API_Neig>();
     GS::Array<API_Guid> inds = *new GS::Array<API_Guid>();
     GS::Array<API_ElementMemo> memos = *new GS::Array<API_ElementMemo>();
     GS::Array<API_Coord> coords = *new GS::Array<API_Coord>();
 
 #if ACVER ==19
+    API_Neig** selNeigs;
+
     err = ACAPI_Selection_Get(&selectionInfo, &selNeigs, true);
 
     BMKillHandle((GSHandle*)&selectionInfo.marquee.coords);
@@ -95,6 +93,8 @@ static void		ReducePolygons(void)
 
     err = ConvertToGSArray<API_Neig, API_ElementMemo>(selNeigs, &memos, ReturnTrue<API_Neig>, ConvertToMemos);
 #else
+    GS::Array<API_Neig>* selNeigs{} ;
+
     err = ACAPI_Selection_Get(&selectionInfo, selNeigs, true);
 
     BMKillHandle((GSHandle*)&selectionInfo.marquee.coords);
@@ -211,8 +211,13 @@ GSErrCode	__ACENV_CALL	RegisterInterface(void)
 
     ACAPI_Register_Menu(32500, 0, MenuCode_UserDef, MenuFlag_Default);
 
+#if ACVER == 19
     err = ACAPI_Register_InfoBoxPanel(InfoBoxPanelRefCon, API_PolyLineID, APIVarId_Generic, IDS_INFOBOXPAGE_NAME, InfoBoxPageId);
     err = ACAPI_Register_InfoBoxPanel(InfoBoxPanelRefCon, API_HatchID, APIVarId_Generic, IDS_INFOBOXPAGE_NAME, InfoBoxPageId);
+#else
+	err = ACAPI_Register_InfoBoxPanel(InfoBoxPanelRefCon, API_PolyLineID, IDS_INFOBOXPAGE_NAME, InfoBoxPageId);
+	err = ACAPI_Register_InfoBoxPanel(InfoBoxPanelRefCon, API_HatchID, IDS_INFOBOXPAGE_NAME, InfoBoxPageId);
+#endif
     if (err != NoError) {
         DBPrintf("Panel_Test add-on: Cannot register info box panel\n");
     }

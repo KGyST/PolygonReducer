@@ -11,7 +11,6 @@
 #ifndef	_APIENVIR_H_
 #define	_APIENVIR_H_
 
-
 #if defined (_MSC_VER)
 	#if !defined (WINDOWS)
 		#define WINDOWS
@@ -31,5 +30,6 @@
 	#define ACExtension
 #endif
 
+#include "RS.hpp"
 
 #endif

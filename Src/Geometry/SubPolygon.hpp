@@ -3,6 +3,7 @@
 #define S_POLYLINE_HPP
 
 #define ACExtension
+#include "APIEnvir.h"
 #include "ACAPinc.h"					// also includes APIdefs.h
 #include "Segment.hpp"
 #include "Sector2DData.h"

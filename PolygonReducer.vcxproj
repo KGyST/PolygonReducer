@@ -42,10 +42,13 @@
     <ACVersion>27</ACVersion>
     <BuildType>Release</BuildType>
   </PropertyGroup>
+	<!-- ACVersion must be defined -->
+  <Import Project="local.props"/>
   <PropertyGroup Condition="'$(ACVersion)'=='19'" Label="Configuration">
     <PlatformToolset>Windows7.1SDK</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(ACVersion)'=='27'" Label="Configuration">
+    <CharacterSet>Unicode</CharacterSet>
     <PlatformToolset>v142</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(BuildType)'=='Debug'" Label="Configuration">
@@ -54,10 +57,16 @@
   <PropertyGroup Condition="'$(BuildType)'=='Release'" Label="Configuration">
     <LinkIncremental>false</LinkIncremental>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(ACVersion)'=='19'" Label="Globals">
+    <WinCorr>\Win</WinCorr>
+    <ImpCorr>Imp</ImpCorr>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(ACVersion)'=='27'" Label="Globals">
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+    <WinCorr/>
+    <ImpCorr/>
+  </PropertyGroup>
   <PropertyGroup Label="UserMacros">
-    <APIDevKitRoot>E:\Git\support\archicad-buildsupport\AC$(ACVersion)\API</APIDevKitRoot>
-    <APIDevKitSupport>$(APIDevKitRoot)\Support</APIDevKitSupport>
-    <APIDevKitModules>$(APIDevKitSupport)\Modules</APIDevKitModules>
     <BoostLib>E:\Git\support\boost_1_78_0</BoostLib>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
@@ -76,7 +85,7 @@
   </PropertyGroup>
   <ItemDefinitionGroup>
     <ClCompile>
-      <AdditionalIncludeDirectories>$(BoostLib);$(APIDevKitSupport)\Inc;$(APIDevKitModules)\GSRoot\STL\imp;$(APIDevKitModules)\GSRoot;$(APIDevKitModules)\GSUtils;$(APIDevKitModules)\DGLib;$(APIDevKitModules)\Geometry;$(APIDevKitModules)\InputOutput;$(APIDevKitModules)\UCLib;$(APIDevKitModules)\VBElemDialogs;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(BoostLib);$(ACDevKitSupport)\Inc;$(ACDevKitModules)\GSRoot;$(ACDevKitModules)\GSUtils;$(ACDevKitModules)\DGLib;$(ACDevKitModules)\Geometry;$(ACDevKitModules)\InputOutput;$(ACDevKitModules)\UCLib;$(ACDevKitModules)\VBElemDialogs;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <WarningLevel>Level4</WarningLevel>
@@ -105,14 +114,14 @@
       <ImportLibrary>
       </ImportLibrary>
       <LinkDLL>true</LinkDLL>
-      <IgnoreAllDefaultLibraries>true</IgnoreAllDefaultLibraries>
+      <!-- <IgnoreAllDefaultLibraries>true</IgnoreAllDefaultLibraries> -->
       <AdditionalOptions>/export:GetExportedFuncAddrs,%401 /export:SetImportedFuncAddrs,%402 %(AdditionalOptions)</AdditionalOptions>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(BuildType)'=='Debug'">
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>_ITERATOR_DEBUG_LEVEL=0;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_ITERATOR_DEBUG_LEVEL=2;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <FunctionLevelLinking>true</FunctionLevelLinking>
@@ -139,10 +148,15 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(ACVersion)'=='19'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>$(ACDevKitModules)\GSRoot\STL\imp;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+    </ClCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(ACVersion)'=='27'">
     <ClCompile>
-      <AdditionalIncludeDirectories>$(APIDevKitModules)\CADInfrastructureBase;$(APIDevKitModules)\Graphix;$(APIDevKitModules)\RS;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(CommonModules);$(ACDevKitSupport)\Inc;$(ACDevKitModules)\RS;$(ACDevKitModules)\CADInfrastructureBase;$(ACDevKitModules)\Graphix;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -157,13 +171,13 @@
     <ClInclude Include="Src\PolygonReducer.hpp" />
     <ClInclude Include="Src\PolygonReducer_Resource.h" />
     <ClInclude Include="Src\APIEnvir.h" />
-    <ClInclude Include="Src\APICommon.h" />
     <ClInclude Include="Src\Geometry\SubPolygon.hpp" />
     <ClInclude Include="Src\Geometry\Segment.hpp" />
     <ClInclude Include="Src\Utils\Utils.hpp" />
+    <ClInclude Include="Src\AC$(ACVersion)\APICommon.h" />
+    <ClInclude Include="$(CommonModules)\AC27.hpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Src\APICommon.c" />
     <ClCompile Include="Src\Containers\Array.cpp" />
     <ClCompile Include="Src\Geometry\Coord.cpp" />
     <ClCompile Include="Src\Geometry\GeometryHelpers.cpp" />
@@ -176,52 +190,61 @@
     <ClCompile Include="Src\PolygonReducer.cpp" />
     <ClCompile Include="Src\Geometry\SubPolygon.cpp" />
     <ClCompile Include="Src\Geometry\Segment.cpp" />
+    <ClCompile Include="Src\AC$(ACVersion)\APICommon.c" />
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="RFIX\$(ProjectName)Fix.grc">
       <FileType>Document</FileType>
-      <Command>"$(APIDevKitSupport)\Tools\Win\ResConv.exe" -m r -D WINDOWS -T W -q utf8 1252 -i "RFIX\$(ProjectName)Fix.grc" -p "RFIX\Images" -D _DEBUG -o "$(OutDir)\RO\$(ProjectName)Fix.grc.rc2"</Command>
+      <Command Condition="'$(BuildType)'=='Debug'">"$(ACDevKitSupport)\Tools\Win\ResConv.exe" -m r -D WINDOWS -T W -q utf8 1252 -i "RINT\$(ProjectName).grc" -D _DEBUG -o "$(OutDir)\RO\$(ProjectName).grc.rc2"</Command>
+      <Command Condition="'$(BuildType)'=='Release'">"$(ACDevKitSupport)\Tools\Win\ResConv.exe" -m r -D WINDOWS -T W -q utf8 1252 -i "RINT\$(ProjectName).grc" -o "$(OutDir)\RO\$(ProjectName).grc.rc2"</Command>
       <Message>Compiling the non-localized GRC file...</Message>
       <Outputs>$(OutDir)\RO\$(ProjectName)Fix.grc.rc2;%(Outputs)</Outputs>
     </CustomBuild>
     <CustomBuild Include="RINT\$(ProjectName).grc">
       <FileType>Document</FileType>
-      <Command>"$(APIDevKitSupport)\Tools\Win\ResConv.exe" -m r -D WINDOWS -T W -q utf8 1252 -i "RINT\$(ProjectName).grc" -D _DEBUG -o "$(OutDir)\RO\$(ProjectName).grc.rc2"</Command>
+			<Command Condition="'$(BuildType)'=='Debug'">"$(ACDevKitSupport)\Tools\Win\ResConv.exe" -m r -D WINDOWS -T W -q utf8 1252 -i "RFIX\$(ProjectName)Fix.grc" -p "RFIX\Images" -D _DEBUG -o "$(OutDir)\RO\$(ProjectName)Fix.grc.rc2"</Command>
+      <Command Condition="'$(BuildType)'=='Release'">"$(ACDevKitSupport)\Tools\Win\ResConv.exe" -m r -D WINDOWS -T W -q utf8 1252 -i "RFIX\$(ProjectName)Fix.grc" -p "RFIX\Images" -o "$(OutDir)\RO\$(ProjectName)Fix.grc.rc2"</Command>
       <Message>Compiling the localized GRC file...</Message>
       <Outputs>$(OutDir)\RO\$(ProjectName).grc.rc2;%(Outputs)</Outputs>
     </CustomBuild>
     <CustomBuild Include="RFIX.WIN\$(ProjectName).rc2">
       <FileType>RC</FileType>
-      <Command>rc /i "$(APIDevKitSupport)\Inc" /i "$(APIDevKitModules)\DGLib" /i "$(OutDir)\RO" /d _DEBUG /fo"$(OutDir)$(ProjectName).res" "RFIX.WIN\$(ProjectName).rc2"</Command>
+			<Command Condition="'$(BuildType)'=='Debug'">rc /i "$(ACDevKitSupport)\Inc" /i "$(ACDevKitModules)\DGLib" /i "$(OutDir)\RO" /i "Src" /d _DEBUG /fo"$(OutDir)$(ProjectName).res" "RFIX.WIN\$(ProjectName).rc2"</Command>
+      <Command Condition="'$(BuildType)'=='Release'">rc /i "$(ACDevKitSupport)\Inc" /i "$(ACDevKitModules)\DGLib" /i "$(OutDir)\RO" /i "Src" /fo"$(OutDir)$(ProjectName).res" "RFIX.WIN\$(ProjectName).rc2"</Command>
       <Message>Compiling the RC2 file...</Message>
       <Outputs>$(OutDir)$(ProjectName).res;%(Outputs)</Outputs>
       <AdditionalInputs>$(OutDir)\RO\$(ProjectName).grc.rc2;$(OutDir)\RO\$(ProjectName)Fix.grc.rc2;%(AdditionalInputs)</AdditionalInputs>
-      <Command>rc /i "$(APIDevKitSupport)\Inc" /i ".\Src" /i "$(APIDevKitModules)\DGLib" /i "$(OutDir)\RO" /d _DEBUG /fo"$(OutDir)$(ProjectName).res" "RFIX.WIN\$(ProjectName).rc2"</Command>
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>
-    <Library Include="$(APIDevKitSupport)\Lib\Win\ACAP_STAT.lib">
+    <Library Condition="'$(BuildType)'=='Debug'" Include="$(ACDevKitSupport)\Lib$(WinCorr)\ACAP_STATD.lib">
       <FileType>Document</FileType>
     </Library>
-    <Library Include="$(APIDevKitModules)\DGLib\Win\DGImp.lib">
+    <Library Condition="'$(BuildType)'=='Release'" Include="$(ACDevKitSupport)\Lib$(WinCorr)\ACAP_STAT.lib">
       <FileType>Document</FileType>
     </Library>
-    <Library Include="$(APIDevKitModules)\GSRoot\Win\GSRootImp.lib">
+    <Library Include="$(ACDevKitModules)\DGLib\Win\DGImp.lib">
       <FileType>Document</FileType>
     </Library>
-    <Library Include="$(APIDevKitModules)\GSUtils\Win\GSUtilsImp.lib">
+    <Library Include="$(ACDevKitModules)\GSRoot\Win\GSRootImp.lib">
       <FileType>Document</FileType>
     </Library>
-    <Library Include="$(APIDevKitModules)\InputOutput\Win\InputOutputImp.lib">
+    <Library Include="$(ACDevKitModules)\GSUtils\Win\GSUtilsImp.lib">
       <FileType>Document</FileType>
     </Library>
-    <Library Include="$(APIDevKitModules)\VBElemDialogs\Win\VBElemDialogsImp.lib">
+    <Library Include="$(ACDevKitModules)\InputOutput\Win\InputOutputImp.lib">
       <FileType>Document</FileType>
     </Library>
-    <Library Include="$(APIDevKitModules)\UCLib\Win\UCImp.lib">
+    <Library Include="$(ACDevKitModules)\VBElemDialogs\Win\VBElemDialogsImp.lib">
       <FileType>Document</FileType>
     </Library>
-    <Library Include="$(APIDevKitModules)\Geometry\Win\GeometryImp.LIB">
+    <Library Include="$(ACDevKitModules)\UCLib\Win\UCImp.lib">
+      <FileType>Document</FileType>
+    </Library>
+    <Library Include="$(ACDevKitModules)\Geometry\Win\GeometryImp.LIB">
+      <FileType>Document</FileType>
+    </Library>
+    <Library Include="$(ACDevKitModules)\RS\Win\RSImp.LIB">
       <FileType>Document</FileType>
     </Library>
   </ItemGroup>
@@ -231,4 +254,14 @@
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
+	<ItemGroup>
+    <Natvis Include="$(NatVisRoot)\Brep.natvis" />
+    <Natvis Include="$(NatVisRoot)\DynamicObject.natvis" />
+    <Natvis Include="$(NatVisRoot)\Geometry.natvis" />
+    <Natvis Include="$(NatVisRoot)\GS.natvis" />
+    <Natvis Include="$(NatVisRoot)\GSModeler.natvis" />
+    <Natvis Include="$(NatVisRoot)\GSXML.natvis" />
+    <Natvis Include="$(NatVisRoot)\IO.natvis" />
+    <Natvis Include="$(NatVisRoot)\ODB.natvis" />
+  </ItemGroup>
 </Project>

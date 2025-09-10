@@ -27,6 +27,9 @@
     <Filter Include="Source Files\Utils">
       <UniqueIdentifier>{7ec265d0-cb1a-4eec-83ce-2b0ba3e5ca78}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Visualizers">
+      <UniqueIdentifier>{c17c8a4a-2b83-4fdb-88ee-47e3fec7822f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="RFIX.WIN\$(ProjectName).rc2">
@@ -40,9 +43,6 @@
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Src\APICommon.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="Src\APIEnvir.h">
       <Filter>Source Files</Filter>
     </ClInclude>
@@ -82,12 +82,17 @@
     <ClInclude Include="Src\Utils\Utils.hpp">
       <Filter>Source Files\Utils</Filter>
     </ClInclude>
-    <ClInclude Include="Src\Geometry\GeometryHelpers.hpp" />
+    <ClInclude Include="Src\AC$(ACVersion)\APICommon.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Geometry\GeometryHelpers.hpp">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="$(CommonModules)\AC27.hpp">
+      <Filter>Source Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Src\APICommon.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Src\PolygonReducer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -124,30 +129,33 @@
     <ClCompile Include="Src\Geometry\GeometryHelpers.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Src\AC$(ACVersion)\APICommon.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <Library Include="$(APIDevKitSupport)\Lib\Win\ACAP_STAT.lib">
+    <Library Include="$(ACDevKitModules)\VBElemDialogs\Win\VBElemDialogsImp.lib">
       <Filter>Libraries</Filter>
     </Library>
-    <Library Include="$(APIDevKitModules)\DGLib\Win\DGImp.lib">
+    <Library Include="$(ACDevKitModules)\Geometry\Win\GeometryImp.LIB">
       <Filter>Libraries</Filter>
     </Library>
-    <Library Include="$(APIDevKitModules)\GSRoot\Win\GSRootImp.lib">
+    <Library Include="$(ACDevKitModules)\GSRoot\Win\GSRootImp.lib">
       <Filter>Libraries</Filter>
     </Library>
-    <Library Include="$(APIDevKitModules)\GSUtils\Win\GSUtilsImp.lib">
+    <Library Include="$(ACDevKitModules)\GSUtils\Win\GSUtilsImp.lib">
       <Filter>Libraries</Filter>
     </Library>
-    <Library Include="$(APIDevKitModules)\InputOutput\Win\InputOutputImp.lib">
+    <Library Include="$(ACDevKitModules)\InputOutput\Win\InputOutputImp.lib">
       <Filter>Libraries</Filter>
     </Library>
-    <Library Include="$(APIDevKitModules)\UCLib\Win\UCImp.lib">
+    <Library Include="$(ACDevKitModules)\UCLib\Win\UCImp.lib">
       <Filter>Libraries</Filter>
     </Library>
-    <Library Include="$(APIDevKitModules)\VBElemDialogs\Win\VBElemDialogsImp.lib">
+    <Library Include="$(ACDevKitModules)\DGLib\Win\DGImp.lib">
       <Filter>Libraries</Filter>
     </Library>
-    <Library Include="$(APIDevKitModules)\Geometry\Win\GeometryImp.LIB">
+    <Library Include="$(ACDevKitSupport)\Lib\Win\ACAP_STAT.lib">
       <Filter>Libraries</Filter>
     </Library>
   </ItemGroup>
@@ -155,5 +163,31 @@
     <None Include="Src\PolygonReducer.template.hpp">
       <Filter>Source Files</Filter>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Natvis Include="$(NatVisRoot)\ODB.natvis">
+      <Filter>Visualizers</Filter>
+    </Natvis>
+    <Natvis Include="$(NatVisRoot)\DynamicObject.natvis">
+      <Filter>Visualizers</Filter>
+    </Natvis>
+    <Natvis Include="$(NatVisRoot)\Geometry.natvis">
+      <Filter>Visualizers</Filter>
+    </Natvis>
+    <Natvis Include="$(NatVisRoot)\GS.natvis">
+      <Filter>Visualizers</Filter>
+    </Natvis>
+    <Natvis Include="$(NatVisRoot)\GSModeler.natvis">
+      <Filter>Visualizers</Filter>
+    </Natvis>
+    <Natvis Include="$(NatVisRoot)\GSXML.natvis">
+      <Filter>Visualizers</Filter>
+    </Natvis>
+    <Natvis Include="$(NatVisRoot)\IO.natvis">
+      <Filter>Visualizers</Filter>
+    </Natvis>
+    <Natvis Include="$(NatVisRoot)\Brep.natvis">
+      <Filter>Visualizers</Filter>
+    </Natvis>
   </ItemGroup>
 </Project>

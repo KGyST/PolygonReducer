@@ -1,20 +1,21 @@
 #pragma once
 #define ACExtension
+#include "APIEnvir.h"
 #include "ACAPinc.h"					// also includes APIdefs.h
-#include "../APICommon.h"
+#include "../AC27/APICommon.h"
 #include <APIdefs.h>
 
 #ifndef UTILS_HPP
 #define UTILS_HPP
 
-void TrackPoly(const API_Polygon* poly, const API_ElementMemo* memo);
+void TrackPoly(const API_Polygon*, const API_ElementMemo*);
 
-bool IsItPolygon(API_Neig p_neig);
+bool IsItPolygon(API_Neig const&);
 
-API_Guid NeigToAPIGuid(API_Neig p_neig);
+API_Guid NeigToAPIGuid(API_Neig const&);
 
-API_ElementMemo ConvertToMemos(API_Neig p_neig);
+API_ElementMemo ConvertToMemos(API_Neig const &);
 
-API_Coord** ConvertToCoords(API_ElementMemo p_memo);
+API_Coord** ConvertToCoords(API_ElementMemo const&);
 
 #endif // !UTILS_HPP

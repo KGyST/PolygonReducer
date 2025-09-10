@@ -1,43 +1,43 @@
 #include "Utils.hpp"
 
-void TrackPoly(const API_Polygon* poly, const API_ElementMemo* memo)
+void TrackPoly(const API_Polygon* i_poly, const API_ElementMemo * i_memo)
 {
     int         j, i, begInd, endInd, arcInd;
     API_Coord   begC, endC;
 
-    for (j = 1; j <= poly->nSubPolys; j++) {
-        begInd = (*memo->pends)[j - 1] + 1;
-        endInd = (*memo->pends)[j];
+    for (j = 1; j <= i_poly->nSubPolys; j++) {
+        begInd = (*i_memo->pends)[j - 1] + 1;
+        endInd = (*i_memo->pends)[j];
         for (i = begInd; i < endInd; i++) {
-            begC = (*memo->coords)[i];
-            endC = (*memo->coords)[i + 1];
-            arcInd = FindArc(*memo->parcs, poly->nArcs, i);
+            begC = (*i_memo->coords)[i];
+            endC = (*i_memo->coords)[i + 1];
+            arcInd = FindArc(*i_memo->parcs, i_poly->nArcs, i);
         }
 
         WriteReport_Alert(&"Teszt"[0]);
     }
 }
 
-bool IsItPolygon(API_Neig p_neig)
+bool IsItPolygon(API_Neig const &i_neig)
 {
-    if  (    p_neig.neigID == APINeig_PolyLine
-        ||   p_neig.neigID == APINeig_PolyLineOn
-        ||   p_neig.neigID == APINeig_Hatch
-        ||   p_neig.neigID == APINeig_HatchOn
+    if  (    i_neig.neigID == APINeig_PolyLine
+        ||   i_neig.neigID == APINeig_PolyLineOn
+        ||   i_neig.neigID == APINeig_Hatch
+        ||   i_neig.neigID == APINeig_HatchOn
         )
         return true;
 
     return false;
 }
 
-API_Guid NeigToAPIGuid(API_Neig p_neig)
+API_Guid NeigToAPIGuid(API_Neig const &i_neig)
 {
-    return p_neig.guid;
+    return i_neig.guid;
 }
 
-API_ElementMemo ConvertToMemos(API_Neig p_neig)
+API_ElementMemo ConvertToMemos(API_Neig const &i_neig)
 {
-    API_Guid _guid = p_neig.guid;
+    API_Guid _guid = i_neig.guid;
     API_ElementMemo _memo;
 
     GSErrCode err = ACAPI_Element_GetMemo(_guid, &_memo);
@@ -45,7 +45,7 @@ API_ElementMemo ConvertToMemos(API_Neig p_neig)
     return _memo;
 }
 
-API_Coord** ConvertToCoords(API_ElementMemo p_memo)
+API_Coord** ConvertToCoords(API_ElementMemo const &i_memo)
 {
-    return p_memo.coords;
+    return i_memo.coords;
 }

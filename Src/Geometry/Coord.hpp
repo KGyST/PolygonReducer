@@ -4,6 +4,7 @@
 #define S_COORD_HPP
 
 #define ACExtension
+#include "APIEnvir.h"
 #include "ACAPinc.h"					// also includes APIdefs.h
 #include "Point2D.hpp"
 

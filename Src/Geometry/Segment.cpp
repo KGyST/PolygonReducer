@@ -1,5 +1,5 @@
 #include "Segment.hpp"
-#include "../APICommon.h"
+#include "APICommon.h"
 
 #include <boost/format.hpp>
 
@@ -41,9 +41,15 @@ namespace S {
     const Segment Segment::MidPerp() const
     {
         //TODO arc
+
         ::Coord _start = m_start.ToCoord();
         ::Coord _midPoint = MidPoint().ToCoord();
+
+#if ACVER == 19
         ::Coord _rotEnd = RotCoord(&_midPoint, &_start, 1.00, 0.00);
+#else
+        ::Coord _rotEnd = RotCoord((Point2D) _midPoint, (Point2D) _start, 1.00, 0.00);
+#endif
 
         return Segment(MidPoint(), Coord(_rotEnd));
     }
@@ -60,8 +66,13 @@ namespace S {
         ::Coord rotEnd = RotCoord(_start.ToCoord(), _end.ToCoord(), sin(_halfAngle), cos(_halfAngle));
         ::Coord rotStart = RotCoord(_end.ToCoord(), _start.ToCoord(), sin(-_halfAngle), cos(-_halfAngle));
 
+#if ACVER == 19
         Sector lin1 = SetSector(_start.ToCoord(), rotEnd);
         Sector lin2 = SetSector(_end.ToCoord(), rotStart);
+#else
+		Sector lin1{ _start.ToCoord(), rotEnd };
+		Sector lin2{ _end.ToCoord(), rotStart };
+#endif
 
         ::Coord xc(0, 0);
 
@@ -116,7 +127,11 @@ namespace S {
 
     const Sector Segment::toSector() const
     {
+#if ACVER == 19
         return SetSector(m_start, m_end);
+#else
+		return Sector{ m_start, m_end };
+#endif
     }
 
 

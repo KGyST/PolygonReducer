@@ -36,18 +36,24 @@ namespace PolygonReducer {
 	GSErrCode PolygonReducerInfoboxPage::SetPointNumber(int i_iPoint/*, int i_iMax*/)
 	{
 		GSErrCode   err;
-		API_Neig**	selNeigs;
+		API_Neig** selNeigs{} ;
 		GS::Array<API_ElementMemo> memos = *new GS::Array<API_ElementMemo>();
 		GS::Array<API_Guid> guids = *new GS::Array<API_Guid>();
+		GS::Array<API_Neig> neigs = *new GS::Array<API_Neig>();
 		API_SelectionInfo   selectionInfo;
-
-		err = ACAPI_Selection_Get(&selectionInfo, &selNeigs, true);
 
 		BMKillHandle((GSHandle*)&selectionInfo.marquee.coords);
 
 		err = ConvertToGSArray<API_Neig, API_ElementMemo>(selNeigs, &memos, ReturnTrue<API_Neig>, ConvertToMemos);
 		err = ConvertToGSArray<API_Neig, API_Guid>(selNeigs, &guids, ReturnTrue<API_Neig>, NeigToAPIGuid);
+		err = ConvertToGSArray<API_Neig, API_Neig>(selNeigs, &neigs, ReturnTrue<API_Neig>);
 
+#if ACVER == 19
+		err = ACAPI_Selection_Get(&selectionInfo, &selNeigs, true);
+#else
+		err = ACAPI_Selection_Get(&selectionInfo, &neigs, false);
+#endif
+		
 		err = ACAPI_CallUndoableCommand("Optimize polygons",
 		[&]() -> GSErrCode {
 			S::Polygon pgon(&memos[0]);
@@ -85,7 +91,7 @@ namespace PolygonReducer {
 	{
 		GSErrCode           err;
 		API_SelectionInfo   selectionInfo;
-		API_Neig** selNeigs;
+		API_Neig** selNeigs{} ;
 		GS::Array<API_ElementMemo> memos = *new GS::Array<API_ElementMemo>();
 		GS::Array<API_Guid> guids = *new GS::Array<API_Guid>();
 
@@ -94,7 +100,13 @@ namespace PolygonReducer {
 		GS::Array<API_PolyArc> parcs = *new GS::Array<API_PolyArc>();
 		GS::Array<UInt32> vertexIDs = *new GS::Array<UInt32>();
 
+#if ACVER == 19
 		err = ACAPI_Selection_Get(&selectionInfo, &selNeigs, true);
+#else
+		GS::Array<API_Neig> neigs = *new GS::Array<API_Neig>();
+		err = ConvertToGSArray<API_Neig, API_Neig>(selNeigs, &neigs, ReturnTrue<API_Neig>);
+		err = ACAPI_Selection_Get(&selectionInfo, &neigs, false);
+#endif
 
 		////----- Userdata handling------------------------------------------------
 
