@@ -2,9 +2,9 @@
 #ifndef POLYGON_REDUCER_TEMPLATE_HPP
 #define POLYGON_REDUCER_TEMPLATE_HPP
 
-#if ACVER == 27
-#include	"AC27.hpp"
-#endif
+//#if ACVER == 27
+//#include	"AC27.hpp"
+//#endif
 
 // To be removed ------------------------------
 namespace PolygonReducer {

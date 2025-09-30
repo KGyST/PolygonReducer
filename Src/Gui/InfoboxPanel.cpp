@@ -36,132 +36,122 @@ namespace PolygonReducer {
 	GSErrCode PolygonReducerInfoboxPage::SetPointNumber(int i_iPoint/*, int i_iMax*/)
 	{
 		GSErrCode   err;
-		API_Neig** selNeigs{} ;
-		GS::Array<API_ElementMemo> memos = *new GS::Array<API_ElementMemo>();
-		GS::Array<API_Guid> guids = *new GS::Array<API_Guid>();
-		GS::Array<API_Neig> neigs = *new GS::Array<API_Neig>();
-		API_SelectionInfo   selectionInfo;
+		//API_Neig** selNeigs{} ;
+		//GS::Array<API_ElementMemo> memos{};
+		GS::Array<API_Guid> guids {};
+		//GS::Array<API_Neig> neigs {};
+		API_Guid guid{};
 
-		BMKillHandle((GSHandle*)&selectionInfo.marquee.coords);
+		if (S::Polygon * pgon = GetFirstPolygonFromSelection(&guid)) {
 
-		err = ConvertToGSArray<API_Neig, API_ElementMemo>(selNeigs, &memos, ReturnTrue<API_Neig>, ConvertToMemos);
-		err = ConvertToGSArray<API_Neig, API_Guid>(selNeigs, &guids, ReturnTrue<API_Neig>, NeigToAPIGuid);
-		err = ConvertToGSArray<API_Neig, API_Neig>(selNeigs, &neigs, ReturnTrue<API_Neig>);
+			err = ACAPI_CallUndoableCommand("Optimize polygons",
+				[&]() -> GSErrCode {
+					pgon->setPointCount(i_iPoint);
 
-#if ACVER == 19
-		err = ACAPI_Selection_Get(&selectionInfo, &selNeigs, true);
-#else
-		err = ACAPI_Selection_Get(&selectionInfo, &neigs, false);
-#endif
-		
-		err = ACAPI_CallUndoableCommand("Optimize polygons",
-		[&]() -> GSErrCode {
-			S::Polygon pgon(&memos[0]);
+					API_ElementMemo mem = pgon->getMemo();
 
-			//pgon.MoveAllPoints();
-			pgon.setPointCount(i_iPoint);
+					API_Element element, mask;
+					BNZeroMemory(&element, sizeof(API_Element));
 
-			API_ElementMemo mem = pgon.getMemo();
+					element.header.guid = guid;
+					err = ACAPI_Element_Get(&element);
 
-			API_Element element, mask;
-			BNZeroMemory(&element, sizeof(API_Element));
-			
-			element.header.guid = guids[0];
-			err = ACAPI_Element_Get(&element);
+					API_Polygon poly;
+					poly.nCoords = BMGetHandleSize((GSHandle)mem.coords) / sizeof(API_Coord) - 1;
+					poly.nSubPolys = BMGetHandleSize((GSHandle)mem.pends) / sizeof(Int32) - 1;
+					poly.nArcs = BMGetHandleSize((GSHandle)mem.parcs) / sizeof(API_PolyArc);
 
-			API_Polygon poly ;
-			poly.nCoords = BMGetHandleSize((GSHandle)mem.coords) / sizeof(API_Coord) - 1;
-			poly.nSubPolys = BMGetHandleSize((GSHandle)mem.pends) / sizeof(Int32) - 1;
-			poly.nArcs = BMGetHandleSize((GSHandle)mem.parcs) / sizeof(API_PolyArc);
-			
-			if (pgon.m_isPolygon)
-				element.hatch.poly = poly;
-			else
-				element.polyLine.poly = poly;
+					if (pgon->m_isPolygon)
+						element.hatch.poly = poly;
+					else
+						element.polyLine.poly = poly;
 
-			err =  ACAPI_Element_Change(&element, &mask, &mem, APIMemoMask_Polygon, true);
+					err = ACAPI_Element_Change(&element, &mask, &mem, APIMemoMask_Polygon, true);
+
+					delete pgon;
+
+					return err;
+				});
 
 			return err;
-		});
-
-		return err;
+		}
+		else {
+			return 0; // no polygon found in selection
+		}
 	}
 
 	int PolygonReducerInfoboxPage::GetPointNumber()
 	{
+		//----- Userdata handling------------------------------------------------
+
+		//API_ElementUserData userData = {};
+
+		//GSErrCode err = ACAPI_Element_GetUserData(&elementHead, &userData);
+
+		//auto originalMemo = memos[i];
+
+		//if (err == NoError && userData.dataHdl != nullptr)
+		//{
+		//	originalMemo = *reinterpret_cast<API_ElementMemo*> (*userData.dataHdl);
+		//}
+
+		//userData.dataVersion = 1;
+		//userData.platformSign = GS::Act_Platform_Sign;
+		//userData.flags = APIUserDataFlag_FillWith | APIUserDataFlag_Pickup;
+		//userData.dataHdl = BMAllocateHandle(sizeof(originalMemo), ALLOCATE_CLEAR, 0);
+		//*reinterpret_cast<API_ElementMemo*> (*userData.dataHdl) = originalMemo;
+
+		//err = ACAPI_Element_SetUserData(&elementHead, &userData);
+
+		//-----/Userdata handling------------------------------------------------
+
+		S::Polygon *pgon = GetFirstPolygonFromSelection();
+
+		if (pgon != NULL) {
+			UINT16 iPoints = (UINT16)pgon->getPointCount();
+			delete pgon;
+
+			return iPoints;
+		}
+		else {
+			return 0; // no polygon found in selection
+		}
+	}
+
+	S::Polygon* GetFirstPolygonFromSelection(API_Guid * o_guid)
+	{
 		GSErrCode           err;
 		API_SelectionInfo   selectionInfo;
-		API_Neig** selNeigs{} ;
-		GS::Array<API_ElementMemo> memos = *new GS::Array<API_ElementMemo>();
-		GS::Array<API_Guid> guids = *new GS::Array<API_Guid>();
+		GS::Array<API_Neig> neigs{};
+		API_ElementMemo _memo{};
 
-		GS::Array<API_Coord> coords = *new GS::Array<API_Coord>();
-		GS::Array<INT32> pends = *new GS::Array<INT32>();
-		GS::Array<API_PolyArc> parcs = *new GS::Array<API_PolyArc>();
-		GS::Array<UInt32> vertexIDs = *new GS::Array<UInt32>();
-
-#if ACVER == 19
-		err = ACAPI_Selection_Get(&selectionInfo, &selNeigs, true);
-#else
-		GS::Array<API_Neig> neigs = *new GS::Array<API_Neig>();
-		err = ConvertToGSArray<API_Neig, API_Neig>(selNeigs, &neigs, ReturnTrue<API_Neig>);
 		err = ACAPI_Selection_Get(&selectionInfo, &neigs, false);
-#endif
-
-		////----- Userdata handling------------------------------------------------
-
-		////API_ElementUserData userData = {};
-
-		////GSErrCode err = ACAPI_Element_GetUserData(&elementHead, &userData);
-
-		////auto originalMemo = memos[i];
-
-		////if (err == NoError && userData.dataHdl != nullptr)
-		////{
-		////	originalMemo = *reinterpret_cast<API_ElementMemo*> (*userData.dataHdl);
-		////}
-
-		////userData.dataVersion = 1;
-		////userData.platformSign = GS::Act_Platform_Sign;
-		////userData.flags = APIUserDataFlag_FillWith | APIUserDataFlag_Pickup;
-		////userData.dataHdl = BMAllocateHandle(sizeof(originalMemo), ALLOCATE_CLEAR, 0);
-		////*reinterpret_cast<API_ElementMemo*> (*userData.dataHdl) = originalMemo;
-
-		////err = ACAPI_Element_SetUserData(&elementHead, &userData);
-
-		////-----/Userdata handling------------------------------------------------
-
-		BMKillHandle((GSHandle*)&selectionInfo.marquee.coords);
 
 		if (err == APIERR_NOSEL)
-			err = NoError;
+			return NULL;
 
 		if (err != NoError) {
-			BMKillHandle((GSHandle*)&selNeigs);
-			return 0;
+			return NULL;
 		}
 
-		API_Elem_Head elementHead;
-		BNZeroMemory(&elementHead, sizeof(API_Elem_Head));
-
-		err = ConvertToGSArray<API_Neig, API_ElementMemo>(selNeigs, &memos, ReturnTrue<API_Neig>, ConvertToMemos);
-		err = ConvertToGSArray<API_Neig, API_Guid>(selNeigs, &guids, ReturnTrue<API_Neig>, NeigToAPIGuid);
-
-		UINT16 iPoints = 0;
-
-		for (unsigned int i = 0; i < memos.GetSize(); i++)
+		for (auto& neig : neigs)
 		{
-			S::Polygon pgon(&memos[i]);
+			if (IsItPolygon(neig))
+			{
+				GSErrCode err = ACAPI_Element_GetMemo(neig.guid, &_memo);
 
-			iPoints += (UINT16)pgon.getPointCount();
+				if (o_guid) *o_guid = neig.guid;
+				
+				return new S::Polygon{ &_memo };
+			}
 		}
-		
-		return iPoints;
+
+		return NULL;
 	}
 
 	// --- PolygonReducerPageObserver -------------------------------------------------
 
-	void	PolygonReducerPageObserver::APIElementChanged(const TBUI::APIElemDefaultFieldMask& fieldMask) {
+	void PolygonReducerPageObserver::APIElementChanged(const TBUI::APIElemDefaultFieldMask& fieldMask) {
 		if (fieldMask.GetRegDataChanged()) {
 		//	// the regdata has changed
 		//	int _n = GetPointNumber();

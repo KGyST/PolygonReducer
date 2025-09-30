@@ -8,8 +8,10 @@
 #include "APIToolUIPanel.hpp"
 #include "../PolygonReducer.hpp"
 #include "../Geometry/Polygon.hpp"
+#include <optional>
 
 namespace PolygonReducer {
+	S::Polygon* GetFirstPolygonFromSelection(API_Guid* o_guid = NULL);
 
 	// --- PolygonReducerPage ---------------------------------------------------------
 

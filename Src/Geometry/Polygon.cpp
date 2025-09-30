@@ -6,6 +6,26 @@
 
 
 namespace S {
+    Polygon::Polygon()
+        : m_subpolys()
+        , m_segments()
+        , m_isPolygon(true)
+    {
+	}
+
+    Polygon::Polygon(const API_Neig* p_neig)
+        : m_subpolys()
+        , m_segments()
+    {
+        API_ElementMemo _memo{};
+
+        GSErrCode err = ACAPI_Element_GetMemo(p_neig->guid, &_memo);
+        if (err == NoError)
+        {
+            S::Polygon pgon(&_memo);
+        }
+	}
+
     Polygon::Polygon(const API_ElementMemo* p_memo)
         : m_subpolys()
         , m_segments()
@@ -200,13 +220,8 @@ namespace S {
     {
         using namespace Geometry;
 
-#if ACVER == 19
-        Sector lin1 = SetSector(io_prev->GetStart()->ToCoord(), io_prev->GetEnd()->ToCoord());
-        Sector lin2 = SetSector(io_next->GetStart()->ToCoord(), io_next->GetEnd()->ToCoord());
-#else
         Sector lin1{ io_prev->GetStart()->ToCoord(), io_prev->GetEnd()->ToCoord() };
         Sector lin2{ io_next->GetStart()->ToCoord(), io_next->GetEnd()->ToCoord() };
-#endif
 
         ::Coord xc(0, 0);
 

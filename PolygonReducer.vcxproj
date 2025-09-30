@@ -89,7 +89,6 @@
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <WarningLevel>Level4</WarningLevel>
-      <TreatWarningAsError>true</TreatWarningAsError>
       <PreprocessorDefinitions>ACVER=$(ACVersion);_STLP_DONT_FORCE_MSVC_LIB_NAME;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <StringPooling>true</StringPooling>
       <MinimalRebuild>false</MinimalRebuild>
@@ -121,6 +120,7 @@
   <ItemDefinitionGroup Condition="'$(BuildType)'=='Debug'">
     <ClCompile>
       <Optimization>Disabled</Optimization>
+      <TreatWarningAsError>false</TreatWarningAsError>
       <PreprocessorDefinitions>_ITERATOR_DEBUG_LEVEL=2;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
@@ -137,6 +137,7 @@
   <ItemDefinitionGroup Condition="'$(BuildType)'=='Release'">
     <ClCompile>
       <Optimization>MaxSpeed</Optimization>
+      <TreatWarningAsError>true</TreatWarningAsError>
       <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <BrowseInformation>true</BrowseInformation>

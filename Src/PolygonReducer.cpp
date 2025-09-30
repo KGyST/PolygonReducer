@@ -35,10 +35,6 @@
 #include "PolygonReducer.template.hpp"			//templated functions' definitions
 //#include "PolygonReducer.hpp"
 
-#if ACVER == 27
-#include	"AC27.hpp"
-#endif
-
 using namespace PolygonReducer;
 // MUST NOT BE IN NAMESPACE
 
@@ -71,55 +67,33 @@ static void		ReducePolygons(void)
 {
     GSErrCode           err;
     API_SelectionInfo   selectionInfo;
-    GS::Array<API_Neig> indxs = *new GS::Array<API_Neig>();
-    GS::Array<API_Guid> inds = *new GS::Array<API_Guid>();
-    GS::Array<API_ElementMemo> memos = *new GS::Array<API_ElementMemo>();
-    GS::Array<API_Coord> coords = *new GS::Array<API_Coord>();
+    //GS::Array<API_Neig> indxs = *new GS::Array<API_Neig>();
+    //GS::Array<API_Guid> inds = *new GS::Array<API_Guid>();
+    GS::Array<API_ElementMemo> memos = {};
+    GS::Array<API_Coord> coords {};
 
-#if ACVER ==19
-    API_Neig** selNeigs;
+    GS::Array<API_Neig> selNeigs{};
 
     err = ACAPI_Selection_Get(&selectionInfo, &selNeigs, true);
 
-    BMKillHandle((GSHandle*)&selectionInfo.marquee.coords);
-
     if (err == APIERR_NOSEL)
-        err = NoError;
+        return;
 
     if (err != NoError) {
-        BMKillHandle((GSHandle*)&selNeigs);
         return;
     }
 
-    err = ConvertToGSArray<API_Neig, API_ElementMemo>(selNeigs, &memos, ReturnTrue<API_Neig>, ConvertToMemos);
-#else
-    GS::Array<API_Neig>* selNeigs{} ;
+    err = ConvertToGSArray<API_Neig, API_ElementMemo>(&selNeigs, &memos, ReturnTrue<API_Neig>, ConvertToMemos);
 
-    err = ACAPI_Selection_Get(&selectionInfo, selNeigs, true);
-
-    BMKillHandle((GSHandle*)&selectionInfo.marquee.coords);
-
-    if (err == APIERR_NOSEL)
-        err = NoError;
-
-    if (err != NoError) {
-        BMKillHandle((GSHandle*)&selNeigs);
-        return;
-    }
-
-    err = ConvertToGSArray<API_Neig, API_ElementMemo>(selNeigs, &memos, ReturnTrue<API_Neig>, ConvertToMemos);
-#endif
-    for (unsigned int i = 0; i < memos.GetSize(); i++)
+    for (API_ElementMemo _memo: memos)
     {
-        err = ConvertToGSArray<API_Coord, API_Coord>(memos[i].coords, &coords);
+        err = ConvertToGSArray<API_Coord, API_Coord>(_memo.coords, &coords);
     }
 
-    for (unsigned int i = 0; i < coords.GetSize(); i++)
+    for (API_Coord _coord: coords)
     {
-        WriteReport_Alert("X = %f, Y = %f", coords[i].x, coords[i].y);
+        WriteReport_Alert("X = %f, Y = %f", _coord.x, _coord.y);
     }
-
-    BMKillHandle((GSHandle*)&selNeigs);
 
     return;
 }
@@ -165,7 +139,7 @@ static	GSErrCode	__ACENV_CALL	DestroyPageCallback(Int32 refCon, void* /*tabPage*
 
 GSErrCode __ACENV_CALL	MenuCommandHandler(const API_MenuParams* params)
 {
-    return ACAPI_CallUndoableCommand("Element Test API Function",
+    return ACAPI_CallUndoableCommand("Reduce Polygons",
         [&]() -> GSErrCode {
             switch (params->menuItemRef.itemIndex) {
             case 1:		ReducePolygons();				break;
@@ -190,13 +164,9 @@ API_AddonType	__ACENV_CALL	CheckEnvironment(API_EnvirParams* envir)
 {
     if (envir->serverInfo.serverApplication != APIAppl_ArchiCADID)
         return APIAddon_DontRegister;
-#if ACVER == 19
-    ACAPI_Resource_GetLocStr(envir->addOnInfo.name, 32000, 1);
-    ACAPI_Resource_GetLocStr(envir->addOnInfo.description, 32000, 2);
-#else
+
     RSGetIndString(&envir->addOnInfo.name, 32000, 1, ACAPI_GetOwnResModule());
     RSGetIndString(&envir->addOnInfo.description, 32000, 2, ACAPI_GetOwnResModule());
-#endif
 
     return APIAddon_Preload;
 }		/* CheckEnvironment */
@@ -209,17 +179,13 @@ GSErrCode	__ACENV_CALL	RegisterInterface(void)
 {
     GSErrCode err = NoError;
 
-    ACAPI_Register_Menu(32500, 0, MenuCode_UserDef, MenuFlag_Default);
+    ACAPI_MenuItem_RegisterMenu(32500, 0, MenuCode_UserDef, MenuFlag_Default);
 
-#if ACVER == 19
-    err = ACAPI_Register_InfoBoxPanel(InfoBoxPanelRefCon, API_PolyLineID, APIVarId_Generic, IDS_INFOBOXPAGE_NAME, InfoBoxPageId);
-    err = ACAPI_Register_InfoBoxPanel(InfoBoxPanelRefCon, API_HatchID, APIVarId_Generic, IDS_INFOBOXPAGE_NAME, InfoBoxPageId);
-#else
-	err = ACAPI_Register_InfoBoxPanel(InfoBoxPanelRefCon, API_PolyLineID, IDS_INFOBOXPAGE_NAME, InfoBoxPageId);
-	err = ACAPI_Register_InfoBoxPanel(InfoBoxPanelRefCon, API_HatchID, IDS_INFOBOXPAGE_NAME, InfoBoxPageId);
-#endif
+	err = ACAPI_AddOnIntegration_RegisterInfoBoxPanel(InfoBoxPanelRefCon, API_PolyLineID, IDS_INFOBOXPAGE_NAME, InfoBoxPageId);
+	err = ACAPI_AddOnIntegration_RegisterInfoBoxPanel(InfoBoxPanelRefCon, API_HatchID, IDS_INFOBOXPAGE_NAME, InfoBoxPageId);
+
     if (err != NoError) {
-        DBPrintf("Panel_Test add-on: Cannot register info box panel\n");
+        DBPrintf("PolygonReducer add-on: Cannot register info box panel\n");
     }
     else
         registrationSuccess |= InfoBoxPanelRegistered;
@@ -236,7 +202,7 @@ GSErrCode	__ACENV_CALL Initialize(void)
 {
     GSErrCode err = NoError;
 
-    err = ACAPI_Install_MenuHandler(32500, MenuCommandHandler);
+    err = ACAPI_MenuItem_InstallMenuHandler(32500, MenuCommandHandler);
     if (err != NoError)
         DBPrintf("Geometry_Test:: Initialize() ACAPI_Install_MenuHandler failed\n");
 
@@ -250,7 +216,7 @@ GSErrCode	__ACENV_CALL Initialize(void)
         }
 
         if (infoBox != NULL) {
-            err = ACAPI_Install_PanelHandler(infoBox->GetRefCon(), CreatePageCallback, DestroyPageCallback);
+            err = ACAPI_AddOnIntegration_InstallPanelHandler(infoBox->GetRefCon(), CreatePageCallback, DestroyPageCallback);
             if (err != NoError) {
                 DBPrintf("Panel_Test add-on: Info box panel handler initialization failed\n");
             }

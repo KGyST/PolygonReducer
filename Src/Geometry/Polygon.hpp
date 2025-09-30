@@ -1,5 +1,4 @@
 #pragma once
-#pragma once
 #ifndef S_POLYGON_HPP
 #define S_POLYGON_HPP
 
@@ -27,6 +26,8 @@ namespace S {
 
     public:
         Polygon(const API_ElementMemo* p_memo);
+        Polygon(const API_Neig*);
+        Polygon();
         ~Polygon();
 
         std::string getGDLcode();
