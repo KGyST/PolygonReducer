@@ -30,6 +30,16 @@ bool IsItPolygon(API_Neig const &i_neig)
     return false;
 }
 
+bool IsItPolygon(API_Element * const &i_elem)
+{
+    if  (   i_elem->header.type.typeID == API_PolyLineID
+        ||  i_elem->header.type.typeID == API_HatchID
+        )
+        return true;
+
+    return false;
+}
+
 API_Guid NeigToAPIGuid(API_Neig const &i_neig)
 {
     return i_neig.guid;

@@ -11,6 +11,7 @@
 void TrackPoly(const API_Polygon*, const API_ElementMemo*);
 
 bool IsItPolygon(API_Neig const&);
+bool IsItPolygon(API_Element* const&);
 
 API_Guid NeigToAPIGuid(API_Neig const&);
 

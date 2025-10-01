@@ -7,8 +7,112 @@
 #include "../PolygonReducer.template.hpp"
 #include "../Utils/Utils.hpp"
 #include "Array.hpp"
+#include <APIdefs_Elements.h>
 
 namespace PolygonReducer {
+
+	//-----------------------   Utility functions //-----------------------
+
+	void SetOriginalPolyGUID(const API_Guid i_elemGuid, const API_Guid i_originalGuid, GSErrCode* o_err = nullptr)
+	{
+		GSErrCode err;
+		API_Elem_Head elemHead{};
+
+		elemHead.guid = i_elemGuid;
+
+		API_ElementUserData userdata;
+
+		userdata.dataVersion = 1;
+		userdata.platformSign = GS::Act_Platform_Sign;
+		userdata.flags = APIUserDataFlag_FillWith | APIUserDataFlag_Pickup;
+		userdata.dataHdl = BMAllocateHandle(sizeof(i_originalGuid), ALLOCATE_CLEAR, 0);
+
+		*reinterpret_cast<API_Guid*> (*userdata.dataHdl) = i_originalGuid;
+
+		err = ACAPI_Element_SetUserData(&elemHead, &userdata);
+
+		if (o_err)
+			*o_err = err;
+	}
+
+	std::optional<API_Guid> GetOriginalPolyGUID(const API_Guid& i_guid, GSErrCode* o_err = nullptr)
+	{
+		GSErrCode err;
+		API_Elem_Head elemHead{};
+
+		elemHead.guid = i_guid;
+
+		API_ElementUserData userData = {};
+		err = ACAPI_Element_GetUserData(&elemHead, &userData);
+
+		if (o_err)
+			*o_err = err;
+
+		if (err != NoError || userData.dataHdl == nullptr)
+			return std::nullopt;
+
+		return *reinterpret_cast<API_Guid*>(*userData.dataHdl);
+	}
+
+	//-----------------------
+
+	S::Polygon* GetPolygonByGUID(const API_Guid i_guid, GSErrCode* o_err)
+	{
+		GSErrCode err;
+		//API_SelectionInfo   selectionInfo;
+		API_Element element{};
+		API_ElementMemo _memo;
+		element.header.guid = i_guid;
+
+		err = ACAPI_Element_Get(&element);
+
+		if (err != NoError) {
+			return nullptr;
+		}
+
+		if (IsItPolygon(&element))
+		{
+			GSErrCode err = ACAPI_Element_GetMemo(element.header.guid, &_memo);
+
+			return new S::Polygon{ &_memo };
+		}
+
+		if (o_err)
+			*o_err = err;
+
+		return nullptr;
+	}
+
+
+	std::optional<API_Guid> GetFirstPolygonGUIDFromSelection(GSErrCode* o_err = nullptr)
+	{
+		GSErrCode           err;
+		API_SelectionInfo   selectionInfo;
+		GS::Array<API_Neig> neigs{};
+		API_ElementMemo _memo{};
+
+		err = ACAPI_Selection_Get(&selectionInfo, &neigs, false);
+		if (o_err)
+			*o_err = err;
+
+		if (err != NoError)
+			return std::nullopt;
+
+		for (auto& neig : neigs)
+		{
+			if (IsItPolygon(neig))
+			{
+				return neig.guid;
+			}
+		}
+
+		if (o_err)
+			*o_err = APIERR_NOSEL;
+		return std::nullopt;
+	}
+
+	//----------------------- / Utility functions //-----------------------
+
 	PolygonReducerInfoboxPage::PolygonReducerInfoboxPage(const DG::TabControl& tabControl, TBUI::IAPIToolUIData* p_uiData)
 		:DG::TabPage	(tabControl, 1, ACAPI_GetOwnResModule(), InfoBoxPageId, InvalidResModule)
 		,iUIPointNumber	(GetReference(), iUIPointNumberId)
@@ -36,75 +140,63 @@ namespace PolygonReducer {
 	GSErrCode PolygonReducerInfoboxPage::SetPointNumber(int i_iPoint/*, int i_iMax*/)
 	{
 		GSErrCode   err;
-		//API_Neig** selNeigs{} ;
-		//GS::Array<API_ElementMemo> memos{};
-		GS::Array<API_Guid> guids {};
-		//GS::Array<API_Neig> neigs {};
 		API_Guid guid{};
+		std::optional<API_Guid> original_guid;
+		API_ElementMemo memo{};
+		API_Element element, mask;
+		S::Polygon pgon;
 
-		if (S::Polygon * pgon = GetFirstPolygonFromSelection(&guid)) {
+		if (auto guidOpt = GetFirstPolygonGUIDFromSelection())
+			guid = *guidOpt;
+		else
+			return APIERR_NOSEL;
 
-			err = ACAPI_CallUndoableCommand("Optimize polygons",
-				[&]() -> GSErrCode {
-					pgon->setPointCount(i_iPoint);
+		original_guid = GetOriginalPolyGUID(guid);
 
-					API_ElementMemo mem = pgon->getMemo();
-
-					API_Element element, mask;
-					BNZeroMemory(&element, sizeof(API_Element));
-
-					element.header.guid = guid;
-					err = ACAPI_Element_Get(&element);
-
-					API_Polygon poly;
-					poly.nCoords = BMGetHandleSize((GSHandle)mem.coords) / sizeof(API_Coord) - 1;
-					poly.nSubPolys = BMGetHandleSize((GSHandle)mem.pends) / sizeof(Int32) - 1;
-					poly.nArcs = BMGetHandleSize((GSHandle)mem.parcs) / sizeof(API_PolyArc);
-
-					if (pgon->m_isPolygon)
-						element.hatch.poly = poly;
-					else
-						element.polyLine.poly = poly;
-
-					err = ACAPI_Element_Change(&element, &mask, &mem, APIMemoMask_Polygon, true);
-
-					delete pgon;
-
-					return err;
-				});
-
-			return err;
+		if (original_guid) {
+			pgon = S::Polygon(&*original_guid);
 		}
 		else {
-			return 0; // no polygon found in selection
+			pgon = S::Polygon(&guid);
 		}
+
+		err = ACAPI_CallUndoableCommand("Optimize polygons",
+			[&]() -> GSErrCode {
+				pgon.setPointCount(i_iPoint);
+
+				API_Polygon apiPoly = pgon.toPoly();
+
+				element.header.guid = guid;
+
+				err = ACAPI_Element_Get(&element);
+
+				if (pgon.m_isPolygon)
+					element.hatch.poly = apiPoly;
+				else
+					element.polyLine.poly = apiPoly;
+
+				pgon.getMemo(memo);
+
+				if (original_guid) {
+					SetOriginalPolyGUID(guid, *original_guid);
+
+					err = ACAPI_Element_Change(&element, &mask, &memo, APIMemoMask_Polygon, true);
+
+					return err;
+				}
+				else
+				{
+					err = ACAPI_Element_Create(&element, &memo);
+				}
+
+				return err;
+			});
+
+		return err;
 	}
 
 	int PolygonReducerInfoboxPage::GetPointNumber()
 	{
-		//----- Userdata handling------------------------------------------------
-
-		//API_ElementUserData userData = {};
-
-		//GSErrCode err = ACAPI_Element_GetUserData(&elementHead, &userData);
-
-		//auto originalMemo = memos[i];
-
-		//if (err == NoError && userData.dataHdl != nullptr)
-		//{
-		//	originalMemo = *reinterpret_cast<API_ElementMemo*> (*userData.dataHdl);
-		//}
-
-		//userData.dataVersion = 1;
-		//userData.platformSign = GS::Act_Platform_Sign;
-		//userData.flags = APIUserDataFlag_FillWith | APIUserDataFlag_Pickup;
-		//userData.dataHdl = BMAllocateHandle(sizeof(originalMemo), ALLOCATE_CLEAR, 0);
-		//*reinterpret_cast<API_ElementMemo*> (*userData.dataHdl) = originalMemo;
-
-		//err = ACAPI_Element_SetUserData(&elementHead, &userData);
-
-		//-----/Userdata handling------------------------------------------------
-
 		S::Polygon *pgon = GetFirstPolygonFromSelection();
 
 		if (pgon != NULL) {
@@ -128,10 +220,10 @@ namespace PolygonReducer {
 		err = ACAPI_Selection_Get(&selectionInfo, &neigs, false);
 
 		if (err == APIERR_NOSEL)
-			return NULL;
+			return nullptr;
 
 		if (err != NoError) {
-			return NULL;
+			return nullptr;
 		}
 
 		for (auto& neig : neigs)
@@ -146,7 +238,7 @@ namespace PolygonReducer {
 			}
 		}
 
-		return NULL;
+		return nullptr;
 	}
 
 	// --- PolygonReducerPageObserver -------------------------------------------------

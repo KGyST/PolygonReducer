@@ -3,28 +3,48 @@
 #include "Algorithms.hpp"
 #include "Polygon.hpp"
 #include "../PolygonReducer.template.hpp"
-
+#include <stdexcept>
 
 namespace S {
+    Polygon::Polygon(const Polygon& other)
+        : m_pointCount(other.m_pointCount)
+        , m_isPolygon(other.m_isPolygon)
+        , m_subpolys()
+        , m_segments() {
+        for (auto sp : other.m_subpolys)
+        {
+            m_subpolys.Push(new SubPolygon(*sp));
+        }
+        for (auto s : other.m_segments)
+        {
+            m_segments.Push(new Segment(*s));
+        }
+    }
+
     Polygon::Polygon()
         : m_subpolys()
         , m_segments()
-        , m_isPolygon(true)
-    {
-	}
+        , m_isPolygon(true) {}
+
+    Polygon::Polygon(const API_Guid* p_guid)
+        : Polygon([&] {
+        API_ElementMemo memo{};
+        GSErrCode err = ACAPI_Element_GetMemo(*p_guid, &memo);
+        if (err != NoError)
+            throw std::runtime_error("Cannot get memo");
+        return memo;
+            }()) {}
 
     Polygon::Polygon(const API_Neig* p_neig)
-        : m_subpolys()
-        , m_segments()
-    {
-        API_ElementMemo _memo{};
+        : Polygon([&] {
+        API_ElementMemo memo{};
 
-        GSErrCode err = ACAPI_Element_GetMemo(p_neig->guid, &_memo);
+        GSErrCode err = ACAPI_Element_GetMemo(p_neig->guid, &memo);
         if (err == NoError)
-        {
-            S::Polygon pgon(&_memo);
-        }
-	}
+            throw std::runtime_error("Cannot get memo");
+
+        return memo;
+            } ()) {}
 
     Polygon::Polygon(const API_ElementMemo* p_memo)
         : m_subpolys()
@@ -128,16 +148,14 @@ namespace S {
     }
 
 
-    API_ElementMemo Polygon::getMemo()
+    void Polygon::getMemo(API_ElementMemo& i_memo) const
     {
         Array<API_Coord> _coords;
         Array<API_PolyArc> _parcs;
         Array<Int32> _pends;
         Array<UInt32> _vertIDs;
 
-        API_Coord* _ac = new API_Coord(Coord(m_isPolygon ? 0.00 : -1.00, 0.00).ToAPICoord());    //1st coord special
-        _coords.Push(*_ac);
-        delete _ac;
+        _coords.Push(API_Coord(Coord(m_isPolygon ? 0.00 : -1.00, 0.00).ToAPICoord()));  //1st coord special
 
         UInt32 maxId = 0/*, id = 0*/;
         _pends.Push(0);
@@ -183,15 +201,15 @@ namespace S {
 
         _vertIDs[0] = maxId;
 
-        API_ElementMemo resultMemo;
-        BNZeroMemory(&resultMemo, sizeof(API_ElementMemo));
+        //API_ElementMemo resultMemo;
+        //BNZeroMemory(&resultMemo, sizeof(API_ElementMemo));
 
-        resultMemo.coords = _coords.ToNeigs();
-        resultMemo.parcs = _parcs.ToNeigs();
-        resultMemo.pends = _pends.ToNeigs();
-        resultMemo.vertexIDs = _vertIDs.ToNeigs();
+        i_memo.coords = _coords.ToNeigs();
+        i_memo.parcs = _parcs.ToNeigs();
+        i_memo.pends = _pends.ToNeigs();
+        i_memo.vertexIDs = _vertIDs.ToNeigs();
 
-        return resultMemo;
+        //return i_memo;
     }
 
 
@@ -282,4 +300,21 @@ namespace S {
 
     // Writing in relevant memo as original user data if not present already
     void SetUserdata(){}
+
+    API_Polygon Polygon::toPoly() const
+    { 
+        API_ElementMemo mem{};
+        API_Polygon poly{};
+
+        getMemo(mem);
+
+        poly.nCoords = BMGetHandleSize((GSHandle)mem.coords) / sizeof(API_Coord) - 1;
+        poly.nSubPolys = BMGetHandleSize((GSHandle)mem.pends) / sizeof(Int32) - 1;
+        poly.nArcs = BMGetHandleSize((GSHandle)mem.parcs) / sizeof(API_PolyArc);
+
+		return poly;
+    }
+
+
+
 }

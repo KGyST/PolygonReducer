@@ -26,12 +26,15 @@ namespace S {
 
     public:
         Polygon(const API_ElementMemo* p_memo);
+        Polygon(const API_ElementMemo& p_memo) : Polygon(&p_memo) {};
         Polygon(const API_Neig*);
+        Polygon(const API_Guid*);
+        Polygon(const Polygon&);
         Polygon();
         ~Polygon();
 
         std::string getGDLcode();
-        API_ElementMemo getMemo();
+        void getMemo(API_ElementMemo&) const;
 
         void setPointCount(const unsigned int i_count);     // The main purpose of the addon
         USize getPointCount();                              // 
@@ -45,6 +48,8 @@ namespace S {
 
         Array <SubPolygon*> m_subpolys;           // Subpolygons, like contour or holes
         Array <Segment*> m_segments;             // Segments: arcs or edges
+
+        API_Polygon toPoly() const ;
     };
 }
 #endif // !S_POLYGON_HPP

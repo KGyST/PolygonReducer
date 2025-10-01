@@ -16,17 +16,19 @@ namespace S {
 
 		Array(const Type* const* p_neigs, UINT p_startIdx = 0);
 		//TODO Array(const Type* const* p_neigs, bool (*funcFilter)(inT), outT(*funcConverter)(inT));
-		Array(GS::Array<Type>) {} ;
-		//Array(S::Array<Type>) {} ;
-		Array() {} ;
-		~Array() {};
+		Array(const GS::Array<Type>& other)
+			: GS::Array<Type>(other) {};
+		Array(const S::Array<Type>& other)
+			: GS::Array<Type>(other) {};
+		Array() = default;
+		~Array() = default;
 		Type** ToNeigs() const;
 
 		Array<Type> &Slice(GS::UIndex start, GS::UIndex end) const;
 		void Sort(GS::UIndex start, GS::UIndex end, bool (*funcSort)());
 
-		typename S::Array<Type>::ConstIterator begin(void);
-		typename S::Array<Type>::ConstIterator end(void);
+		typename S::Array<Type>::ConstIterator begin(void) const { return ConstIterator(*this, 0); }
+		typename S::Array<Type>::ConstIterator end(void) const { return ConstIterator(*this, this->GetSize()); }
 	};
 }
 
@@ -49,33 +51,23 @@ S::Array<Type>::Array(const Type* const* p_neigs, UINT p_startIdx)
 	}
 }
 
+
 template <class Type>
 Type** S::Array<Type>::ToNeigs() const
 {
+	// ChatGPT suggested change: use GSHandle directly instead of UINT
 	UINT _size = this->GetSize();
-    Type** neigs = reinterpret_cast<Type**> (BMAllocateHandle(_size * sizeof(Type), ALLOCATE_CLEAR, 0));
-    if (neigs != NULL)
-    {
-        for (UINT i = 0; i < this->GetSize(); i++)
-        {
-            (*neigs)[i] = (Type)(*this)[i];
-        }
-    }
+	GSHandle hdl = BMAllocateHandle(_size * sizeof(Type), ALLOCATE_CLEAR, 0);
+	if (!hdl)
+		return nullptr;
 
-    return neigs;
-}
+	Type* raw = reinterpret_cast<Type*>(*hdl);
+	for (UINT i = 0; i < _size; i++)
+		raw[i] = (*this)[i];
 
-template <class Type>
-inline typename S::Array<Type>::ConstIterator S::Array<Type>::begin(void)
-{
-	return ConstIterator(*this, 0);
-}
-
-template <class Type>
-inline typename S::Array<Type>::ConstIterator S::Array<Type>::end(void)
-{
-	return ConstIterator(*this, this->GetSize() );
+	return reinterpret_cast<Type**>(hdl);
 }
 
 
 #endif // S_ARRAY_HPP
+
