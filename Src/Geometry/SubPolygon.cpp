@@ -44,7 +44,13 @@ namespace S {
         }
     }
 
-    using namespace Geometry;
-
-    SubPolygon::~SubPolygon() {}
+    //SubPolygon::SubPolygon(const SubPolygon& i_other)
+    //{
+    //    m_segments.SetCapacity(i_other.m_segments.GetSize());
+    //    for (auto s : i_other.m_segments)
+    //    {
+    //        m_segments.Push(new Segment(*s));
+    //        //m_segments.Push(s);
+    //    }
+    //}
 }

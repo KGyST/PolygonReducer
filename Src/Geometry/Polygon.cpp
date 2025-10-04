@@ -6,25 +6,42 @@
 #include <stdexcept>
 
 namespace S {
+    //Polygon::Polygon(const Polygon& other)
+    //    : m_pointCount(other.m_pointCount)
+    //    , m_isPolygon(other.m_isPolygon)
+    //    , m_subpolys()
+    //    , m_segments() {
+    //    for (auto s : other.m_segments)
+    //    {
+    //        m_segments.Push(new Segment(*s));
+    //    }
+    //    for (auto sp : other.m_subpolys)
+    //    {
+    //        _sp = 
+    //        m_subpolys.Push(new SubPolygon(*sp));
+    //    }
+    //}
+
     Polygon::Polygon(const Polygon& other)
-        : m_pointCount(other.m_pointCount)
-        , m_isPolygon(other.m_isPolygon)
-        , m_subpolys()
-        , m_segments() {
-        for (auto sp : other.m_subpolys)
-        {
-            m_subpolys.Push(new SubPolygon(*sp));
-        }
-        for (auto s : other.m_segments)
-        {
-            m_segments.Push(new Segment(*s));
-        }
+    {
+        API_ElementMemo memo;
+        BNZeroMemory(&memo, sizeof(API_ElementMemo));
+
+        other.getMemo(memo);
+
+        Polygon rebuilt(&memo);
+        *this = std::move(rebuilt);
+
+        ACAPI_DisposeElemMemoHdls(&memo);
     }
 
+
     Polygon::Polygon()
-        : m_subpolys()
+        : m_pointCount(0)
+        , m_subpolys()
         , m_segments()
         , m_isPolygon(true) {}
+
 
     Polygon::Polygon(const API_Guid* p_guid)
         : Polygon([&] {
@@ -34,6 +51,7 @@ namespace S {
             throw std::runtime_error("Cannot get memo");
         return memo;
             }()) {}
+
 
     Polygon::Polygon(const API_Neig* p_neig)
         : Polygon([&] {
@@ -46,20 +64,19 @@ namespace S {
         return memo;
             } ()) {}
 
+
     Polygon::Polygon(const API_ElementMemo* p_memo)
         : m_subpolys()
         , m_segments()
+        , m_pointCount(0)
     {
-        //Segment _segment;
-
         Array<Int32> _pends(p_memo->pends);
         Array<API_Coord> _coords(p_memo->coords);
         Array<API_PolyArc> _parcs(p_memo->parcs);
         Array<UInt32> _vertexIDs(p_memo->vertexIDs);
         GS::HashTable<UInt32, double> _archTable;
 
-        //for (auto _parc : _parcs)
-        for each (API_PolyArc _parc in _parcs)
+        for (API_PolyArc _parc : _parcs)
         {
             _archTable.Add(_parc.begIndex, _parc.arcAngle);
         }
@@ -102,8 +119,8 @@ namespace S {
 
             if (_segment)
             {
-                m_segments[0]->SetPrev(_segment);
-                _segment->SetNext(m_segments[0]);
+                _sp->m_segments[0]->SetPrev(_segment);
+                _segment->SetNext(_sp->m_segments[0]);
             }
 
             //auto _iLast = sp.m_segments.GetSize() - 1;
@@ -231,6 +248,8 @@ namespace S {
         GS::Sort(newSegments.Begin(), newSegments.End(), [](Segment* s1, Segment* s2) -> bool {return s1->GetIdx() < s2->GetIdx(); });
 
         removeSegment(shortestSegment);
+
+        //delete shortestSegment;
     }
 
 
@@ -277,7 +296,7 @@ namespace S {
             _subPoly->RemoveSegment(i_segment);
         }
 
-        delete i_segment;
+        //delete i_segment;
     }
 
 

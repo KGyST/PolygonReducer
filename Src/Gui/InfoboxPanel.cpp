@@ -142,9 +142,6 @@ namespace PolygonReducer {
 		GSErrCode   err;
 		API_Guid guid{};
 		std::optional<API_Guid> original_guid;
-		API_ElementMemo memo{};
-		API_Element element, mask;
-		S::Polygon pgon;
 
 		if (auto guidOpt = GetFirstPolygonGUIDFromSelection())
 			guid = *guidOpt;
@@ -153,43 +150,57 @@ namespace PolygonReducer {
 
 		original_guid = GetOriginalPolyGUID(guid);
 
-		if (original_guid) {
-			pgon = S::Polygon(&*original_guid);
-		}
-		else {
-			pgon = S::Polygon(&guid);
-		}
-
 		err = ACAPI_CallUndoableCommand("Optimize polygons",
 			[&]() -> GSErrCode {
-				pgon.setPointCount(i_iPoint);
+				S::Polygon *pgon;
+				API_ElementMemo _memo{};
+				API_Element element{}, mask;
+				API_ElementMemo memo{};
 
-				API_Polygon apiPoly = pgon.toPoly();
+				if (original_guid) {
+					pgon = new S::Polygon(&*original_guid);
+				}
+				else {
+					pgon = new S::Polygon(&guid);
+				}
+
+				pgon->setPointCount(i_iPoint);
+
+				GSErrCode _err = NoError;
+
+				API_Polygon apiPoly = pgon->toPoly();
 
 				element.header.guid = guid;
 
-				err = ACAPI_Element_Get(&element);
+				_err = ACAPI_Element_Get(&element);
+				ACAPI_ELEMENT_MASK_CLEAR(mask);
 
-				if (pgon.m_isPolygon)
+				if (pgon->m_isPolygon)
+				{
 					element.hatch.poly = apiPoly;
-				else
-					element.polyLine.poly = apiPoly;
-
-				pgon.getMemo(memo);
-
-				if (original_guid) {
-					SetOriginalPolyGUID(guid, *original_guid);
-
-					err = ACAPI_Element_Change(&element, &mask, &memo, APIMemoMask_Polygon, true);
-
-					return err;
+					ACAPI_ELEMENT_MASK_SET(mask, API_HatchType, poly);
 				}
 				else
 				{
-					err = ACAPI_Element_Create(&element, &memo);
+					element.polyLine.poly = apiPoly;
+					ACAPI_ELEMENT_MASK_SET(mask, API_PolyLineType, poly);
 				}
 
-				return err;
+				pgon->getMemo(memo);
+
+				if (original_guid) {
+					_err = ACAPI_Element_Change(&element, &mask, &memo, APIMemoMask_Polygon, true);
+				}
+				else
+				{
+					_err = ACAPI_Element_Create(&element, &memo);
+					
+					SetOriginalPolyGUID(element.header.guid, guid);
+				}
+
+				delete pgon;
+
+				return _err;
 			});
 
 		return err;

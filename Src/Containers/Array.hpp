@@ -6,6 +6,7 @@
 #define ACExtension
 #include "APIEnvir.h"
 #include "ACAPinc.h"					// also includes APIdefs.h
+#include <type_traits>
 
 namespace S {
 	template <class Type>
@@ -42,12 +43,15 @@ S::Array<Type>::Array(const Type* const* p_neigs, UINT p_startIdx)
 	
 	SetCapacity(nSel);
 
-	Type _an;
-
 	for (UINT i = startIdx; i < nSel; ++i) {
-		_an = (*p_neigs)[i];
+		Type _an = (*p_neigs)[i];
 
-		this->Push(_an);
+		if constexpr (std::is_pointer_v<Type>) {
+			this->Push(new std::remove_pointer_t<Type>(*_an));
+		}
+		else {
+			this->Push(_an);
+		}
 	}
 }
 
