@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<AutoVisualizer xmlns="http://schemas.microsoft.com/vstudio/debugger/natvis/2010">
+
+  <Type Name="S::Segment">
+    <DisplayString>
+      [{m_idx}] {m_start} -> {m_end}
+		</DisplayString>
+  </Type>
+	
+  <Type Name="S::Coord">
+    <DisplayString>
+      ({m_x}, {m_y})
+		</DisplayString>
+  </Type>
+
+</AutoVisualizer>
