@@ -33,6 +33,8 @@ namespace S {
         Polygon();
         ~Polygon();
 
+        Polygon& operator=(const Polygon&);
+
         std::string getGDLcode();
         void getMemo(API_ElementMemo&) const;
 

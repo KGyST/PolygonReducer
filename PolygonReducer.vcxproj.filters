@@ -155,7 +155,10 @@
     <Library Include="$(ACDevKitModules)\DGLib\Win\DGImp.lib">
       <Filter>Libraries</Filter>
     </Library>
-    <Library Include="$(ACDevKitSupport)\Lib\Win\ACAP_STAT.lib">
+    <Library Include="$(ACDevKitModules)\RS\Win\RSImp.LIB">
+      <Filter>Libraries</Filter>
+    </Library>
+    <Library Include="$(ACDevKitSupport)\Lib$(WinCorr)\ACAP_STATD.lib">
       <Filter>Libraries</Filter>
     </Library>
   </ItemGroup>
@@ -187,6 +190,9 @@
       <Filter>Visualizers</Filter>
     </Natvis>
     <Natvis Include="$(NatVisRoot)\Brep.natvis">
+      <Filter>Visualizers</Filter>
+    </Natvis>
+    <Natvis Include="S_Types.natvis">
       <Filter>Visualizers</Filter>
     </Natvis>
   </ItemGroup>

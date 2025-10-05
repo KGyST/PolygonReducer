@@ -42,8 +42,8 @@
     <ACVersion>27</ACVersion>
     <BuildType>Release</BuildType>
   </PropertyGroup>
-	<!-- ACVersion must be defined -->
-  <Import Project="local.props"/>
+  <!-- ACVersion must be defined -->
+  <Import Project="local.props" />
   <PropertyGroup Condition="'$(ACVersion)'=='19'" Label="Configuration">
     <PlatformToolset>Windows7.1SDK</PlatformToolset>
   </PropertyGroup>
@@ -63,8 +63,8 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(ACVersion)'=='27'" Label="Globals">
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
-    <WinCorr/>
-    <ImpCorr/>
+    <WinCorr />
+    <ImpCorr />
   </PropertyGroup>
   <PropertyGroup Label="UserMacros">
     <BoostLib>E:\Git\support\boost_1_78_0</BoostLib>
@@ -203,14 +203,14 @@
     </CustomBuild>
     <CustomBuild Include="RINT\$(ProjectName).grc">
       <FileType>Document</FileType>
-			<Command Condition="'$(BuildType)'=='Debug'">"$(ACDevKitSupport)\Tools\Win\ResConv.exe" -m r -D WINDOWS -T W -q utf8 1252 -i "RFIX\$(ProjectName)Fix.grc" -p "RFIX\Images" -D _DEBUG -o "$(OutDir)\RO\$(ProjectName)Fix.grc.rc2"</Command>
+      <Command Condition="'$(BuildType)'=='Debug'">"$(ACDevKitSupport)\Tools\Win\ResConv.exe" -m r -D WINDOWS -T W -q utf8 1252 -i "RFIX\$(ProjectName)Fix.grc" -p "RFIX\Images" -D _DEBUG -o "$(OutDir)\RO\$(ProjectName)Fix.grc.rc2"</Command>
       <Command Condition="'$(BuildType)'=='Release'">"$(ACDevKitSupport)\Tools\Win\ResConv.exe" -m r -D WINDOWS -T W -q utf8 1252 -i "RFIX\$(ProjectName)Fix.grc" -p "RFIX\Images" -o "$(OutDir)\RO\$(ProjectName)Fix.grc.rc2"</Command>
       <Message>Compiling the localized GRC file...</Message>
       <Outputs>$(OutDir)\RO\$(ProjectName).grc.rc2;%(Outputs)</Outputs>
     </CustomBuild>
     <CustomBuild Include="RFIX.WIN\$(ProjectName).rc2">
       <FileType>RC</FileType>
-			<Command Condition="'$(BuildType)'=='Debug'">rc /i "$(ACDevKitSupport)\Inc" /i "$(ACDevKitModules)\DGLib" /i "$(OutDir)\RO" /i "Src" /d _DEBUG /fo"$(OutDir)$(ProjectName).res" "RFIX.WIN\$(ProjectName).rc2"</Command>
+      <Command Condition="'$(BuildType)'=='Debug'">rc /i "$(ACDevKitSupport)\Inc" /i "$(ACDevKitModules)\DGLib" /i "$(OutDir)\RO" /i "Src" /d _DEBUG /fo"$(OutDir)$(ProjectName).res" "RFIX.WIN\$(ProjectName).rc2"</Command>
       <Command Condition="'$(BuildType)'=='Release'">rc /i "$(ACDevKitSupport)\Inc" /i "$(ACDevKitModules)\DGLib" /i "$(OutDir)\RO" /i "Src" /fo"$(OutDir)$(ProjectName).res" "RFIX.WIN\$(ProjectName).rc2"</Command>
       <Message>Compiling the RC2 file...</Message>
       <Outputs>$(OutDir)$(ProjectName).res;%(Outputs)</Outputs>
@@ -255,7 +255,7 @@
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
-	<ItemGroup>
+  <ItemGroup>
     <Natvis Include="$(NatVisRoot)\Brep.natvis" />
     <Natvis Include="$(NatVisRoot)\DynamicObject.natvis" />
     <Natvis Include="$(NatVisRoot)\Geometry.natvis" />
@@ -264,5 +264,6 @@
     <Natvis Include="$(NatVisRoot)\GSXML.natvis" />
     <Natvis Include="$(NatVisRoot)\IO.natvis" />
     <Natvis Include="$(NatVisRoot)\ODB.natvis" />
+    <Natvis Include="S_Types.natvis" />
   </ItemGroup>
 </Project>

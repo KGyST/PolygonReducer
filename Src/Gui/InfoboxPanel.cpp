@@ -152,30 +152,32 @@ namespace PolygonReducer {
 
 		err = ACAPI_CallUndoableCommand("Optimize polygons",
 			[&]() -> GSErrCode {
-				S::Polygon *pgon;
+				S::Polygon pgon;
 				API_ElementMemo _memo{};
 				API_Element element{}, mask;
 				API_ElementMemo memo{};
 
 				if (original_guid) {
-					pgon = new S::Polygon(&*original_guid);
+					//pgon = new S::Polygon(&*original_guid);
+					pgon = S::Polygon(& *original_guid );
 				}
 				else {
-					pgon = new S::Polygon(&guid);
+					//pgon = new S::Polygon(&guid);
+					pgon = S::Polygon (&guid)  ;
 				}
 
-				pgon->setPointCount(i_iPoint);
+				pgon.setPointCount(i_iPoint);
 
 				GSErrCode _err = NoError;
 
-				API_Polygon apiPoly = pgon->toPoly();
+				API_Polygon apiPoly = pgon.toPoly();
 
 				element.header.guid = guid;
 
 				_err = ACAPI_Element_Get(&element);
 				ACAPI_ELEMENT_MASK_CLEAR(mask);
 
-				if (pgon->m_isPolygon)
+				if (pgon.m_isPolygon)
 				{
 					element.hatch.poly = apiPoly;
 					ACAPI_ELEMENT_MASK_SET(mask, API_HatchType, poly);
@@ -186,7 +188,7 @@ namespace PolygonReducer {
 					ACAPI_ELEMENT_MASK_SET(mask, API_PolyLineType, poly);
 				}
 
-				pgon->getMemo(memo);
+				pgon.getMemo(memo);
 
 				if (original_guid) {
 					_err = ACAPI_Element_Change(&element, &mask, &memo, APIMemoMask_Polygon, true);
@@ -198,7 +200,7 @@ namespace PolygonReducer {
 					SetOriginalPolyGUID(element.header.guid, guid);
 				}
 
-				delete pgon;
+				//delete pgon;
 
 				return _err;
 			});

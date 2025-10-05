@@ -6,34 +6,72 @@
 #include <stdexcept>
 
 namespace S {
-    //Polygon::Polygon(const Polygon& other)
-    //    : m_pointCount(other.m_pointCount)
-    //    , m_isPolygon(other.m_isPolygon)
-    //    , m_subpolys()
-    //    , m_segments() {
-    //    for (auto s : other.m_segments)
-    //    {
-    //        m_segments.Push(new Segment(*s));
-    //    }
-    //    for (auto sp : other.m_subpolys)
-    //    {
-    //        _sp = 
-    //        m_subpolys.Push(new SubPolygon(*sp));
-    //    }
-    //}
-
     Polygon::Polygon(const Polygon& other)
-    {
-        API_ElementMemo memo;
-        BNZeroMemory(&memo, sizeof(API_ElementMemo));
+        : m_pointCount(other.m_pointCount)
+        , m_isPolygon(other.m_isPolygon)
+        , m_subpolys()
+        , m_segments() {
+        GS::HashTable<Segment* , int> _sMap{};
+        int _iDx = 0;
 
-        other.getMemo(memo);
+        for (auto s: other.m_segments)
+        {
+            m_segments.Push(new Segment(*s));
+            _sMap.Add(s, _iDx++);
+        }
 
-        Polygon rebuilt(&memo);
-        *this = std::move(rebuilt);
-
-        ACAPI_DisposeElemMemoHdls(&memo);
+        for (SubPolygon* sp : other.m_subpolys)
+        {
+            SubPolygon* _nsp = new SubPolygon(*sp);
+            _nsp->m_segments.Clear();
+            m_subpolys.Push(_nsp);
+            for (auto s : sp->m_segments)
+            {
+                int _segIdx = _sMap[s];
+                Segment *_seg = m_segments[_segIdx];
+                _nsp->m_segments.Push(_seg);
+                _sMap.Add(_seg, _segIdx);
+            }
+            for (auto s : _nsp->m_segments)
+            {
+                int _segIdx = _sMap[s];
+                Segment* _seg = m_segments[_segIdx];
+                int _prevIdx = _sMap[s->GetPrev()];
+                int _nextIdx = _sMap[s->GetNext()];
+                _seg->SetPrev(m_segments[_prevIdx]);
+                _seg->SetNext(m_segments[_nextIdx]);
+			}
+        }
     }
+
+    void swap(Polygon& a, Polygon& b) noexcept {
+        using std::swap;
+        swap(a.m_subpolys, b.m_subpolys);
+        swap(a.m_segments, b.m_segments);
+        swap(a.m_isPolygon, b.m_isPolygon);
+        //swap(a.m_pointCount, b.m_pointCount);
+    }
+
+    Polygon& Polygon::operator=(const Polygon& other) {
+        if (this != &other) {
+            Polygon temp(other);
+            swap(*this, temp);
+        }
+        return *this;
+    }
+
+    //Polygon::Polygon(const Polygon& other)
+    //{
+    //    API_ElementMemo memo;
+    //    BNZeroMemory(&memo, sizeof(API_ElementMemo));
+
+    //    other.getMemo(memo);
+
+    //    Polygon rebuilt(&memo);
+    //    *this = std::move(rebuilt);
+
+    //    ACAPI_DisposeElemMemoHdls(&memo);
+    //}
 
 
     Polygon::Polygon()
@@ -165,7 +203,7 @@ namespace S {
     }
 
 
-    void Polygon::getMemo(API_ElementMemo& i_memo) const
+    void Polygon::getMemo(API_ElementMemo& io_memo) const
     {
         Array<API_Coord> _coords;
         Array<API_PolyArc> _parcs;
@@ -178,7 +216,7 @@ namespace S {
         _pends.Push(0);
         _vertIDs.Push(0);
 
-        for each (SubPolygon* sp in m_subpolys)
+        for (SubPolygon* sp: m_subpolys)
         {
             _coords.Push(sp->m_segments[0]->GetStart()->ToAPICoord());
             UInt32 iFirstSegmentIdx = ++maxId;
@@ -186,7 +224,7 @@ namespace S {
             _vertIDs.Push(iFirstSegmentIdx);
             //maxId = sp->m_segments[0]->GetStartIdx() > maxId ? sp->m_segments[0]->GetStartIdx() : maxId;
             
-            for each (Segment* _segment in sp->m_segments)
+            for (Segment* _segment: sp->m_segments)
             {
                 //++id;
 
@@ -221,18 +259,16 @@ namespace S {
         //API_ElementMemo resultMemo;
         //BNZeroMemory(&resultMemo, sizeof(API_ElementMemo));
 
-        i_memo.coords = _coords.ToNeigs();
-        i_memo.parcs = _parcs.ToNeigs();
-        i_memo.pends = _pends.ToNeigs();
-        i_memo.vertexIDs = _vertIDs.ToNeigs();
-
-        //return i_memo;
+        io_memo.coords = _coords.ToNeigs();
+        io_memo.parcs = _parcs.ToNeigs();
+        io_memo.pends = _pends.ToNeigs();
+        io_memo.vertexIDs = _vertIDs.ToNeigs();
     }
 
 
     void Polygon::removeShortestEdge()
     {
-        Array <Segment*> newSegments(m_segments);
+        //Array <Segment*> newSegments(m_segments);
 
         GS::Sort(m_segments.Begin(), m_segments.End(), [](Segment* s1, Segment* s2) -> bool {return s1->GetLength() < s2->GetLength(); });
 
@@ -245,7 +281,8 @@ namespace S {
         _prevSeg->SetEndIdx(shortestSegment->GetEndIdx() );
         _nextSeg->SetStartIdx(shortestSegment->GetEndIdx());
 
-        GS::Sort(newSegments.Begin(), newSegments.End(), [](Segment* s1, Segment* s2) -> bool {return s1->GetIdx() < s2->GetIdx(); });
+        //GS::Sort(newSegments.Begin(), newSegments.End(), [](Segment* s1, Segment* s2) -> bool {return s1->GetIdx() < s2->GetIdx(); });
+        GS::Sort(m_segments.Begin(), m_segments.End(), [](Segment* s1, Segment* s2) -> bool {return s1->GetIdx() < s2->GetIdx(); });
 
         removeSegment(shortestSegment);
 
