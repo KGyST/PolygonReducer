@@ -34,6 +34,7 @@
 #include "Gui/InfoboxPanel.hpp"
 #include "PolygonReducer.template.hpp"			//templated functions' definitions
 //#include "PolygonReducer.hpp"
+#include "Logger/Logger.hpp"
 
 using namespace PolygonReducer;
 // MUST NOT BE IN NAMESPACE
@@ -54,6 +55,7 @@ enum {
 };
 
 PolygonReducerPanel* infoBox = NULL;
+Logger logger("Karlisoft", "PolygonReducer");
 
 // ----------------------------------  --------------------------------
 

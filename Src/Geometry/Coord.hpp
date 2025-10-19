@@ -44,3 +44,4 @@ namespace S {
 }
 
 #endif // !S_COORD_HPP
+

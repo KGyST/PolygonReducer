@@ -9,6 +9,9 @@
 #include "../PolygonReducer.hpp"
 #include "../Geometry/Polygon.hpp"
 #include <optional>
+#include "Logger/Logger.hpp"
+
+extern Logger logger;
 
 namespace PolygonReducer {
 	S::Polygon* GetFirstPolygonFromSelection(API_Guid* o_guid = NULL);

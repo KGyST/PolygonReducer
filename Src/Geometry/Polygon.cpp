@@ -5,6 +5,7 @@
 #include "../PolygonReducer.template.hpp"
 #include <stdexcept>
 #include <algorithm>
+#include <boost/format.hpp>
 
 namespace S {
 	// Internal helper functions
@@ -65,6 +66,7 @@ namespace S {
         return *this;
     }
 
+	// // FIXME this should be a good check if a polygon can be reproduced from another's memo
     //Polygon::Polygon(const Polygon& other)
     //{
     //    API_ElementMemo memo;
@@ -299,6 +301,8 @@ namespace S {
         Segment* shortestSegment = m_segments[0];
         Segment* _prevSeg = shortestSegment->GetPrev();
         Segment* _nextSeg = shortestSegment->GetNext();
+
+		logger.Log(GS::UniString("Removing segment: ") + shortestSegment->ToString() + GS::UniString("Length:") + str(boost::format("%-.2f ") % shortestSegment->GetLength()));
 
         intersectSegments( _prevSeg, _nextSeg);
 

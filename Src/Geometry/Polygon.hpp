@@ -9,7 +9,9 @@
 #include "../PolygonReducer.hpp"
 #include "Array.hpp"
 #include <string>
+#include "Logger/Logger.hpp"
 
+extern Logger logger;
 
 namespace S {
     class Polygon

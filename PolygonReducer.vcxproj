@@ -42,7 +42,7 @@
     <ACVersion>27</ACVersion>
     <BuildType>Release</BuildType>
   </PropertyGroup>
-  <!-- ACVersion must be defined -->
+  <!-- ACVersion must be defined for local.props-->
   <Import Project="local.props" />
   <PropertyGroup Condition="'$(ACVersion)'=='19'" Label="Configuration">
     <PlatformToolset>Windows7.1SDK</PlatformToolset>
@@ -177,6 +177,9 @@
     <ClInclude Include="Src\Utils\Utils.hpp" />
     <ClInclude Include="Src\AC$(ACVersion)\APICommon.h" />
     <ClInclude Include="$(CommonModules)\AC27.hpp" />
+    <ClInclude Include="$(CommonModules)\Logger\Logger.hpp" />
+    <ClInclude Include="$(CommonModules)\WinReg\WinReg.hpp" />
+    <ClInclude Include="$(CommonModules)\DateTime\DateTime.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Src\Containers\Array.cpp" />
@@ -191,6 +194,9 @@
     <ClCompile Include="Src\PolygonReducer.cpp" />
     <ClCompile Include="Src\Geometry\SubPolygon.cpp" />
     <ClCompile Include="Src\Geometry\Segment.cpp" />
+    <ClCompile Include="$(CommonModules)\Logger\Logger.cpp" />
+    <ClCompile Include="$(CommonModules)\DateTime\DateTime.cpp" />
+    <ClCompile Include="$(CommonModules)\WinReg\WinReg.cpp" />
     <ClCompile Include="Src\AC$(ACVersion)\APICommon.c" />
   </ItemGroup>
   <ItemGroup>
