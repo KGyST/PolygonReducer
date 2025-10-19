@@ -4,8 +4,21 @@
 #include "Polygon.hpp"
 #include "../PolygonReducer.template.hpp"
 #include <stdexcept>
+#include <algorithm>
 
 namespace S {
+	// Internal helper functions
+
+    void _swap(Polygon& a, Polygon& b) noexcept {
+        using std::swap;
+        swap(a.m_subpolys, b.m_subpolys);
+        swap(a.m_segments, b.m_segments);
+        swap(a.m_isPolygon, b.m_isPolygon);
+        //swap(a.m_pointCount, b.m_pointCount);
+    }
+
+	// Constructors, destructors, assignment operators
+
     Polygon::Polygon(const Polygon& other)
         : m_pointCount(other.m_pointCount)
         , m_isPolygon(other.m_isPolygon)
@@ -44,18 +57,10 @@ namespace S {
         }
     }
 
-    void swap(Polygon& a, Polygon& b) noexcept {
-        using std::swap;
-        swap(a.m_subpolys, b.m_subpolys);
-        swap(a.m_segments, b.m_segments);
-        swap(a.m_isPolygon, b.m_isPolygon);
-        //swap(a.m_pointCount, b.m_pointCount);
-    }
-
     Polygon& Polygon::operator=(const Polygon& other) {
         if (this != &other) {
             Polygon temp(other);
-            swap(*this, temp);
+            _swap(*this, temp);
         }
         return *this;
     }
@@ -127,17 +132,18 @@ namespace S {
         else
             m_isPolygon = false;    // Polyline
 
-        for (UInt32 i = 1; i < _pends.GetSize(); i++)
+        for (UInt32 i = 1; i < _pends.GetSize(); ++i)
         {
             SubPolygon* _sp = new SubPolygon;
             Segment* _sPrev=nullptr;
             Segment* _segment = nullptr;
 
-            for (UInt32 j = (UInt32)_pends[i - 1] + 1; j < (UInt32)_pends[i]; j++)
-            {
+            for (UInt32 j = (UInt32)_pends[i - 1] + 1; j < (UInt32)_pends[i]; ++j)
+            {   
                 API_Coord c1(_coords[j]);
                 API_Coord c2(_coords[j + 1]);
                 _segment = new Segment(_idx++, _vertexIDs[j], _vertexIDs[j + 1], c1, c2);
+
                 if (_archTable.ContainsKey(j))
                 {
                     _segment->SetArc(_archTable[j]);
@@ -189,7 +195,11 @@ namespace S {
     }
 
 
-    std::string Polygon::getGDLcode() {
+	// Accessors, mutators and other methods
+
+
+    std::string Polygon::getGDLcode() const
+    {
         using namespace std;
 
         string result = "";
@@ -266,10 +276,24 @@ namespace S {
     }
 
 
+    double Polygon::getShortestEdgeLength() const
+    // Length of the shortest edge
+    {
+        if (m_segments.GetSize() == 0)
+            return 0.00;
+        double _minLength = m_segments[0]->GetLength();
+        for (Segment* _seg: m_segments)
+        {
+            double _len = _seg->GetLength();
+            if (_len < _minLength)
+                _minLength = _len;
+        }
+		return _minLength;
+    }
+
+
     void Polygon::removeShortestEdge()
     {
-        //Array <Segment*> newSegments(m_segments);
-
         GS::Sort(m_segments.Begin(), m_segments.End(), [](Segment* s1, Segment* s2) -> bool {return s1->GetLength() < s2->GetLength(); });
 
         Segment* shortestSegment = m_segments[0];
@@ -278,10 +302,9 @@ namespace S {
 
         intersectSegments( _prevSeg, _nextSeg);
 
-        _prevSeg->SetEndIdx(shortestSegment->GetEndIdx() );
+        _prevSeg->SetEndIdx(shortestSegment->GetEndIdx());
         _nextSeg->SetStartIdx(shortestSegment->GetEndIdx());
 
-        //GS::Sort(newSegments.Begin(), newSegments.End(), [](Segment* s1, Segment* s2) -> bool {return s1->GetIdx() < s2->GetIdx(); });
         GS::Sort(m_segments.Begin(), m_segments.End(), [](Segment* s1, Segment* s2) -> bool {return s1->GetIdx() < s2->GetIdx(); });
 
         removeSegment(shortestSegment);
@@ -357,6 +380,7 @@ namespace S {
     // Writing in relevant memo as original user data if not present already
     void SetUserdata(){}
 
+
     API_Polygon Polygon::toPoly() const
     { 
         API_ElementMemo mem{};
@@ -370,7 +394,5 @@ namespace S {
 
 		return poly;
     }
-
-
-
 }
+

@@ -59,7 +59,6 @@ namespace PolygonReducer {
 	S::Polygon* GetPolygonByGUID(const API_Guid i_guid, GSErrCode* o_err)
 	{
 		GSErrCode err;
-		//API_SelectionInfo   selectionInfo;
 		API_Element element{};
 		API_ElementMemo _memo;
 		element.header.guid = i_guid;
@@ -137,7 +136,7 @@ namespace PolygonReducer {
 		m_currentPolygon = currentPolygon;
 	}
 
-	GSErrCode PolygonReducerInfoboxPage::SetPointNumber(int i_iPoint/*, int i_iMax*/)
+	GSErrCode PolygonReducerInfoboxPage::SetPointNumber(const int i_iPoint/*, int i_iMax*/)
 	{
 		GSErrCode   err;
 		API_Guid guid{};

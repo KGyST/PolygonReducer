@@ -59,3 +59,4 @@ API_Coord** ConvertToCoords(API_ElementMemo const &i_memo)
 {
     return i_memo.coords;
 }
+

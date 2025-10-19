@@ -14,17 +14,21 @@
 namespace S {
     class Polygon
     {
-        // Representing a polygon which can have multiple subpolygons
+        // Representing a polygon which can have multiple subpolygons (of class SubPolygon)
         // (first representing the contour, others inner holes; all non-intersecting)
-        // of straight edges and circular arcs 
+		// of straight edges and circular arcs (of class Segment)
     private:
         UINT m_pointCount;
         void removeShortestEdge();
         void removeSegment(Segment* i_segment);
 
-        void SetUserdata();                               //TODO
+        void SetUserdata();                                 //TODO
 
     public:
+        bool m_isPolygon;                                   // False if polyline, true if hatch
+        Array <SubPolygon*> m_subpolys;                     // Subpolygons, like contour or holes
+        Array <Segment*> m_segments;                        // Segments: arcs or edges
+
         Polygon(const API_ElementMemo* p_memo);
         Polygon(const API_ElementMemo& p_memo) : Polygon(&p_memo) {};
         Polygon(const API_Neig*);
@@ -35,23 +39,21 @@ namespace S {
 
         Polygon& operator=(const Polygon&);
 
-        std::string getGDLcode();
+        std::string getGDLcode() const;
         void getMemo(API_ElementMemo&) const;
 
         void setPointCount(const unsigned int i_count);     // The main purpose of the addon
         USize getPointCount();                              // 
 
-        void MoveAllPoints();                               // For testing
+        API_Polygon toPoly() const;
 
-        bool m_isPolygon;                                   // False if polyline
+		double getShortestEdgeLength() const;               // Length of the shortest edge
 
         void intersectSegments( Segment* io_prev,  Segment* io_next);  // Intersect two segments
 
 
-        Array <SubPolygon*> m_subpolys;           // Subpolygons, like contour or holes
-        Array <Segment*> m_segments;             // Segments: arcs or edges
-
-        API_Polygon toPoly() const ;
+        void MoveAllPoints();                               // For testing
     };
 }
 #endif // !S_POLYGON_HPP
+
