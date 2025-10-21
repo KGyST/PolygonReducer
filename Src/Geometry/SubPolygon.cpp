@@ -4,8 +4,8 @@
 using namespace Geometry;
 
 namespace S {
-    SubPolygon::SubPolygon(Array<API_Coord>* coords, Array<API_PolyArc>* pars, Array<UInt32>* vertexIDs)
-        //m_segments({}) 
+    SubPolygon::SubPolygon(Array<API_Coord>* coords, Array<API_PolyArc>* pars, Array<UInt32>* vertexIDs, bool i_isHole)
+		: m_isHole(i_isHole)
     {
         Coord *centerPrev = NULL;
         Coord pointPrev = (*coords)[0], pointThis;
@@ -43,6 +43,23 @@ namespace S {
             midPerpPrev = midPerpThis;
         }
     }
+
+
+    std::string SubPolygon::ToString() const
+    {
+		std::string result = "";
+
+        for(auto s : m_segments)
+        {
+            result += s->ToString(LogFormat::Index) + std::string(" ");
+		}
+
+		if (!result.empty())
+		    result.pop_back();
+
+		return result;
+    }
+
 
     //SubPolygon::SubPolygon(const SubPolygon& i_other)
     //{

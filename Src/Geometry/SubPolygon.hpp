@@ -13,16 +13,19 @@ namespace S {
     class SubPolygon
     {
     private:
-
+		
     public:
         Array <Segment*> m_segments;
+		bool 		m_isHole = false;
 
-        SubPolygon(Array<API_Coord>* coords, Array<API_PolyArc>* pars, Array<UInt32>* vertexIDs);
+        SubPolygon(Array<API_Coord>* coords, Array<API_PolyArc>* pars, Array<UInt32>* vertexIDs, const bool i_isHole = false);
         //SubPolygon(const SubPolygon&);
         SubPolygon() {};
         ~SubPolygon() {};
 
         inline void RemoveSegment(Segment* i_segment) { m_segments.DeleteAll(i_segment); }
+		inline bool isValid() const { return m_segments.GetSize() >= 3; };
+		std::string ToString() const;
     };
 }
 #endif // !S_POLYLINE_HPP

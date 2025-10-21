@@ -13,7 +13,11 @@
 /* Add-On Information */
 
 'STR#' 32000 "Add-on Info strings" {
+#ifdef _DEBUG
+/* [  1] */		"_PolygonReducer"
+#else
 /* [  1] */		"PolygonReducer"
+#endif
 /* [  2] */		"Reduces/decimates polygons"
 }
 

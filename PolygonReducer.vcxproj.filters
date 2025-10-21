@@ -91,6 +91,15 @@
     <ClInclude Include="$(CommonModules)\AC27.hpp">
       <Filter>Source Files</Filter>
     </ClInclude>
+    <ClInclude Include="$(CommonModules)\WinReg\WinReg.hpp">
+      <Filter>Source Files\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="$(CommonModules)\DateTime\DateTime.hpp">
+      <Filter>Source Files\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="$(CommonModules)\Logger\Logger.hpp">
+      <Filter>Source Files\Utils</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Src\PolygonReducer.cpp">
@@ -131,6 +140,15 @@
     </ClCompile>
     <ClCompile Include="Src\AC$(ACVersion)\APICommon.c">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(CommonModules)\Logger\Logger.cpp">
+      <Filter>Source Files\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="$(CommonModules)\DateTime\DateTime.cpp">
+      <Filter>Source Files\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="$(CommonModules)\WinReg\WinReg.cpp">
+      <Filter>Source Files\Utils</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

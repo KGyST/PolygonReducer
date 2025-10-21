@@ -104,14 +104,30 @@ namespace S {
     //    m_end = end;
     //}
 
-
-    std::string Segment::ToString() const
+    std::string Segment::ToString(LogFormat i_format) const
     {
         std::string result = "";
 
-        auto _s = str(boost::format("%-.2f %-.2f \n") % m_start.GetX() % m_start.GetY());
-
-        result += std::string(_s);
+		switch (i_format) {
+		case LogFormat::Default:
+            result = str(boost::format("%-.2f %-.2f") % m_start.GetX() % m_start.GetY());
+			return result;
+        case LogFormat::Index:
+			result = str(boost::format("[%d]") % m_idx);
+            return result;
+		case LogFormat::Short:
+            result = str(boost::format("[%d]: [%d] %-.2f %-.2f -> [%d] %-.2f %-.2f") % m_idx % m_startIdx % m_start.GetX() % m_start.GetY() % m_endIdx % m_end.GetX() % m_end.GetY());
+			return result;
+		case LogFormat::Detailed:
+			result += str(boost::format("Segment Idx: %d\n") % m_idx);
+			result += str(boost::format(" StartIdx: %d, EndIdx: %d\n") % m_startIdx % m_endIdx);
+			result += str(boost::format(" Start: %-.2f %-.2f\n") % m_start.GetX() % m_start.GetY());
+			result += str(boost::format(" End: %-.2f %-.2f\n") % m_end.GetX() % m_end.GetY());
+			result += str(boost::format(" Length: %-.2f\n") % GetLength());
+			result += str(boost::format(" Arc Angle: %-.2f\n") % m_angle);
+			result += str(boost::format(" Radius: %-.2f\n") % m_radius);
+			return result;
+		}
 
         return result;
     }

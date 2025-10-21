@@ -183,8 +183,11 @@ namespace S {
             //    l = l + 1;
             //}
 
+            _sp->m_isHole = true;
             m_subpolys.Push(_sp);
         }
+
+        m_subpolys[0]->m_isHole = false;
     }
 
 
@@ -302,18 +305,16 @@ namespace S {
         Segment* _prevSeg = shortestSegment->GetPrev();
         Segment* _nextSeg = shortestSegment->GetNext();
 
-		logger.Log(GS::UniString("Removing segment: ") + shortestSegment->ToString() + GS::UniString("Length:") + str(boost::format("%-.2f ") % shortestSegment->GetLength()));
-
+		logger.Log(GS::UniString("Removing segment: ") + shortestSegment->ToString(LogFormat::Short));
+        
         intersectSegments( _prevSeg, _nextSeg);
 
         _prevSeg->SetEndIdx(shortestSegment->GetEndIdx());
-        _nextSeg->SetStartIdx(shortestSegment->GetEndIdx());
+        //_nextSeg->SetStartIdx(shortestSegment->GetEndIdx());
 
         GS::Sort(m_segments.Begin(), m_segments.End(), [](Segment* s1, Segment* s2) -> bool {return s1->GetIdx() < s2->GetIdx(); });
 
         removeSegment(shortestSegment);
-
-        //delete shortestSegment;
     }
 
 
@@ -328,18 +329,19 @@ namespace S {
 
         double eps = 0, radEps = 0;
 
-        XLinesEps(lin1, lin2, &xc, eps, radEps);
-
-        io_prev->SetEnd(xc);
-        io_next->SetStart(xc);
-        io_prev->SetNext(io_next);
-        io_next->SetPrev(io_prev);
+        if (XLinesEps(lin1, lin2, &xc, eps, radEps))
+        {
+            io_prev->SetEnd(xc);
+            io_next->SetStart(xc);
+            io_prev->SetNext(io_next);
+            io_next->SetPrev(io_prev);
+        }
     } 
 
 
     void Polygon::setPointCount(const unsigned int i_count)
     {
-        for (UINT i = getPointCount(); i > i_count; i--)
+        for (UINT i = getPointCount(); i > i_count; --i)
         {
             removeShortestEdge();
         }
@@ -355,12 +357,33 @@ namespace S {
     void Polygon::removeSegment(Segment* i_segment)
     {
         m_segments.DeleteAll(i_segment);
-        for each (SubPolygon* _subPoly in m_subpolys)
+
+		GS::Array <SubPolygon*> _spToDelete;
+
+        for (SubPolygon* _subPoly: m_subpolys)
         {
             _subPoly->RemoveSegment(i_segment);
+            if (!_subPoly->isValid() )
+            {
+				_spToDelete.Push(_subPoly);
+			}
         }
 
-        //delete i_segment;
+        delete i_segment;
+
+        for (SubPolygon* _sp : _spToDelete)
+        {
+			logger.Log(GS::UniString("Removing subpolygon: ") + _sp->ToString());
+
+            for (Segment* _seg : _sp->m_segments)
+            {
+                m_segments.DeleteAll(_seg);
+                delete _seg;
+			}       
+
+            m_subpolys.DeleteAll(_sp);
+            delete _sp;
+		}
     }
 
 

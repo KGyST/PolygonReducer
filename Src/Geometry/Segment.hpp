@@ -11,6 +11,15 @@
 #include <string>
 #include "Coord.hpp"
 
+
+enum class LogFormat {
+    Default,
+    Index,
+    Short,
+    Detailed
+};
+
+
 namespace S {
     class Segment
     {
@@ -73,8 +82,9 @@ namespace S {
 
         inline void SetPrev(Segment* prev) { m_previous = prev; };
         inline void SetNext(Segment* next) { m_next = next; };
-
-        std::string ToString() const;
+        
+        inline std::string ToString() const { return ToString(LogFormat::Default); };
+        std::string ToString(LogFormat) const;
 
         //bool S::Segment::operator()(S::Segment *s1, S::Segment *s2);
     };
