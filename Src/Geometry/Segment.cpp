@@ -2,6 +2,7 @@
 #include "APICommon.h"
 
 #include <boost/format.hpp>
+#include "GeometryHelpers.hpp"
 
 using namespace Geometry;
 
@@ -15,7 +16,7 @@ namespace S {
         m_endIdx = endIdx;
         m_status1 = 0;
         m_status2 = 0;
-        m_angle = 0.00;
+        //m_angle = 0.00;
     }
 
     //Segment::Segment(int idx, int startIdx, int endIdx, const Coord& start, const Coord& end, Segment* prev, Segment* next)
@@ -27,10 +28,16 @@ namespace S {
     //    ,m_previous(prev)
     //    ,m_next(next)
 
+  //  Segment& Segment::operator=(const Segment& i_other) noexcept
+  //  {
+  //      if (this == &i_other)
+  //          return *this;
 
-    Segment::~Segment()
-    {
-    }
+  //      m_previous = i_other.m_previous;
+  //      m_next = i_other.m_next;
+
+		//return *this;
+  //  }
 
     const Coord Segment::MidPoint() const
     {
@@ -57,7 +64,7 @@ namespace S {
 
     void Segment::SetArc(double angle)
     {
-        m_angle = angle;
+        //m_angle = angle;
 
         Coord _start(m_start.GetX(), m_start.GetY());
         Coord _end(m_end.GetX(), m_end.GetY());
@@ -66,13 +73,13 @@ namespace S {
         ::Coord rotEnd = RotCoord(_start.ToCoord(), _end.ToCoord(), sin(_halfAngle), cos(_halfAngle));
         ::Coord rotStart = RotCoord(_end.ToCoord(), _start.ToCoord(), sin(-_halfAngle), cos(-_halfAngle));
 
-#if ACVER == 19
-        Sector lin1 = SetSector(_start.ToCoord(), rotEnd);
-        Sector lin2 = SetSector(_end.ToCoord(), rotStart);
-#else
+//#if ACVER == 19
+//        Sector lin1 = SetSector(_start.ToCoord(), rotEnd);
+//        Sector lin2 = SetSector(_end.ToCoord(), rotStart);
+//#else
 		Sector lin1{ _start.ToCoord(), rotEnd };
 		Sector lin2{ _end.ToCoord(), rotStart };
-#endif
+//#endif
 
         ::Coord xc(0, 0);
 
@@ -80,19 +87,19 @@ namespace S {
 
         XLinesEps(lin1, lin2, &xc, eps, radEps);
 
-        m_center.SetX(xc.x);
-        m_center.SetY(xc.y);
-        m_radius = (float)Dist(xc, _start.ToCoord());
+        m_center->SetX(xc.x);
+        m_center->SetY(xc.y);
+        //m_radius = (float)Dist(xc, _start.ToCoord());
     }
 
 
-    void Segment::SetArc(double angle, Coord center)
-    {
-        m_angle = angle;
-        m_center.SetX(center.GetX());
-        m_center.SetY(center.GetY());
-        //TODO m_radius
-    }
+    //void Segment::SetArc(double angle, Coord center)
+    //{
+    //    //m_angle = angle;
+    //    m_center->SetX(center.GetX());
+    //    m_center->SetY(center.GetY());
+    //    //TODO m_radius
+    //}
 
     //void Segment::SetStart(const Coord& start)
     //{
@@ -103,6 +110,7 @@ namespace S {
     //{
     //    m_end = end;
     //}
+
 
     std::string Segment::ToString(LogFormat i_format) const
     {
@@ -124,22 +132,23 @@ namespace S {
 			result += str(boost::format(" Start: %-.2f %-.2f\n") % m_start.GetX() % m_start.GetY());
 			result += str(boost::format(" End: %-.2f %-.2f\n") % m_end.GetX() % m_end.GetY());
 			result += str(boost::format(" Length: %-.2f\n") % GetLength());
-			result += str(boost::format(" Arc Angle: %-.2f\n") % m_angle);
-			result += str(boost::format(" Radius: %-.2f\n") % m_radius);
+			//result += str(boost::format(" Arc Angle: %-.2f\n") % m_angle);
+			//result += str(boost::format(" Radius: %-.2f\n") % m_radius);
 			return result;
 		}
 
         return result;
     }
 
+
     const double Segment::GetLength() const
     {
-        if (m_angle > -EPS
-            && m_angle < EPS)
+        if (!m_center)
             return sqrt(pow((m_end.GetX() - m_start.GetX()), 2) + pow((m_end.GetY() - m_start.GetY()), 2));
         else
-            return abs(m_radius * m_angle);
+            return abs(*GetRad() * *GetAng());
     }
+
 
     const Sector Segment::toSector() const
     {
@@ -151,6 +160,53 @@ namespace S {
     }
 
 
+    void Segment::intersect(Segment* io_other)
+    {
+        using namespace Geometry;
+
+        Sector lin1{ GetStart()->ToCoord(), GetEnd()->ToCoord() };
+        Sector lin2{ io_other->GetStart()->ToCoord(), io_other->GetEnd()->ToCoord() };
+
+        ::Coord xc(0, 0);
+
+        double eps = 0, radEps = 0;
+
+        if (XLinesEps(lin1, lin2, &xc, eps, radEps))
+        {
+            SetEnd(xc);
+            io_other->SetStart(xc);
+            SetNext(io_other);
+            io_other->SetPrev(this);
+        }
+        else
+        {
+            //TODO handle parallel lines
+		}
+    }
+
+    std::optional<double>   Segment::GetRad() const
+    {
+        if (m_center)
+            return Dist(m_start, *m_center);
+        else
+			return std::nullopt;
+    }
+
+    std::optional<double>  Segment::GetAng() const
+    {
+        if (!m_center)
+            return std::nullopt;
+
+          Coord v1 = m_start - *m_center;
+          Coord v2 = m_end - *m_center;
+
+          double angle = std::atan2(v2.GetY(), v2.GetX()) - std::atan2(v1.GetY(), v1.GetX());
+
+          if (angle < 0)
+            angle += 2 * PI;
+
+          return angle;
+    }       
 
     //bool Segment::operator()(Segment *s1, Segment *s2) { return s1->GetLength() < s2->GetLength() ; }
 

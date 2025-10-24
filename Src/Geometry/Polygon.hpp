@@ -21,18 +21,19 @@ namespace S {
 		// of straight edges and circular arcs (of class Segment)
     private:
         UINT m_pointCount;
-        void removeShortestEdge();
-        void removeSegment(Segment* i_segment);
+        //void removeShortestEdge();
+        void removeShortestSegment();
+        SubPolygon* getSPolyHavingShortestSegment() const;
 
         void SetUserdata();                                 //TODO
 
     public:
         bool m_isPolygon;                                   // False if polyline, true if hatch
         Array <SubPolygon*> m_subpolys;                     // Subpolygons, like contour or holes
-        Array <Segment*> m_segments;                        // Segments: arcs or edges
+        //Array <Segment*> m_segments;                        // Segments: arcs or edges
 
         Polygon(const API_ElementMemo* p_memo);
-        Polygon(const API_ElementMemo& p_memo) : Polygon(&p_memo) {};
+        Polygon(const API_ElementMemo& p_memo) : Polygon(&p_memo) {}
         Polygon(const API_Neig*);
         Polygon(const API_Guid*);
         Polygon(const Polygon&);
@@ -44,15 +45,14 @@ namespace S {
         std::string getGDLcode() const;
         void getMemo(API_ElementMemo&) const;
 
-        void setPointCount(const unsigned int i_count);     // The main purpose of the addon
-        USize getPointCount();                              // 
+        void setPointCount(unsigned int i_count);     // The main purpose of the addon
+        USize getPointCount() const;                              // 
 
         API_Polygon toPoly() const;
 
 		double getShortestEdgeLength() const;               // Length of the shortest edge
 
         void intersectSegments( Segment* io_prev,  Segment* io_next);  // Intersect two segments
-
 
         void MoveAllPoints();                               // For testing
     };

@@ -1,7 +1,7 @@
 #include "Array.hpp"
 
 template <class Type>
-S::Array<Type>& S::Array<Type>::Slice(GS::UIndex start, GS::UIndex end) const
+S::Array<Type>& S::Array<Type>::slice(GS::UIndex start, GS::UIndex end) const
 {
     S::Array<Type> resultArray{};
 
@@ -14,7 +14,7 @@ S::Array<Type>& S::Array<Type>::Slice(GS::UIndex start, GS::UIndex end) const
 }
 
 template <class Type>
-void S::Array<Type>::Sort(GS::UIndex start, GS::UIndex end, bool (*funcSort)())
+void S::Array<Type>::sort(GS::UIndex start, GS::UIndex end, bool (*funcSort)())
 {
     auto _start = ConstIterator(*this, start);
     auto _end = ConstIterator(*this, end);

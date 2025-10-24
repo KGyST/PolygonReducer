@@ -10,6 +10,7 @@
 #include "Sector2DData.h"
 #include <string>
 #include "Coord.hpp"
+#include <optional>
 
 
 enum class LogFormat {
@@ -38,9 +39,9 @@ namespace S {
         Segment*        m_next;
         bool            m_startPoint;       // Is it a start of a subcontour
         //For arcs:
-        Coord           m_center;
-        double          m_angle;
-        float           m_radius;
+        std::optional<Coord>           m_center;
+        //double          m_angle;
+        //float           m_radius;
 
         //DELETE
         void init(int idx, int startIdx, int endIdx, const Coord& p_start, const Coord& p_end);
@@ -54,17 +55,20 @@ namespace S {
         inline Segment(int idx, int startIdx, int endIdx, const Coord& start, const Coord& end) { init(idx, startIdx, endIdx, start, end); };
         //Segment(int idx=0, int startIdx=0, int endIdx=0, const Coord& start=NULL, const Coord& end = NULL, Segment* prev = NULL, Segment* next =NULL);
         //Segment(Sector sect);
-        ~Segment();
 
-        inline unsigned int GetIdx() const { return m_idx; };
-        inline const Coord* GetStart() const { return &m_start; };
-        inline const Coord* GetEnd() const { return &m_end; };
-        inline Segment* GetPrev() const { return m_previous; };
-        inline Segment* GetNext() const { return m_next; };
-        inline unsigned int GetStartIdx() const { return m_startIdx; };
-        inline unsigned int GetEndIdx() const { return m_endIdx; };
-        inline float   GetRad() const { return m_radius; };
-        inline double  GetAng() const { return m_angle; };
+        //Segment& operator=(const Segment&) noexcept;
+
+        unsigned int GetIdx() const { return m_idx; }
+        const Coord* GetStart() const { return &m_start; }
+        const Coord* GetEnd() const { return &m_end; }
+        Segment* GetPrev() const { return m_previous; }
+        Segment* GetNext() const { return m_next; }
+        unsigned int GetStartIdx() const { return m_startIdx; }
+        unsigned int GetEndIdx() const { return m_endIdx; }
+        std::optional<double>   GetRad() const;
+        std::optional<double>  GetAng() const;
+        std::optional<Coord>  GetCenter() const { return m_center; }
+        void SetCenter(const Coord i_center) { m_center = i_center; }
 
         const Coord MidPoint() const;
         const Segment MidPerp() const;
@@ -73,7 +77,7 @@ namespace S {
         const Sector toSector() const;
 
         void SetArc(double angle);
-        void SetArc(double angle, const Coord center);
+        //void SetArc(double angle, const Coord center);
 
         inline void SetStart(const Coord& start) { m_start = start; };
         inline void SetEnd(const Coord& end) { m_end = end; };
@@ -82,6 +86,8 @@ namespace S {
 
         inline void SetPrev(Segment* prev) { m_previous = prev; };
         inline void SetNext(Segment* next) { m_next = next; };
+
+        void Segment::intersect(Segment* io_other);
         
         inline std::string ToString() const { return ToString(LogFormat::Default); };
         std::string ToString(LogFormat) const;

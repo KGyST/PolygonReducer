@@ -13,9 +13,7 @@ namespace S {
     void _swap(Polygon& a, Polygon& b) noexcept {
         using std::swap;
         swap(a.m_subpolys, b.m_subpolys);
-        swap(a.m_segments, b.m_segments);
         swap(a.m_isPolygon, b.m_isPolygon);
-        //swap(a.m_pointCount, b.m_pointCount);
     }
 
 	// Constructors, destructors, assignment operators
@@ -23,40 +21,12 @@ namespace S {
     Polygon::Polygon(const Polygon& other)
         : m_pointCount(other.m_pointCount)
         , m_isPolygon(other.m_isPolygon)
-        , m_subpolys()
-        , m_segments() {
-        GS::HashTable<Segment* , int> _sMap{};
-        int _iDx = 0;
-
-        for (auto s: other.m_segments)
+    {
+        for (auto _sp : other.m_subpolys)
         {
-            m_segments.Push(new Segment(*s));
-            _sMap.Add(s, _iDx++);
+            m_subpolys.Push(new SubPolygon(*_sp));
         }
-
-        for (SubPolygon* sp : other.m_subpolys)
-        {
-            SubPolygon* _nsp = new SubPolygon(*sp);
-            _nsp->m_segments.Clear();
-            m_subpolys.Push(_nsp);
-            for (auto s : sp->m_segments)
-            {
-                int _segIdx = _sMap[s];
-                Segment *_seg = m_segments[_segIdx];
-                _nsp->m_segments.Push(_seg);
-                _sMap.Add(_seg, _segIdx);
-            }
-            for (auto s : _nsp->m_segments)
-            {
-                int _segIdx = _sMap[s];
-                Segment* _seg = m_segments[_segIdx];
-                int _prevIdx = _sMap[s->GetPrev()];
-                int _nextIdx = _sMap[s->GetNext()];
-                _seg->SetPrev(m_segments[_prevIdx]);
-                _seg->SetNext(m_segments[_nextIdx]);
-			}
-        }
-    }
+    } 
 
     Polygon& Polygon::operator=(const Polygon& other) {
         if (this != &other) {
@@ -80,13 +50,10 @@ namespace S {
     //    ACAPI_DisposeElemMemoHdls(&memo);
     //}
 
-
     Polygon::Polygon()
         : m_pointCount(0)
         , m_subpolys()
-        , m_segments()
         , m_isPolygon(true) {}
-
 
     Polygon::Polygon(const API_Guid* p_guid)
         : Polygon([&] {
@@ -96,7 +63,6 @@ namespace S {
             throw std::runtime_error("Cannot get memo");
         return memo;
             }()) {}
-
 
     Polygon::Polygon(const API_Neig* p_neig)
         : Polygon([&] {
@@ -109,10 +75,9 @@ namespace S {
         return memo;
             } ()) {}
 
-
     Polygon::Polygon(const API_ElementMemo* p_memo)
         : m_subpolys()
-        , m_segments()
+        //, m_segments()
         , m_pointCount(0)
     {
         Array<Int32> _pends(p_memo->pends);
@@ -157,7 +122,6 @@ namespace S {
                     _sPrev->SetNext(_segment);
                 }
 
-                m_segments.Push(_segment);
                 _sp->m_segments.Push(_segment);
 
                 _sPrev = _segment;
@@ -190,18 +154,12 @@ namespace S {
         m_subpolys[0]->m_isHole = false;
     }
 
-
     Polygon::~Polygon() {
-        for each (Segment* _seg in m_segments)
-            delete _seg;
-
-        for each (SubPolygon * _sp in m_subpolys)
+        for (SubPolygon* _sp: m_subpolys)
             delete _sp;
-    }
-
+    } 
 
 	// Accessors, mutators and other methods
-
 
     std::string Polygon::getGDLcode() const
     {
@@ -209,14 +167,18 @@ namespace S {
 
         string result = "";
 
-        for each (Segment* _s in m_segments)
+        for (SubPolygon* _sp: m_subpolys)
         {
-            result += _s->ToString();
-        }
+            result += _sp->ToString();
+		}
+
+        //for each (Segment* _s in m_segments)
+        //{
+        //    result += _s->ToString();
+        //}
 
         return result;
     }
-
 
     void Polygon::getMemo(API_ElementMemo& io_memo) const
     {
@@ -243,11 +205,10 @@ namespace S {
             {
                 //++id;
 
-                if  (   _segment->GetAng() < -EPS
-                    ||  _segment->GetAng() >  EPS)
+                if  (   _segment->GetCenter())
                 {
                     API_PolyArc _arc;
-                    _arc.arcAngle = _segment->GetAng();
+                    _arc.arcAngle = *_segment->GetAng();
                     _arc.begIndex = maxId;
                     //_arc.begIndex = _segment->GetStartIdx();
                     _arc.endIndex = maxId + 1;
@@ -280,43 +241,49 @@ namespace S {
         io_memo.vertexIDs = _vertIDs.ToNeigs();
     }
 
-
     double Polygon::getShortestEdgeLength() const
     // Length of the shortest edge
     {
-        if (m_segments.GetSize() == 0)
+        if (m_subpolys.GetSize() == 0)
             return 0.00;
-        double _minLength = m_segments[0]->GetLength();
-        for (Segment* _seg: m_segments)
+
+        double _minLength = DBL_MAX;
+
+        for (UINT i = 1; i < m_subpolys.GetSize(); ++i)
         {
-            double _len = _seg->GetLength();
+            double _len = m_subpolys[i]->getShortestEdgeLength();
             if (_len < _minLength)
                 _minLength = _len;
-        }
+		}
+
 		return _minLength;
     }
 
-
-    void Polygon::removeShortestEdge()
+    SubPolygon* Polygon::getSPolyHavingShortestSegment() const
     {
-        GS::Sort(m_segments.Begin(), m_segments.End(), [](Segment* s1, Segment* s2) -> bool {return s1->GetLength() < s2->GetLength(); });
+        SubPolygon* _resultSP = nullptr;
 
-        Segment* shortestSegment = m_segments[0];
-        Segment* _prevSeg = shortestSegment->GetPrev();
-        Segment* _nextSeg = shortestSegment->GetNext();
+        for (SubPolygon* _sp : m_subpolys)
+        {
+            if (_resultSP == nullptr || _sp->getShortestSegment()->GetLength() < _resultSP->getShortestSegment()->GetLength())
+                _resultSP = _sp;
+        }
 
-		logger.Log(GS::UniString("Removing segment: ") + shortestSegment->ToString(LogFormat::Short));
-        
-        intersectSegments( _prevSeg, _nextSeg);
-
-        _prevSeg->SetEndIdx(shortestSegment->GetEndIdx());
-        //_nextSeg->SetStartIdx(shortestSegment->GetEndIdx());
-
-        GS::Sort(m_segments.Begin(), m_segments.End(), [](Segment* s1, Segment* s2) -> bool {return s1->GetIdx() < s2->GetIdx(); });
-
-        removeSegment(shortestSegment);
+		return _resultSP;
     }
 
+    void Polygon::removeShortestSegment()
+    {
+        SubPolygon* SPhavingShortestSegment = getSPolyHavingShortestSegment();
+		SPhavingShortestSegment->removeShortestSegment();
+
+        if (!SPhavingShortestSegment->isValid())
+        {
+            m_subpolys.DeleteAll(SPhavingShortestSegment);
+
+            logger.Log(GS::UniString("Removing SubPoly: ") + SPhavingShortestSegment->ToString());
+		}
+    }
 
     void Polygon::intersectSegments(Segment * io_prev, Segment * io_next)
     {
@@ -338,54 +305,25 @@ namespace S {
         }
     } 
 
-
-    void Polygon::setPointCount(const unsigned int i_count)
+    void Polygon::setPointCount(unsigned int i_count)
     {
         for (UINT i = getPointCount(); i > i_count; --i)
         {
-            removeShortestEdge();
+            removeShortestSegment();
         }
     }
 
-
-    USize Polygon::getPointCount()
+    USize Polygon::getPointCount() const
     {
-        return m_segments.GetSize();
-    }
+		USize count = 0;
 
-
-    void Polygon::removeSegment(Segment* i_segment)
-    {
-        m_segments.DeleteAll(i_segment);
-
-		GS::Array <SubPolygon*> _spToDelete;
-
-        for (SubPolygon* _subPoly: m_subpolys)
+        for (auto sp : m_subpolys)
         {
-            _subPoly->RemoveSegment(i_segment);
-            if (!_subPoly->isValid() )
-            {
-				_spToDelete.Push(_subPoly);
-			}
+            count += sp->m_segments.GetSize();
         }
 
-        delete i_segment;
-
-        for (SubPolygon* _sp : _spToDelete)
-        {
-			logger.Log(GS::UniString("Removing subpolygon: ") + _sp->ToString());
-
-            for (Segment* _seg : _sp->m_segments)
-            {
-                m_segments.DeleteAll(_seg);
-                delete _seg;
-			}       
-
-            m_subpolys.DeleteAll(_sp);
-            delete _sp;
-		}
+		return count;
     }
-
 
     // Only for testning
     void Polygon::MoveAllPoints()
@@ -406,7 +344,6 @@ namespace S {
 
     // Writing in relevant memo as original user data if not present already
     void SetUserdata(){}
-
 
     API_Polygon Polygon::toPoly() const
     { 

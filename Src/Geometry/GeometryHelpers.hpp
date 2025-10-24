@@ -5,6 +5,7 @@
 
 #include "APIEnvir.h"
 #include "ACAPinc.h"					// also includes APIdefs.h
+#include "Coord.hpp"
 
 namespace S {
 }
