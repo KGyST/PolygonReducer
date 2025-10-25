@@ -87,8 +87,10 @@ namespace S {
 
         XLinesEps(lin1, lin2, &xc, eps, radEps);
 
-        m_center->SetX(xc.x);
-        m_center->SetY(xc.y);
+		m_center = Coord(xc.x, xc.y);
+
+        //m_center->SetX(xc.x);
+        //m_center->SetY(xc.y);
         //m_radius = (float)Dist(xc, _start.ToCoord());
     }
 
@@ -184,7 +186,7 @@ namespace S {
 		}
     }
 
-    std::optional<double>   Segment::GetRad() const
+    std::optional<double> Segment::GetRad() const
     {
         if (m_center)
             return Dist(m_start, *m_center);
@@ -192,20 +194,20 @@ namespace S {
 			return std::nullopt;
     }
 
-    std::optional<double>  Segment::GetAng() const
+    std::optional<double> Segment::GetAng() const
     {
         if (!m_center)
             return std::nullopt;
 
-          Coord v1 = m_start - *m_center;
-          Coord v2 = m_end - *m_center;
+        Coord v1 = m_start - *m_center;
+        Coord v2 = m_end - *m_center;
 
-          double angle = std::atan2(v2.GetY(), v2.GetX()) - std::atan2(v1.GetY(), v1.GetX());
+        double angle = std::atan2(v2.GetY(), v2.GetX()) - std::atan2(v1.GetY(), v1.GetX());
 
-          if (angle < 0)
-            angle += 2 * PI;
+        if (angle < 0)
+        angle += 2 * PI;
 
-          return angle;
+        return angle;
     }       
 
     //bool Segment::operator()(Segment *s1, Segment *s2) { return s1->GetLength() < s2->GetLength() ; }
