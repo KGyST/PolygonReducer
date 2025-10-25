@@ -184,6 +184,7 @@
     <None Include="Src\PolygonReducer.template.hpp">
       <Filter>Source Files</Filter>
     </None>
+    <None Include="Readme.md" />
   </ItemGroup>
   <ItemGroup>
     <Natvis Include="$(NatVisRoot)\ODB.natvis">

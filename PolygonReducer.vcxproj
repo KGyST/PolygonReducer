@@ -256,6 +256,7 @@
     </Library>
   </ItemGroup>
   <ItemGroup>
+    <None Include="Readme.md" />
     <None Include="Src\PolygonReducer.template.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
