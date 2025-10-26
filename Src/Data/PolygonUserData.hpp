@@ -15,7 +15,7 @@ private:
 	API_ElementMemo m_memo;
 public:
 	int						getCurrentPoint()	const		{ return m_iCurrentPoint; };
-	const API_ElementMemo&	getMemo()			const		{ return m_memo; };
+	const API_ElementMemo&	GetMemo()			const		{ return m_memo; };
 	void					setCurrentPoint(int iPoint)		{m_iCurrentPoint = iPoint;};
 	void					setMemo(API_ElementMemo memo)	{ m_memo = memo; };
 };

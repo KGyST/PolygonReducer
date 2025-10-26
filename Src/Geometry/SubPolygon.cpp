@@ -16,14 +16,14 @@ namespace S {
         double eps = 0, radEps = 0;
 
         const Segment s((*coords)[0], (*coords)[1]);
-        Sector midPerpPrev = s.MidPerp().toSector();
+        Sector midPerpPrev = s.MidPerp().ToSector();
 
         for(UInt16 i = 1; i < coords->GetSize(); ++i)
         {
             pointThis = (*coords)[i];
             Segment s(pointPrev, pointThis);
 
-            const Sector midPerpThis = s.MidPerp().toSector();
+            const Sector midPerpThis = s.MidPerp().ToSector();
 
             XLinesEps(midPerpPrev, midPerpThis, &centerThis, eps, radEps);
 
@@ -51,7 +51,7 @@ namespace S {
 
         for(auto s : m_segments)
         {
-            result += s->ToString(LogFormat::Index) + std::string(" ");
+            result += s->ToString(LogFormat::Default) + std::string(" ");
 		}
 
 		// Remove last space
@@ -122,9 +122,7 @@ namespace S {
 
         logger.Log(GS::UniString("Removing segment: ") + shortestSegment->ToString(LogFormat::Short));
 
-        _prevSeg->intersect(_nextSeg);
-
-        _prevSeg->SetEndIdx(shortestSegment->GetEndIdx());
+        _prevSeg->Intersect(_nextSeg);
 
         removeSegment(shortestSegment);
     }

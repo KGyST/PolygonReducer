@@ -18,6 +18,7 @@
 	- 2 char tabs
 	- Pascal case function names
 	- std::optional return values with errorcode pointers defaulted nullptr
+	- AC19 removal
 
 ## (Later)
 - Boost.Test

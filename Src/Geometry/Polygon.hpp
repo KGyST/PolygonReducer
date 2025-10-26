@@ -43,7 +43,7 @@ namespace S {
         Polygon& operator=(const Polygon&);
 
         std::string getGDLcode() const;
-        void getMemo(API_ElementMemo&) const;
+        void GetMemo(API_ElementMemo&) const;
 
         void setPointCount(unsigned int i_count);     // The main purpose of the addon
         USize getPointCount() const;                              // 

@@ -187,7 +187,7 @@ namespace PolygonReducer {
 					ACAPI_ELEMENT_MASK_SET(mask, API_PolyLineType, poly);
 				}
 
-				pgon.getMemo(memo);
+				pgon.GetMemo(memo);
 
 				if (original_guid) {
 					_err = ACAPI_Element_Change(&element, &mask, &memo, APIMemoMask_Polygon, true);
