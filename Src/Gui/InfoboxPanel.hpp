@@ -29,6 +29,7 @@ namespace PolygonReducer {
 			iUISliderId = 3,
 			SettingsButtonId = 4,
 			GDLButtonId = 5,
+			iUISmallestLengthId,a
 		};
 	
 		DG::PosIntEdit			iUIPointNumber;

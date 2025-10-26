@@ -40,11 +40,12 @@
 }
 
 'GDLG'  InfoBoxPageId  TabPage  0    0  160   36  "" {
-/* [  1] */ LeftText            0    0  100   18  ExtraSmall  vCenter  "Segment number:"
-/* [  2] */ IntEdit            115    1  45   16  ExtraSmall  "0" "1000"
-/* [  3] */ Slider       	   0     18 126   16  1 0 100  TopLeft
-/* [  4] */ Button			   127   18  16   16  ExtraSmall  ""
-/* [  5] */ Button			   144   18  16   16  ExtraSmall  ""
+/* [  1] */ LeftText            36    0  79   18  ExtraSmall  vCenter  "Segment number:"
+/* [  2] */ IntEdit            0    0  34   16  ExtraSmall  "0" "1000"
+/* [  3] */ Slider       	   36     18 124   16  1 0 100  TopLeft
+/* [  4] */ Button			   0   18  16   16  ExtraSmall  ""
+/* [  5] */ Button			   18   18  16   16  ExtraSmall  ""
+/* [  6] */ LengthEdit        115   0  45   16  ExtraSmall  "0" "1000"
 }
 
 'DLGH'  InfoBoxPageId  DLG_InfoBoxPageId {
@@ -53,6 +54,7 @@
 3	"Current number of segments"		Slider_0
 4	"Open Settings window"				Button_0
 5	"Open GDL output window"			Button_1
+6	"Smallest segment length"			LengthEdit_0
 }
 
 /*----------------------------------------------------------*/
