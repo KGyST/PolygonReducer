@@ -42,6 +42,7 @@ namespace S {
 
         Polygon& operator=(const Polygon&);
 
+        // Getters
         std::string getGDLcode() const;
         void GetMemo(API_ElementMemo&) const;
 
@@ -50,11 +51,13 @@ namespace S {
 
         API_Polygon toPoly() const;
 
-		double getShortestEdgeLength() const;               // Length of the shortest edge
+		double GetShortestEdgeLength() const;               // Length of the shortest edge
 
         void intersectSegments( Segment* io_prev,  Segment* io_next);  // Intersect two segments
 
         void MoveAllPoints();                               // For testing
+        // Converters
+
     };
 }
 #endif // !S_POLYGON_HPP

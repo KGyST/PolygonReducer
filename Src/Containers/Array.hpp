@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #ifndef S_ARRAY_HPP
 #define S_ARRAY_HPP
@@ -7,6 +7,7 @@
 #include "APIEnvir.h"
 #include "ACAPinc.h"					// also includes APIdefs.h
 #include <type_traits>
+#include <optional>
 
 namespace S {
 	template <class Type>
@@ -25,11 +26,22 @@ namespace S {
 		~Array() = default;
 		Type** ToNeigs() const;
 
-		Array<Type> &slice(GS::UIndex start, GS::UIndex end) const;
+		Array<Type> Slice(int start, int end, int step) const;
+		Array<Type> Slice(int start, int end) const {return Slice(start, end, 1);}
+		Array<Type> Slice(int start = 0) const { return Slice(start, this->GetSize() );}
 		void sort(GS::UIndex start, GS::UIndex end, bool (*funcSort)());
+		std::optional<int> IndexOf(const Type& item) const;
 
 		typename S::Array<Type>::ConstIterator begin(void) const { return ConstIterator(*this, 0); }
 		typename S::Array<Type>::ConstIterator end(void) const { return ConstIterator(*this, this->GetSize()); }
+	};
+
+	template <class Type>
+	class CircularArray : public Array<Type>
+	{
+	public:
+		Type operator[](int) const;
+		// FIXME Rotate method
 	};
 }
 
@@ -55,7 +67,6 @@ S::Array<Type>::Array(const Type* const* p_neigs, UINT p_startIdx)
 	}
 }
 
-
 template <class Type>
 Type** S::Array<Type>::ToNeigs() const
 {
@@ -72,6 +83,51 @@ Type** S::Array<Type>::ToNeigs() const
 	return reinterpret_cast<Type**>(hdl);
 }
 
+template <class Type>
+S::Array<Type> S::Array<Type>::Slice(int start, int end, int step) const
+{
+	int size = GetSize();
+
+	if (start < 0)
+		start = size + start;
+	if (end < 0)
+		end = size + end;
+
+	if (start < 0) start = 0;
+	if (end > size) end = size;
+	if (end < start) end = start;
+
+	S::Array<Type> resultArray{};
+
+	for (int i = start; i < end; i += step)
+	{
+		resultArray.Push((*this)[i]);
+	}
+
+	return resultArray;
+}
+
+template <class Type>
+std::optional<int> S::Array<Type>::IndexOf(const Type& item) const {
+	for (int i = 0; i < this->GetSize(); ++i) {
+		if ((*this)[i] == item) {
+			return i;
+		}
+	}
+	return std::nullopt;
+}
+
+template <class Type>
+Type S::CircularArray<Type>::operator[](int i_index) const
+{
+	int size = this->GetSize();
+	if (size == 0)
+		throw std::out_of_range("CircularArray is empty");
+
+	i_index = ((i_index % size) + size) % size;
+
+	return GS::Array<Type>::operator[](i_index);
+}
 
 #endif // S_ARRAY_HPP
 

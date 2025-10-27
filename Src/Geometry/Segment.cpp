@@ -137,6 +137,23 @@ namespace S {
         }
     }
 
+    bool Segment::IsCollinear(const Segment* i_other) const
+    {
+        using namespace Geometry;
+
+        Sector lin1 = ToSector();
+        Sector lin2 = i_other->ToSector();
+
+        ::Coord xc(0, 0);
+
+        double eps = 0, radEps = 0;
+
+        if (XLinesEps(lin1, lin2, &xc, eps, radEps))
+            return false;
+        else
+            return true;
+    }
+
     std::optional<Coord> Segment::IntersectMidPerp(Segment* io_other)
     {
         using namespace Geometry;
@@ -157,7 +174,7 @@ namespace S {
     std::optional<double> Segment::GetRad() const
     {
         if (m_center)
-            return Dist(m_start, *m_center);
+            return Dist(m_start.ToCoord(), m_center->ToCoord());
         else
 			return std::nullopt;
     }
@@ -167,13 +184,16 @@ namespace S {
         if (!m_center)
             return std::nullopt;
 
-        Coord v1 = m_start - *m_center;
-        Coord v2 = m_end - *m_center;
+        Coord v1 = *m_center - m_start;
+        Coord v2 = *m_center - m_end;
 
         double angle = std::atan2(v2.GetY(), v2.GetX()) - std::atan2(v1.GetY(), v1.GetX());
 
-        if (angle < 0)
-        angle += 2 * PI;
+        if (angle < -PI - EPS)
+            angle += 2 * PI;
+
+        if (angle > PI + EPS)
+            angle -= 2 * PI;
 
         return angle;
     }       

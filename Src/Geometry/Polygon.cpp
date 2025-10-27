@@ -57,7 +57,7 @@ namespace S {
 
                 if (_archTable.ContainsKey(j))
                 {
-                    _segment->SetArc(_archTable[j]);
+                    _segment->SetAng(_archTable[j]);
                 }
 
                 if (_sPrev)
@@ -78,6 +78,7 @@ namespace S {
             }
 
             _sp->m_isHole = true;
+            _sp->Preprocess();
             m_subpolys.Push(_sp);
         }
 
@@ -217,7 +218,7 @@ namespace S {
         io_memo.vertexIDs = _vertIDs.ToNeigs();
     }
 
-    double Polygon::getShortestEdgeLength() const
+    double Polygon::GetShortestEdgeLength() const
     // Length of the shortest edge
     {
         if (m_subpolys.GetSize() == 0)
@@ -227,7 +228,7 @@ namespace S {
 
         for (UINT i = 1; i < m_subpolys.GetSize(); ++i)
         {
-            double _len = m_subpolys[i]->getShortestEdgeLength();
+            double _len = m_subpolys[i]->GetShortestEdgeLength();
             if (_len < _minLength)
                 _minLength = _len;
 		}

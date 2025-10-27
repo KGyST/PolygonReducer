@@ -16,16 +16,22 @@ namespace S {
     class SubPolygon
     {
     private:
-		
+        void PolyToArc();
+        void RemoveCollinear();
+        void ArcToPoly();
+
     public:
-        Array <Segment*> m_segments;                // Segments: arcs or edges
+        CircularArray <Segment*> m_segments;                // Segments: arcs or edges
 		bool 		     m_isHole = false;
 
         SubPolygon(Array<API_Coord>* coords, Array<API_PolyArc>* pars, Array<UInt32>* vertexIDs, const bool i_isHole = false);
         SubPolygon(const SubPolygon&);
-        //SubPolygon(SubPolygon&&) noexcept;
         SubPolygon() {} 
-        //~SubPolygon() {};
+        ~SubPolygon() = default;
+
+        void Preprocess();
+        void Postprocess();
+
         //SubPolygon& SubPolygon::operator=(const SubPolygon&);
         SubPolygon& operator=(const SubPolygon&) = delete;
         SubPolygon& operator=(SubPolygon&&) = delete;
@@ -33,10 +39,13 @@ namespace S {
         inline void removeSegment(Segment* i_segment) { m_segments.DeleteAll(i_segment); }
         Segment* getShortestSegment() const;
         void removeShortestSegment();
-        double getShortestEdgeLength() const;
+        double GetShortestEdgeLength() const;
 
 		inline bool isValid() const { return m_segments.GetSize() >= 3; }
-		std::string ToString() const;
+        // Geometry
+        
+        // Converters
+        std::string ToString() const;
     };
 }
 #endif // !S_POLYLINE_HPP

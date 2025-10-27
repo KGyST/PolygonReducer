@@ -72,6 +72,7 @@ namespace S {
         const Coord MidPoint() const;
         const Segment MidPerp() const;
         bool Intersect(Segment* io_other);
+        bool Segment::IsCollinear(const Segment*) const;
         std::optional<Coord> IntersectMidPerp(Segment* io_other);
 
 		// Converters
@@ -82,3 +83,4 @@ namespace S {
 }
 
 #endif // !S_SEGMENT_HPP
+

@@ -45,22 +45,6 @@ namespace S {
         }
     }
 
-    std::string SubPolygon::ToString() const
-    {
-		std::string result = "";
-
-        for(auto s : m_segments)
-        {
-            result += s->ToString(LogFormat::Default) + std::string(" ");
-		}
-
-		// Remove last space
-		if (!result.empty())
-		    result.pop_back();
-
-		return result;
-    }
-
     SubPolygon::SubPolygon(const SubPolygon& i_other)
     {
 		Segment* _prevSeg = nullptr;
@@ -127,7 +111,7 @@ namespace S {
         removeSegment(shortestSegment);
     }
 
-    double SubPolygon::getShortestEdgeLength() const
+    double SubPolygon::GetShortestEdgeLength() const
     {
         double _minLength;
 
@@ -146,5 +130,121 @@ namespace S {
 
 		return _minLength;
     }
+
+    std::string SubPolygon::ToString() const
+    {
+        std::string result = "";
+
+        for (auto s : m_segments)
+        {
+            result += s->ToString(LogFormat::Default) + std::string(" ");
+        }
+
+        // Remove last space
+        if (!result.empty())
+            result.pop_back();
+
+        return result;
+    }
+
+    // --
+
+    void SubPolygon::Preprocess()
+    {
+        RemoveCollinear();
+        PolyToArc();
+    }
+
+    void SubPolygon::Postprocess()
+    {
+        //ArcToPoly();
+    }
+
+    // ----
+
+    void _createArc(Array<Segment*> &io_arc, const Coord* i_prevMidPerpIntSectPt, CircularArray <Segment*> &io_segments)
+    {
+        UINT minSize = 3;
+
+        if (io_arc.GetSize() > minSize)
+        {
+            io_arc[0]->SetCenter(*i_prevMidPerpIntSectPt);
+            io_arc[0]->SetEnd(*io_arc.GetLast()->GetEnd());
+
+            for (Segment* sToDelete : io_arc.Slice(1, io_arc.GetSize()))
+            {
+                io_segments.DeleteAll(sToDelete);
+            }
+        }
+
+        io_arc.Clear();
+    }
+
+    void SubPolygon::PolyToArc()
+    {
+
+        Segment* prevSegment = m_segments[-1];
+        Coord* prevMidPerpIntSectPt = new Coord, * midPerpIntSectPt = new Coord;
+        Array<Segment*> arc;
+        UINT minSize = 3;
+
+        for (Segment* s : m_segments)
+        {
+            std::optional<Coord> _int = s->IntersectMidPerp(prevSegment);
+
+            if (_int)
+                midPerpIntSectPt = &(*_int);
+            else
+				midPerpIntSectPt = nullptr;
+
+            if (prevMidPerpIntSectPt && midPerpIntSectPt)
+                if (*prevMidPerpIntSectPt == *midPerpIntSectPt)
+                {
+                    if (arc.GetSize() == 0)
+                    {
+                        std::optional<int> _index = m_segments.IndexOf(s);
+                        if (_index)
+                        {
+                            arc.Push(m_segments[*_index - 2]);
+                            arc.Push(m_segments[*_index - 1]);
+                        }
+                    }
+                    arc.Push(s);
+                }
+                else
+                {
+                    _createArc(arc, prevMidPerpIntSectPt, m_segments);
+                }
+
+            if (midPerpIntSectPt)
+                *prevMidPerpIntSectPt = *midPerpIntSectPt;
+
+            prevSegment = s;
+        }
+
+        if (arc.GetSize() )
+			// FIXME if arc goes beyond the end and continues at the beginning
+            _createArc(arc, prevMidPerpIntSectPt, m_segments);
+
+        delete prevSegment, prevMidPerpIntSectPt, midPerpIntSectPt;
+    }
+
+    void SubPolygon::RemoveCollinear()
+    {
+        Segment* prevSegment = m_segments[-1];
+
+        for (Segment *s: m_segments)
+        {
+            if (s->IsCollinear(prevSegment) )
+            {
+                prevSegment->SetEnd(*s->GetEnd());
+                m_segments.DeleteAll(s);
+            }
+
+            prevSegment = s;
+        }
+    }
+
+    void SubPolygon::ArcToPoly(){}
 }
 

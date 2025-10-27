@@ -44,6 +44,7 @@ namespace S {
 		const double GetEps(void) const { return m_eps; }
 
 		bool operator== (Coord anotherCoord) const;
+		Coord operator- (const Coord& anotherCoord) const { return this->ToCoord() - anotherCoord.ToCoord(); };
 
 		::Coord ToCoord() const;
 		API_Coord ToAPICoord() const;
