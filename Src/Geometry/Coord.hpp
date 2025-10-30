@@ -9,6 +9,7 @@
 #include "Point2D.hpp"
 #include "Vector2D.hpp"
 #include "GeometryHelpers.hpp"
+#include <optional>
 
 
 namespace S {
@@ -50,6 +51,8 @@ namespace S {
 		API_Coord ToAPICoord() const;
 	};
 }
+
+std::optional<double> AngleBetween(const Coord& i_p1, const Coord& i_cen, const Coord& i_p2);
 
 #endif // !S_COORD_HPP
 
