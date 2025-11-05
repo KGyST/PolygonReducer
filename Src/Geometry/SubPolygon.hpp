@@ -21,6 +21,7 @@ namespace S {
     void ArcToPoly();
     double _SignedArea() const;
     void SubPolygon::_deepCopy(const SubPolygon& other);
+    void _createArc(Array<Segment*>& io_arc, const Coord* i_prevMidPerpIntSectPt, Array <Segment*>& io_delArc);
 
   public:
     CircularArray <Segment*> m_segments;                // Segments: arcs or edges

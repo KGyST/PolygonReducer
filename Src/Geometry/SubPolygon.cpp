@@ -176,23 +176,32 @@ namespace S {
 
   // ----
 
-  //void _createArc(Array<Segment*> &io_arc, const Coord* i_prevMidPerpIntSectPt, Array <Segment*> &io_delArc)
-  //{
-  //    UINT minSize = 3;
+  void SubPolygon::_createArc(Array<Segment*>& io_arc, const Coord* i_prevMidPerpIntSectPt, Array <Segment*>& io_delArc)
+  {
+    UINT minSize = 3;
 
-  //    if (io_arc.GetSize() > minSize)
-  //    {
-  //        io_arc[0]->SetCenter(*i_prevMidPerpIntSectPt);
-  //        io_arc[0]->SetEnd(*io_arc.GetLast()->GetEnd());
+    if (io_arc.GetSize() > minSize)
+    {
+      io_arc[0]->SetEnd(*io_arc.GetLast()->GetEnd());
+      Segment* _nextSegment = io_arc.GetLast()->GetNext();
+      io_arc[0]->SetNext(_nextSegment);
+      _nextSegment->SetPrev(io_arc[0]);
+      std::optional<double> a1 = AngleBetween(io_arc[0]->GetStart()->ToCoord(), i_prevMidPerpIntSectPt->ToCoord(), io_arc[0]->GetEnd()->ToCoord());
+      if (a1)
+      {
+        io_arc[0]->SetAng(IsClockWise() ? -*a1 : *a1);
 
-  //        for (Segment* sToDelete : io_arc.Slice(1, io_arc.GetSize()))
-  //        {
-  //          io_delArc.Push(sToDelete);
-  //        }
-  //    }
+        for (Segment* sToDelete : io_arc.Slice(1, io_arc.GetSize()))
+        {
+          io_delArc.Push(sToDelete);
+        }
+      }
+      else
+        logger.Log("Error calculating arc angle in PolyToArc", 0, LogLev_ERROR);
+    }
 
-  //    io_arc.Clear();
-  //}
+    io_arc.Clear();
+  }
 
   void SubPolygon::PolyToArc()
   {
@@ -226,34 +235,7 @@ namespace S {
           arc.Push(s);
         }
         else
-        {
-          //_createArc(arc, prevMidPerpIntSectPt, _delarc);
-
-          UINT minSize = 3;
-
-          if (arc.GetSize() > minSize)
-          {
-            //arc[0]->SetCenter(*prevMidPerpIntSectPt);
-            arc[0]->SetEnd(*arc.GetLast()->GetEnd());
-            Segment* _nextSegment = arc.GetLast()->GetNext();
-            arc[0]->SetNext(_nextSegment);
-            _nextSegment->SetPrev(arc[0]);
-            std::optional<double> a1 = AngleBetween(arc[0]->GetStart()->ToCoord(), prevMidPerpIntSectPt->ToCoord(), arc[0]->GetEnd()->ToCoord());
-            if (a1)
-            {
-              arc[0]->SetAng(-*a1);
-
-              for (Segment* sToDelete : arc.Slice(1, arc.GetSize()))
-              {
-                _delarc.Push(sToDelete);
-              }
-            }
-            else
-              logger.Log("Error calculating arc angle in PolyToArc", 0, LogLev_ERROR);
-          }
-
-          arc.Clear();
-        }
+          _createArc(arc, prevMidPerpIntSectPt.get(), _delarc);
 
       if (midPerpIntSectPt)
         *prevMidPerpIntSectPt = *midPerpIntSectPt;
@@ -261,9 +243,9 @@ namespace S {
       prevSegment = s;
     }
 
-    // FIXME if arc goes beyond the end and continues at the beginning
+    _createArc(arc, prevMidPerpIntSectPt.get(), _delarc);
 
-    //delete prevSegment;
+    // FIXME if arc goes beyond the end and continues at the beginning
 
     for (Segment* sToDelete : _delarc)
     {
