@@ -101,9 +101,7 @@ namespace S {
 
   Polygon& Polygon::operator=(const Polygon& other) {
     if (this != &other) {
-      //Polygon temp(other);
-      //logger.Log(GS::UniString("Assigning Poly : ") + other.ToString());
-      //_swap(*this, temp);
+      m_isPolyline = other.m_isPolyline;
 
       for (SubPolygon* sp : m_subpolys)
         delete sp;
@@ -228,7 +226,6 @@ namespace S {
 
     //API_ElementMemo resultMemo;
     //BNZeroMemory(&resultMemo, sizeof(API_ElementMemo));
-
     io_memo.coords = _coords.ToNeigs();
     io_memo.parcs = _parcs.ToNeigs();
     io_memo.pends = _pends.ToNeigs();
