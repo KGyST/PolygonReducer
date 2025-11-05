@@ -21,12 +21,10 @@ namespace S {
 	{}
 
 
-	bool Coord::operator==(const Coord anotherCoord) const
+	bool Coord::operator==(const Coord &i_other) const
 	{
-		return	m_x - m_eps < anotherCoord.m_x
-			&&	m_x + m_eps > anotherCoord.m_x
-			&&	m_y - m_eps < anotherCoord.m_y
-			&&	m_y + m_eps > anotherCoord.m_y;
+    return	abs(m_x - i_other.m_x) < m_eps
+			&&		abs(m_y - i_other.m_y) < m_eps;
 	}
 
 

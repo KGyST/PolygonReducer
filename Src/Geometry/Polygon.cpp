@@ -35,8 +35,7 @@ namespace S {
 
     int _idx = 0;
 
-    if (_coords[0].x - EPS < 0.00
-      && _coords[0].x + EPS > 0.00)
+    if (abs(_coords[0].x) < EPS)
       m_isPolyline = false;
     else
       m_isPolyline = true;

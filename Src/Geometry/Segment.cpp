@@ -10,7 +10,7 @@ using namespace Geometry;
 namespace S {
   bool Segment::IsArc() const
   {
-    return (m_angle < -EPS || m_angle > EPS);
+    return (abs(m_angle) > EPS);
   }
 
   void Segment::init(int idx, int startIdx, int endIdx, const Coord& p_start, const Coord& p_end)
@@ -44,7 +44,7 @@ namespace S {
 
   const Coord Segment::MidPoint() const
   {
-    if (-EPS < m_angle && m_angle < EPS)
+    if (abs(m_angle) < EPS)
       return Coord((m_start.GetX() + m_end.GetX()) / 2, (m_start.GetY() + m_end.GetY()) / 2);
     else
     {
@@ -60,7 +60,7 @@ namespace S {
 
   const Segment Segment::MidPerp() const
   {
-    if (-EPS < m_angle && m_angle < EPS)
+    if (abs(m_angle) < EPS)
     {
       ::Coord _start = m_start.ToCoord();
       ::Coord _midPoint = MidPoint().ToCoord();

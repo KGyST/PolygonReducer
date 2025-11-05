@@ -44,7 +44,7 @@ namespace S {
 		const double GetY(void) const { return m_y; }
 		const double GetEps(void) const { return m_eps; }
 
-		bool operator== (Coord anotherCoord) const;
+		bool operator== (const Coord & i_other) const;
 		Coord operator- (const Coord& anotherCoord) const { return this->ToCoord() - anotherCoord.ToCoord(); };
 
 		::Coord ToCoord() const;
