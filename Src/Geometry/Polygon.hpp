@@ -51,6 +51,7 @@ namespace S {
     API_Polygon ToPoly() const;
 
     double GetShortestEdgeLength() const;               // Length of the shortest edge
+    void SetShortestEdgeLength(double i_length);
 
     void IntersectSegments(Segment* io_prev, Segment* io_next);  // Intersect two segments
 

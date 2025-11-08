@@ -29,22 +29,26 @@ namespace PolygonReducer {
       iUISliderId = 3,
       SettingsButtonId = 4,
       GDLButtonId = 5,
-      iUISmallestLengthId, a
+      iUISmallestLengthId, 
     };
+    void SetControls();
 
     DG::PosIntEdit			iUIPointNumber;
-    DG::Slider				iSlider;
-    DG::Button				GDLButton;
-    DG::Button				SettingsButton;
+    DG::Slider				  iSlider;
+    DG::Button				  GDLButton;
+    DG::Button				  SettingsButton;
+    DG::RealEdit        iUISmallestLength;
     TBUI::IAPIToolUIData* uiData;
-    S::Polygon* m_currentPolygon;
+    API_Guid m_currentPolygonGUID;
 
   public:
     PolygonReducerInfoboxPage(const DG::TabControl& tabControl, TBUI::IAPIToolUIData* puiData);
     ~PolygonReducerInfoboxPage();
-    void SetCurrentPolygon(S::Polygon* currentPolygon);
+    void SetCurrentPolyGUID(API_Guid i_currentPolygonGUID);
     int GetPointNumber();
-    GSErrCode SetPointNumber(int/* p_val, int p_max*/);
+    GSErrCode SetPointNumber(int);
+    double GetSmallestLength();
+    GSErrCode SetSmallestLength(double);
   };
 
 

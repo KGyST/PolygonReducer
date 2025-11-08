@@ -8,80 +8,96 @@
 #include "../Utils/Utils.hpp"
 #include "Array.hpp"
 #include <APIdefs_Elements.h>
+#include "../Geometry/Polygon.hpp"
+#include <functional>
 
-namespace PolygonReducer {
+//-----------------------   Utility functions //-----------------------
 
-  //-----------------------   Utility functions //-----------------------
+static void SetOriginalPolyGUID(const API_Guid i_elemGuid, const API_Guid i_originalGuid, GSErrCode* o_err = nullptr)
+{
+  GSErrCode err;
+  API_Elem_Head elemHead{};
 
-  void SetOriginalPolyGUID(const API_Guid i_elemGuid, const API_Guid i_originalGuid, GSErrCode* o_err = nullptr)
-  {
-    GSErrCode err;
-    API_Elem_Head elemHead{};
+  elemHead.guid = i_elemGuid;
 
-    elemHead.guid = i_elemGuid;
+  API_ElementUserData userdata;
 
-    API_ElementUserData userdata;
+  userdata.dataVersion = 1;
+  userdata.platformSign = GS::Act_Platform_Sign;
+  userdata.flags = APIUserDataFlag_FillWith | APIUserDataFlag_Pickup;
+  userdata.dataHdl = BMAllocateHandle(sizeof(i_originalGuid), ALLOCATE_CLEAR, 0);
 
-    userdata.dataVersion = 1;
-    userdata.platformSign = GS::Act_Platform_Sign;
-    userdata.flags = APIUserDataFlag_FillWith | APIUserDataFlag_Pickup;
-    userdata.dataHdl = BMAllocateHandle(sizeof(i_originalGuid), ALLOCATE_CLEAR, 0);
+  *reinterpret_cast<API_Guid*> (*userdata.dataHdl) = i_originalGuid;
 
-    *reinterpret_cast<API_Guid*> (*userdata.dataHdl) = i_originalGuid;
+  err = ACAPI_Element_SetUserData(&elemHead, &userdata);
 
-    err = ACAPI_Element_SetUserData(&elemHead, &userdata);
+  if (o_err)
+    *o_err = err;
+}
 
-    if (o_err)
-      *o_err = err;
-  }
+static std::optional<API_Guid> GetOriginalPolyGUID(const API_Guid& i_guid, GSErrCode* o_err = nullptr)
+{
+  GSErrCode err;
+  API_Elem_Head elemHead{};
 
-  std::optional<API_Guid> GetOriginalPolyGUID(const API_Guid& i_guid, GSErrCode* o_err = nullptr)
-  {
-    GSErrCode err;
-    API_Elem_Head elemHead{};
+  elemHead.guid = i_guid;
 
-    elemHead.guid = i_guid;
+  API_ElementUserData userData = {};
+  err = ACAPI_Element_GetUserData(&elemHead, &userData);
 
-    API_ElementUserData userData = {};
-    err = ACAPI_Element_GetUserData(&elemHead, &userData);
+  if (o_err)
+    *o_err = err;
 
-    if (o_err)
-      *o_err = err;
+  if (err != NoError || userData.dataHdl == nullptr)
+    return std::nullopt;
 
-    if (err != NoError || userData.dataHdl == nullptr)
-      return std::nullopt;
+  return *reinterpret_cast<API_Guid*>(*userData.dataHdl);
+}
 
-    return *reinterpret_cast<API_Guid*>(*userData.dataHdl);
-  }
+static S::Polygon* GetPolygonByGUID(const API_Guid i_guid, GSErrCode* o_err = nullptr)
+{
+  GSErrCode err;
+  API_Element element{};
+  API_ElementMemo _memo;
+  element.header.guid = i_guid;
 
-  //-----------------------
+  err = ACAPI_Element_Get(&element);
 
-  S::Polygon* GetPolygonByGUID(const API_Guid i_guid, GSErrCode* o_err)
-  {
-    GSErrCode err;
-    API_Element element{};
-    API_ElementMemo _memo;
-    element.header.guid = i_guid;
-
-    err = ACAPI_Element_Get(&element);
-
-    if (err != NoError) {
-      return nullptr;
-    }
-
-    if (IsItPolygon(&element))
-    {
-      GSErrCode err = ACAPI_Element_GetMemo(element.header.guid, &_memo);
-
-      return new S::Polygon{ &_memo };
-    }
-
-    if (o_err)
-      *o_err = err;
-
+  if (err != NoError) {
     return nullptr;
   }
 
+  if (IsItPolygon(&element))
+  {
+    GSErrCode err = ACAPI_Element_GetMemo(element.header.guid, &_memo);
+
+    return new S::Polygon{ &_memo };
+  }
+
+  if (o_err)
+    *o_err = err;
+
+  return nullptr;
+}
+
+//-----------------------
+
+namespace PolygonReducer {
+
+  void PolygonReducerInfoboxPage::SetControls()
+  {
+    auto _originalGuid = GetOriginalPolyGUID(m_currentPolygonGUID);
+    API_Guid originalGuid = _originalGuid.value_or(m_currentPolygonGUID);
+
+    S::Polygon* currentPgon = GetPolygonByGUID(m_currentPolygonGUID), * originalPgon = GetPolygonByGUID(originalGuid);
+    
+    iUIPointNumber.SetValue(currentPgon->GetPointCount());
+
+    DGSetItemValLong(InfoBoxPageId, iUISliderId, currentPgon->GetPointCount());
+    DGSetItemMaxLong(InfoBoxPageId, iUISliderId, originalPgon->GetPointCount());
+
+    iUISmallestLength.SetValue(currentPgon->GetShortestEdgeLength());
+  }
 
   std::optional<API_Guid> GetFirstPolygonGUIDFromSelection(GSErrCode* o_err = nullptr)
   {
@@ -118,97 +134,26 @@ namespace PolygonReducer {
     , iSlider(GetReference(), iUISliderId)
     , GDLButton(GetReference(), GDLButtonId)
     , SettingsButton(GetReference(), SettingsButtonId)
+    , iUISmallestLength(GetReference(), iUISmallestLengthId)
     , uiData(p_uiData)
   {
-    int _iPoint = GetPointNumber();
+    auto FirstGUID = GetFirstPolygonGUIDFromSelection();
 
-    iUIPointNumber.SetValue(_iPoint);
-    DGSetItemMaxLong(InfoBoxPageId, iUISliderId, _iPoint);
-    DGSetItemValLong(InfoBoxPageId, iUISliderId, _iPoint);
+    if (FirstGUID)
+    {
+      SetCurrentPolyGUID(*FirstGUID);
+    }
   }
 
   PolygonReducerInfoboxPage::~PolygonReducerInfoboxPage() {
     uiData = NULL;
   }
 
-  void PolygonReducerInfoboxPage::SetCurrentPolygon(S::Polygon* currentPolygon)
+  void PolygonReducerInfoboxPage::SetCurrentPolyGUID(API_Guid i_currentPolygonGUID)
   {
-    m_currentPolygon = currentPolygon;
-  }
+    m_currentPolygonGUID = i_currentPolygonGUID;
 
-  GSErrCode PolygonReducerInfoboxPage::SetPointNumber(const int i_iPoint/*, int i_iMax*/)
-  {
-    GSErrCode   err;
-    API_Guid guid{};
-    std::optional<API_Guid> original_guid;
-
-    if (auto guidOpt = GetFirstPolygonGUIDFromSelection())
-      guid = *guidOpt;
-    else
-      return APIERR_NOSEL;
-
-    original_guid = GetOriginalPolyGUID(guid);
-
-    err = ACAPI_CallUndoableCommand("Optimize polygons",
-      [&]() -> GSErrCode {
-        S::Polygon pgon;
-        API_ElementMemo _memo{};
-        API_Element element{}, mask;
-        API_ElementMemo memo{};
-
-        if (original_guid) {
-          //pgon = new S::Polygon(&*original_guid);
-          pgon = S::Polygon(&*original_guid);
-        }
-        else {
-          //pgon = new S::Polygon(&guid);
-          pgon = S::Polygon(&guid);
-        }
-
-        logger.Log(GS::UniString("Original polygon: ") + pgon.ToString() );
-
-        pgon.SetPointCount(i_iPoint);
-
-        logger.Log(GS::UniString("Result polygon: ") + pgon.ToString());
-
-        GSErrCode _err = NoError;
-
-        API_Polygon apiPoly = pgon.ToPoly();
-
-        element.header.guid = guid;
-
-        _err = ACAPI_Element_Get(&element);
-        ACAPI_ELEMENT_MASK_CLEAR(mask);
-
-        if (!pgon.m_isPolyline)
-        {
-          element.hatch.poly = apiPoly;
-          ACAPI_ELEMENT_MASK_SET(mask, API_HatchType, poly);
-        }
-        else
-        {
-          element.polyLine.poly = apiPoly;
-          ACAPI_ELEMENT_MASK_SET(mask, API_PolyLineType, poly);
-        }
-
-        pgon.GetMemo(memo);
-
-        if (original_guid) {
-          _err = ACAPI_Element_Change(&element, &mask, &memo, APIMemoMask_Polygon, true);
-        }
-        else
-        {
-          _err = ACAPI_Element_Create(&element, &memo);
-
-          SetOriginalPolyGUID(element.header.guid, guid);
-        }
-
-        //delete pgon;
-
-        return _err;
-      });
-
-    return err;
+    SetControls();
   }
 
   int PolygonReducerInfoboxPage::GetPointNumber()
@@ -224,6 +169,117 @@ namespace PolygonReducer {
     else {
       return 0; // no polygon found in selection
     }
+  }
+
+  GSErrCode _Wrapper(std::function<void(S::Polygon&)> i_func)
+  {
+    GSErrCode   err;
+    API_Guid guid{};
+    std::optional<API_Guid> original_guid;
+    API_ElementMemo memo{};
+    API_Element element{}, mask;
+
+    if (auto guidOpt = GetFirstPolygonGUIDFromSelection())
+      guid = *guidOpt;
+    else
+      return APIERR_NOSEL;
+
+    original_guid = GetOriginalPolyGUID(guid);
+
+    S::Polygon pgon;
+
+    if (original_guid) {
+      pgon = S::Polygon(&*original_guid);
+    }
+    else {
+      pgon = S::Polygon(&guid);
+    }
+
+    logger.Log(GS::UniString("Original polygon: ") + pgon.ToString());
+
+    i_func(pgon);
+
+    logger.Log(GS::UniString("Result polygon: ") + pgon.ToString());
+
+    GSErrCode _err = NoError;
+
+    API_Polygon apiPoly = pgon.ToPoly();
+
+    element.header.guid = guid;
+
+    _err = ACAPI_Element_Get(&element);
+    ACAPI_ELEMENT_MASK_CLEAR(mask);
+
+    if (!pgon.m_isPolyline)
+    {
+      element.hatch.poly = apiPoly;
+      ACAPI_ELEMENT_MASK_SET(mask, API_HatchType, poly);
+    }
+    else
+    {
+      element.polyLine.poly = apiPoly;
+      ACAPI_ELEMENT_MASK_SET(mask, API_PolyLineType, poly);
+    }
+
+    pgon.GetMemo(memo);
+
+    err = ACAPI_CallUndoableCommand("Optimize polygons",
+      [&]() -> GSErrCode {
+        if (original_guid) {
+          _err = ACAPI_Element_Change(&element, &mask, &memo, APIMemoMask_Polygon, true);
+        }
+        else
+        {
+          _err = ACAPI_Element_Create(&element, &memo);
+
+          SetOriginalPolyGUID(element.header.guid, guid);
+
+          ACAPI_Selection_DeselectAll();
+
+          GS::Array<API_Neig> selNeigs;
+          API_Neig neig(element.header.guid);
+          selNeigs.Push(neig);
+
+          return ACAPI_Selection_Select(selNeigs, true);
+        }
+
+        return _err;
+      });
+
+    return err;
+  }
+
+  GSErrCode PolygonReducerInfoboxPage::SetPointNumber(const int i_iPoint)
+  {
+    auto func = [i_iPoint](S::Polygon& i_poly) -> void {
+      return i_poly.SetPointCount(i_iPoint);
+      };
+
+    return _Wrapper(func);
+  }
+
+  double PolygonReducerInfoboxPage::GetSmallestLength()
+  {
+    S::Polygon* pgon = GetFirstPolygonFromSelection();
+
+    if (pgon != NULL) {
+      double _sel = pgon->GetShortestEdgeLength();
+      delete pgon;
+
+      return _sel;
+    }
+    else {
+      return 0.00; // no polygon found in selection
+    }
+  }
+
+  GSErrCode PolygonReducerInfoboxPage::SetSmallestLength(double i_length)
+  {
+    auto func = [i_length](S::Polygon& i_poly) -> void {
+      return i_poly.SetShortestEdgeLength(i_length);
+      };
+
+    return _Wrapper(func);
   }
 
   S::Polygon* GetFirstPolygonFromSelection(API_Guid* o_guid)
@@ -261,9 +317,12 @@ namespace PolygonReducer {
 
   void PolygonReducerPageObserver::APIElementChanged(const TBUI::APIElemDefaultFieldMask& fieldMask) {
     if (fieldMask.GetRegDataChanged()) {
-      //	// the regdata has changed
-      //	int _n = GetPointNumber();
-      //	tabPage->iUIPointNumber.SetValue(_n);
+      auto FirstGUID = GetFirstPolygonGUIDFromSelection();
+
+      if (FirstGUID)
+      {
+        m_tabPage->SetCurrentPolyGUID(*FirstGUID);
+      }
     }
   }
 
@@ -299,7 +358,8 @@ namespace PolygonReducer {
     if (ev.GetSource() == &m_tabPage->GDLButton)
     {
       GDLDialog* dialog = new GDLDialog();
-      std::string _s = m_tabPage->m_currentPolygon->GetGDLcode();
+      S::Polygon* pgon = GetPolygonByGUID(m_tabPage->m_currentPolygonGUID);
+      std::string _s = pgon->GetGDLcode();
       dialog->setEditText(_s);
 
       GDLDialogObserver observer(dialog);

@@ -239,14 +239,24 @@ namespace S {
 
     double _minLength = DBL_MAX;
 
-    for (UINT i = 1; i < m_subpolys.GetSize(); ++i)
+    for (SubPolygon * _sp: m_subpolys)
     {
-      double _len = m_subpolys[i]->GetShortestEdgeLength();
+      double _len = _sp->GetShortestEdgeLength();
       if (_len < _minLength)
         _minLength = _len;
     }
 
     return _minLength;
+  }
+
+  void Polygon::SetShortestEdgeLength(double i_length)
+  {
+    unsigned int iPointCount = GetPointCount();
+
+    while (GetShortestEdgeLength() < i_length && iPointCount-- > 3)
+    {
+      RemoveShortestSegment();
+    }
   }
 
   SubPolygon* Polygon::GetSPolyHavingShortestSegment() const
