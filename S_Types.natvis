@@ -3,7 +3,7 @@
 
   <Type Name="S::Segment">
     <DisplayString>
-      [{m_idx}] {m_start} -> {m_end}
+      {m_start} -> {m_end}
 		</DisplayString>
   </Type>
 	

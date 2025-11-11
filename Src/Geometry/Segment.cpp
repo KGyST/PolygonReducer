@@ -17,8 +17,8 @@ namespace S {
   {
     m_start = p_start;
     m_end = p_end;
-    m_status1 = 0;
-    m_status2 = 0;
+    //m_status1 = 0;
+    //m_status2 = 0;
     m_angle = 0;
   }
 
@@ -120,12 +120,23 @@ namespace S {
       result = str(boost::format("%-.2f %-.2f") % m_start.GetX() % m_start.GetY());
       return result;
     case LogFormat::Short:
-      result = str(boost::format("%-.2f %-.2f -> %-.2f %-.2f") % m_start.GetX() % m_start.GetY() % m_end.GetX() % m_end.GetY());
+      if (m_angle)
+        result = m_start.ToString(i_format) + " -> " + str(boost::format("%-.2f  (%-.2f %-.2f) -> ") % m_angle % GetCenter()->GetX() % GetCenter()->GetY()) + m_end.ToString(i_format) + "\n";
+      else
+        result = m_start.ToString(i_format) + " -> " + m_end.ToString(i_format) + "\n";
       return result;
     case LogFormat::Detailed:
       result += str(boost::format(" Start: %-.2f %-.2f\n") % m_start.GetX() % m_start.GetY());
       result += str(boost::format(" End: %-.2f %-.2f\n") % m_end.GetX() % m_end.GetY());
       result += str(boost::format(" Length: %-.2f\n") % GetLength());
+      return result;
+    case LogFormat::JSON:
+      result += "{ ";
+      result += "\"start\": " + m_start.ToString(i_format) + ", ";
+      result += "\"end\": " + m_end.ToString(i_format) + ", ";
+      if (m_angle)
+        result += str(boost::format("\"angle\": %-.2f, \"center\": {%-.2f, %-.2f}") % m_angle % GetCenter()->GetX() % GetCenter()->GetY() );
+      result += " }";
       return result;
     }
 

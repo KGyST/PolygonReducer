@@ -12,6 +12,15 @@
 #include <optional>
 
 
+enum class LogFormat {
+	Default,
+	Short,
+	Detailed,
+	JSON,
+	GDL
+};
+
+
 namespace S {
 	class Coord : public ::Coord
 	{
@@ -43,6 +52,7 @@ namespace S {
 		const double GetX(void) const { return m_x; }
 		const double GetY(void) const { return m_y; }
 		const double GetEps(void) const { return m_eps; }
+    std::string ToString(LogFormat i_format = LogFormat::Short) const;
 
 		bool operator== (const Coord & i_other) const;
 		Coord operator- (const Coord& anotherCoord) const { return this->ToCoord() - anotherCoord.ToCoord(); };
@@ -50,9 +60,10 @@ namespace S {
 		::Coord ToCoord() const;
 		API_Coord ToAPICoord() const;
 	};
+
+	std::optional<double> AngleBetween(const Coord& i_pStart, const Coord& i_pEnd, const Coord& i_P3);
 }
 
-std::optional<double> AngleBetween(const Coord& i_p1, const Coord& i_cen, const Coord& i_p2);
 
 #endif // !S_COORD_HPP
 

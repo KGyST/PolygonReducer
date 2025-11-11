@@ -13,13 +13,6 @@
 #include <optional>
 
 
-enum class LogFormat {
-  Default,
-  Short,
-  Detailed
-};
-
-
 namespace S {
   class Segment
   {
@@ -27,8 +20,8 @@ namespace S {
     Coord           m_start;
     Coord           m_end;
 
-    unsigned int    m_status1;
-    unsigned int    m_status2;
+    //unsigned int    m_status1;
+    //unsigned int    m_status2;
     Segment*        m_previous;
     Segment*        m_next;
     bool            m_startPoint;       // Is it a start of a subcontour

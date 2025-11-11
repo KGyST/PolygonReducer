@@ -1,5 +1,6 @@
 #include "Coord.hpp"
-
+#include <boost/format.hpp>
+#include "Segment.hpp"
 
 namespace S {
 	double S::Coord::m_eps = 0.01;
@@ -35,27 +36,57 @@ namespace S {
 		API_Coord res = { m_x, m_y };
 		return res;
 	}
-}
 
+	std::string Coord::ToString(LogFormat i_format) const
+	{
+		switch (i_format) {
+		case LogFormat::JSON:
+			return str(boost::format("{ \"x\": %-.2f, \"y\": %-.2f }") % m_x % m_y);
+		default:
+			return str(boost::format("%.2f, %.2f") % m_x % m_y);
+		}
+  }
 
-std::optional<double> AngleBetween(const Coord& i_p1, const Coord& i_cen, const Coord& i_p2) {
-	Coord v1{ i_p1.x - i_cen.x, i_p1.y - i_cen.y };
-	Coord v2{ i_p2.x - i_cen.x, i_p2.y - i_cen.y };
+	std::optional<double> AngleBetween(const Coord& i_pStart, const Coord& i_pEnd, const Coord& i_P3) {
+		Segment s1(i_pStart, i_P3);
+		Segment s2(i_P3, i_pEnd);
+		Coord cen = *s1.IntersectMidPerp(&s2);
 
-	double len1 = hypot(v1.x, v1.y);
-	double len2 = hypot(v2.x, v2.y);
+		Coord v1 = i_pStart - cen;
+    Coord v2 = i_pEnd - cen;
 
-	if (len1 < EPS || len2 < EPS)
-		return std::nullopt;
+    double len1 = std::hypot(v1.GetX(), v1.GetY());
+    double len2 = std::hypot(v2.GetX(), v2.GetY());
 
-	double dot = v1.x * v2.x + v1.y * v2.y;
-	double cosang = dot / (len1 * len2);
+		if (len1 < EPS || len2 < EPS)
+      return std::nullopt;
+		
+    v1.SetX(v1.GetX() / len1);
+    v1.SetY(v1.GetY() / len1);
+    v2.SetX(v2.GetX() / len2);
+    v2.SetY(v2.GetY() / len2);
 
-	cosang = max(min(cosang, 1.0), -1.0);
+    double dot = v1.GetX() * v2.GetX() + v1.GetY() * v2.GetY();
+    double det = v1.GetX() * v2.GetY() - v1.GetY() * v2.GetX();
 
-	if (cosang > -1.0 + EPS)
-		return acos(cosang);
-	else
-    return -acos(cosang);
+    double angle = std::atan2(det, dot);
+
+    Coord dirVec = i_pEnd - i_pStart;
+    Coord dir3 = i_P3 - i_pStart;
+    double d3t = dirVec.GetY() * (dir3.GetX()) - dirVec.GetX() * (dir3.GetY());
+
+		if (d3t > 0)
+		{
+			if (angle < 0)
+				angle += 2 * PI;
+		}
+		else
+		{
+			if (angle > 0)
+				angle -= 2 * PI;
+		}
+
+    return angle;
+		}
 }
 

@@ -146,11 +146,11 @@ namespace S {
 
   std::string SubPolygon::ToString() const
   {
-    std::string result = "";
+    std::string result = IsClockWise() ? "CW " : "CCW ";
 
     for (auto s : m_segments)
     {
-      result += s->ToString(LogFormat::Default) + std::string(" ");
+      result += s->ToString(LogFormat::Short) + std::string(" ");
     }
 
     // Remove last space
@@ -186,10 +186,10 @@ namespace S {
       Segment* _nextSegment = io_arc.GetLast()->GetNext();
       io_arc[0]->SetNext(_nextSegment);
       _nextSegment->SetPrev(io_arc[0]);
-      std::optional<double> a1 = AngleBetween(io_arc[0]->GetStart()->ToCoord(), i_prevMidPerpIntSectPt->ToCoord(), io_arc[0]->GetEnd()->ToCoord());
+      std::optional<double> a1 = AngleBetween(io_arc[0]->GetStart()->ToCoord(), io_arc[0]->GetEnd()->ToCoord(), io_arc[1]->GetStart()->ToCoord());
       if (a1)
       {
-        io_arc[0]->SetAng(IsClockWise() ? -*a1 : *a1);
+        io_arc[0]->SetAng(*a1);
 
         for (Segment* sToDelete : io_arc.Slice(1, io_arc.GetSize()))
         {
@@ -217,7 +217,7 @@ namespace S {
       if (_int)
         *midPerpIntSectPt = *_int;
       else
-        midPerpIntSectPt.reset();
+        midPerpIntSectPt = make_unique<Coord>();
 
       if (prevMidPerpIntSectPt && midPerpIntSectPt)
         if (*prevMidPerpIntSectPt == *midPerpIntSectPt)
@@ -251,23 +251,30 @@ namespace S {
     {
       m_segments.DeleteAll(sToDelete);
     }
-
-    logger.Log(GS::UniString("After PolyToArc: " + ToString()));
   }
 
   void SubPolygon::RemoveCollinear()
   {
-    Segment* prevSegment = m_segments[-1];
+    Segment* prevSegment = m_segments[-1], *nextSeg;
+    GS::Array<Segment*> toDelete;
 
     for (Segment* s : m_segments)
     {
       if (s->IsCollinear(prevSegment))
       {
         prevSegment->SetEnd(*s->GetEnd());
-        m_segments.DeleteAll(s);
+        nextSeg = s->GetNext();
+        prevSegment->SetNext(nextSeg);
+        nextSeg->SetPrev(prevSegment);
       }
+      else
+        prevSegment = s;
+    }
 
-      prevSegment = s;
+    for (Segment* s : toDelete)
+    {
+      m_segments.DeleteAll(s);
+      delete s;
     }
   }
 
