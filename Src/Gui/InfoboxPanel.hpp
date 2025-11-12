@@ -14,8 +14,6 @@
 extern Logger logger;
 
 namespace PolygonReducer {
-  S::Polygon* GetFirstPolygonFromSelection(API_Guid* o_guid = NULL);
-
   // --- PolygonReducerPage ---------------------------------------------------------
 
   class PolygonReducerInfoboxPage :
@@ -44,11 +42,15 @@ namespace PolygonReducer {
   public:
     PolygonReducerInfoboxPage(const DG::TabControl& tabControl, TBUI::IAPIToolUIData* puiData);
     ~PolygonReducerInfoboxPage();
-    void SetCurrentPolyGUID(API_Guid i_currentPolygonGUID);
+
+    // Getters / Setters
     int GetPointNumber();
     GSErrCode SetPointNumber(int);
+
     double GetSmallestLength();
     GSErrCode SetSmallestLength(double);
+
+    void SetCurrentPolyGUID(API_Guid i_currentPolygonGUID);
   };
 
 
@@ -65,8 +67,6 @@ namespace PolygonReducer {
   private:
     PolygonReducerInfoboxPage* m_tabPage;
 
-    //void			GetUserDataFromDefault(WallUserData* data);
-    //void			SetUserDataToDefault(WallUserData* sdata);
   protected:
     virtual	void		APIElementChanged(const TBUI::APIElemDefaultFieldMask& fieldMask) override;
     virtual void		PosIntEditChanged(const DG::PosIntEditChangeEvent& ev);

@@ -11,7 +11,7 @@
 namespace S {
   // Internal helper functions
 
-  void _swap(Polygon& a, Polygon& b) noexcept {
+  void _Swap(Polygon& a, Polygon& b) noexcept {
     using std::swap;
     swap(a.m_subpolys, b.m_subpolys);
     swap(a.m_isPolyline, b.m_isPolyline);
@@ -19,7 +19,6 @@ namespace S {
 
   // Constructors, destructors, assignment operators
 
-  // Main ctor
   void Polygon::_Init(const API_ElementMemo* i_memo)
   {
     Array<Int32> _pends(i_memo->pends);
@@ -98,42 +97,6 @@ namespace S {
     }
   }
 
-  Polygon& Polygon::operator=(const Polygon& other) {
-    if (this != &other) {
-      m_isPolyline = other.m_isPolyline;
-
-      for (SubPolygon* sp : m_subpolys)
-        delete sp;
-      m_subpolys.Clear();
-
-      for (SubPolygon* _sp : other.m_subpolys)
-      {
-        m_subpolys.Push(new SubPolygon(*_sp));
-      }
-    }
-    return *this;
-  }
-
-  // // FIXME this should be a good check if a polygon can be reproduced from another's memo
-    // 
-    //Polygon::Polygon(const Polygon& other)
-    //{
-    //    API_ElementMemo memo;
-    //    BNZeroMemory(&memo, sizeof(API_ElementMemo));
-
-    //    other.getMemo(memo);
-
-    //    Polygon rebuilt(&memo);
-    //    *this = std::move(rebuilt);
-
-    //    ACAPI_DisposeElemMemoHdls(&memo);
-    //}
-
-  Polygon::Polygon()
-    : m_subpolys()
-    , m_isPolyline(false) {
-  }
-
   Polygon::Polygon(const API_Guid* i_guid)
   {
     API_ElementMemo memo{} ;
@@ -156,30 +119,172 @@ namespace S {
       } ()) {
   }
 
+  Polygon::Polygon()
+    : m_subpolys()
+    , m_isPolyline(false) {
+  }
+
   Polygon::~Polygon() {
     for (SubPolygon* _sp : m_subpolys)
       delete _sp;
   }
 
-  // Accessors, mutators and other methods
+  // Operators
 
-  std::string Polygon::GetGDLcode() const
+  Polygon& Polygon::operator=(const Polygon& other) {
+    if (this != &other) {
+      m_isPolyline = other.m_isPolyline;
+
+      for (SubPolygon* sp : m_subpolys)
+        delete sp;
+      m_subpolys.Clear();
+
+      for (SubPolygon* _sp : other.m_subpolys)
+      {
+        m_subpolys.Push(new SubPolygon(*_sp));
+      }
+    }
+    return *this;
+  }
+
+  // Getters / Setters
+
+  USize Polygon::GetPointCount() const
   {
-    using namespace std;
+    USize count = 0;
 
-    string result = "";
+    for (auto sp : m_subpolys)
+    {
+      count += sp->m_segments.GetSize();
+    }
+
+    return count;
+  }
+
+  void Polygon::SetPointCount(unsigned int i_count)
+  {
+    for (UINT i = GetPointCount(); i > i_count; --i)
+    {
+      RemoveShortestSegment();
+    }
+  }
+
+  double Polygon::GetShortestEdgeLength() const
+    // Length of the shortest edge
+  {
+    if (m_subpolys.GetSize() == 0)
+      return 0.00;
+
+    double _minLength = DBL_MAX;
 
     for (SubPolygon* _sp : m_subpolys)
     {
-      result += _sp->ToString();
+      double _len = _sp->GetShortestEdgeLength();
+      if (_len < _minLength)
+        _minLength = _len;
     }
 
-    //for each (Segment* _s in m_segments)
-    //{
-    //    result += _s->ToString();
-    //}
+    return _minLength;
+  }
 
-    return result;
+  void Polygon::SetShortestEdgeLength(double i_length)
+  {
+    unsigned int iPointCount = GetPointCount();
+
+    while (GetShortestEdgeLength() < i_length && iPointCount-- > 3)
+    {
+      RemoveShortestSegment();
+    }
+  }
+
+  // Geometry
+
+  void Polygon::IntersectSegments(Segment* io_prev, Segment* io_next)
+  {
+    using namespace Geometry;
+
+    Sector lin1{ io_prev->GetStart()->ToCoord(), io_prev->GetEnd()->ToCoord() };
+    Sector lin2{ io_next->GetStart()->ToCoord(), io_next->GetEnd()->ToCoord() };
+
+    ::Coord xc(0, 0);
+
+    double eps = 0, radEps = 0;
+
+    if (XLinesEps(lin1, lin2, &xc, eps, radEps))
+    {
+      io_prev->SetEnd(xc);
+      io_next->SetStart(xc);
+      io_prev->SetNext(io_next);
+      io_next->SetPrev(io_prev);
+    }
+  }
+
+  // Only for testning
+
+  void Polygon::MoveAllPoints()
+  {
+    for each(SubPolygon * _sp in m_subpolys)
+    {
+      for each(Segment * _seg in _sp->m_segments)
+      {
+        Coord _s(*_seg->GetStart());
+        _seg->SetStart(Coord(_s.GetX() + 1.00, _s.GetY() + 1.00));
+        Coord _e(*_seg->GetEnd());
+        _seg->SetEnd(Coord(_e.GetX() + 1.00, _e.GetY() + 1.00));
+      }
+    }
+  }
+
+  SubPolygon* Polygon::GetSPolyHavingShortestSegment() const
+  {
+    SubPolygon* _resultSP = nullptr;
+
+    for (SubPolygon* _sp : m_subpolys)
+    {
+      if (_resultSP == nullptr || _sp->GetShortestSegment()->GetLength() < _resultSP->GetShortestSegment()->GetLength())
+        _resultSP = _sp;
+    }
+
+    return _resultSP;
+  }
+
+  void Polygon::RemoveShortestSegment()
+  {
+    SubPolygon* SPhavingShortestSegment = GetSPolyHavingShortestSegment();
+    SPhavingShortestSegment->RemoveShortestSegment();
+
+    if (!SPhavingShortestSegment->IsValid())
+    {
+      m_subpolys.DeleteAll(SPhavingShortestSegment);
+
+      logger.Log(GS::UniString("Removing SubPoly: ") + SPhavingShortestSegment->ToString());
+    }
+  }
+
+  // Converters
+  
+  API_Polygon Polygon::ToPoly() const
+  {
+    API_ElementMemo mem{};
+    API_Polygon poly{};
+
+    GetMemo(mem);
+
+    poly.nCoords = BMGetHandleSize((GSHandle)mem.coords) / sizeof(API_Coord) - 1;
+    poly.nSubPolys = BMGetHandleSize((GSHandle)mem.pends) / sizeof(Int32) - 1;
+    poly.nArcs = BMGetHandleSize((GSHandle)mem.parcs) / sizeof(API_PolyArc);
+
+    return poly;
+  }
+
+  std::string Polygon::ToString() const
+  {
+    std::string sResult{ "" };
+
+    for (SubPolygon *sp : m_subpolys)
+      sResult += sp->ToString();
+
+    return sResult;
   }
 
   void Polygon::GetMemo(API_ElementMemo& io_memo) const
@@ -231,142 +336,25 @@ namespace S {
     io_memo.vertexIDs = _vertIDs.ToNeigs();
   }
 
-  double Polygon::GetShortestEdgeLength() const
-    // Length of the shortest edge
+  // To be removed:
+  std::string Polygon::GetGDLcode() const
   {
-    if (m_subpolys.GetSize() == 0)
-      return 0.00;
+    using namespace std;
 
-    double _minLength = DBL_MAX;
-
-    for (SubPolygon * _sp: m_subpolys)
-    {
-      double _len = _sp->GetShortestEdgeLength();
-      if (_len < _minLength)
-        _minLength = _len;
-    }
-
-    return _minLength;
-  }
-
-  void Polygon::SetShortestEdgeLength(double i_length)
-  {
-    unsigned int iPointCount = GetPointCount();
-
-    while (GetShortestEdgeLength() < i_length && iPointCount-- > 3)
-    {
-      RemoveShortestSegment();
-    }
-  }
-
-  SubPolygon* Polygon::GetSPolyHavingShortestSegment() const
-  {
-    SubPolygon* _resultSP = nullptr;
+    string result = "";
 
     for (SubPolygon* _sp : m_subpolys)
     {
-      if (_resultSP == nullptr || _sp->GetShortestSegment()->GetLength() < _resultSP->GetShortestSegment()->GetLength())
-        _resultSP = _sp;
+      result += _sp->ToString();
     }
 
-    return _resultSP;
+    //for each (Segment* _s in m_segments)
+    //{
+    //    result += _s->ToString();
+    //}
+
+    return result;
   }
 
-  void Polygon::RemoveShortestSegment()
-  {
-    SubPolygon* SPhavingShortestSegment = GetSPolyHavingShortestSegment();
-    SPhavingShortestSegment->RemoveShortestSegment();
-
-    if (!SPhavingShortestSegment->IsValid())
-    {
-      m_subpolys.DeleteAll(SPhavingShortestSegment);
-
-      logger.Log(GS::UniString("Removing SubPoly: ") + SPhavingShortestSegment->ToString());
-    }
-  }
-
-  void Polygon::IntersectSegments(Segment* io_prev, Segment* io_next)
-  {
-    using namespace Geometry;
-
-    Sector lin1{ io_prev->GetStart()->ToCoord(), io_prev->GetEnd()->ToCoord() };
-    Sector lin2{ io_next->GetStart()->ToCoord(), io_next->GetEnd()->ToCoord() };
-
-    ::Coord xc(0, 0);
-
-    double eps = 0, radEps = 0;
-
-    if (XLinesEps(lin1, lin2, &xc, eps, radEps))
-    {
-      io_prev->SetEnd(xc);
-      io_next->SetStart(xc);
-      io_prev->SetNext(io_next);
-      io_next->SetPrev(io_prev);
-    }
-  }
-
-  void Polygon::SetPointCount(unsigned int i_count)
-  {
-    for (UINT i = GetPointCount(); i > i_count; --i)
-    {
-      RemoveShortestSegment();
-    }
-  }
-
-  USize Polygon::GetPointCount() const
-  {
-    USize count = 0;
-
-    for (auto sp : m_subpolys)
-    {
-      count += sp->m_segments.GetSize();
-    }
-
-    return count;
-  }
-
-  // Only for testning
-  void Polygon::MoveAllPoints()
-  {
-    for each(SubPolygon * _sp in m_subpolys)
-    {
-      for each(Segment * _seg in _sp->m_segments)
-      {
-        Coord _s(*_seg->GetStart());
-        _seg->SetStart(Coord(_s.GetX() + 1.00, _s.GetY() + 1.00));
-        Coord _e(*_seg->GetEnd());
-        _seg->SetEnd(Coord(_e.GetX() + 1.00, _e.GetY() + 1.00));
-      }
-    }
-  }
-
-  // --------------- TODO ---------------
-
-  // Writing in relevant memo as original user data if not present already
-  void SetUserdata() {}
-
-  API_Polygon Polygon::ToPoly() const
-  {
-    API_ElementMemo mem{};
-    API_Polygon poly{};
-
-    GetMemo(mem);
-
-    poly.nCoords = BMGetHandleSize((GSHandle)mem.coords) / sizeof(API_Coord) - 1;
-    poly.nSubPolys = BMGetHandleSize((GSHandle)mem.pends) / sizeof(Int32) - 1;
-    poly.nArcs = BMGetHandleSize((GSHandle)mem.parcs) / sizeof(API_PolyArc);
-
-    return poly;
-  }
-
-  std::string Polygon::ToString() const
-  {
-    std::string sResult{ "" };
-
-    for (SubPolygon *sp : m_subpolys)
-      sResult += sp->ToString();
-
-    return sResult;
-  }
 }
 

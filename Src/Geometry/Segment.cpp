@@ -4,43 +4,63 @@
 #include <boost/format.hpp>
 #include "GeometryHelpers.hpp"
 
+
 using namespace Geometry;
 
 
 namespace S {
-  bool Segment::IsArc() const
-  {
-    return (abs(m_angle) > EPS);
-  }
+  //  Private methods
 
-  void Segment::init(int idx, int startIdx, int endIdx, const Coord& p_start, const Coord& p_end)
+  void Segment::Init(int idx, int startIdx, int endIdx, const Coord& p_start, const Coord& p_end)
   {
     m_start = p_start;
     m_end = p_end;
-    //m_status1 = 0;
-    //m_status2 = 0;
     m_angle = 0;
   }
 
-  //Segment::Segment(int idx, int startIdx, int endIdx, const Coord& start, const Coord& end, Segment* prev, Segment* next)
-  //    :m_idx(idx)
-  //    ,m_startIdx(startIdx)
-  //    ,m_endIdx(endIdx)
-  //    ,m_start(start)
-  //    ,m_end(end)
-  //    ,m_previous(prev)
-  //    ,m_next(next)
+  // /Private methods
 
-//  Segment& Segment::operator=(const Segment& i_other) noexcept
-//  {
-//      if (this == &i_other)
-//          return *this;
+  // Getters only
 
-//      m_previous = i_other.m_previous;
-//      m_next = i_other.m_next;
+  std::optional<Coord> Segment::GetCenter() const
+  {
+    if (IsArc())
+    {
+      double angle = PI / 2.00 - m_angle / 2.00;
+      double radius = *GetRad();
+      double halfDist = Dist(m_start.ToCoord(), m_end.ToCoord()) / 2;
+      double distToCenter = radius * cos(angle);
+      ::Coord dirVec = (m_end - m_start).ToCoord();
+      double vecLength = sqrt(dirVec.x * dirVec.x + dirVec.y * dirVec.y);
+      ::Coord unitVec = ::Coord(dirVec.x / vecLength, dirVec.y / vecLength);
+      ::Coord center = ::Coord(m_start.GetX() + unitVec.x * halfDist - unitVec.y * distToCenter,
+        m_start.GetY() + unitVec.y * halfDist + unitVec.x * distToCenter);
+      return Coord(center.x, center.y);
+    }
+    else
+      return std::nullopt;
+  }
 
-  //return *this;
-//  }
+  const double Segment::GetLength() const
+  {
+    if (IsArc())
+      return abs(*GetRad() * m_angle);
+    else
+      return sqrt(pow((m_end.GetX() - m_start.GetX()), 2) + pow((m_end.GetY() - m_start.GetY()), 2));
+  }
+
+  std::optional<double> Segment::GetRad() const
+  {
+    if (IsArc())
+    {
+      double halfDist = Dist(m_start.ToCoord(), m_end.ToCoord()) / 2;
+      return halfDist / sin(m_angle / 2);
+    }
+    else
+      return std::nullopt;
+  }
+
+  // Geometry
 
   const Coord Segment::MidPoint() const
   {
@@ -72,7 +92,7 @@ namespace S {
     else
     {
       // Arc
-     double halfAngle = GetAng() / 2.00;
+      double halfAngle = GetAng() / 2.00;
       double radius = *GetRad();
       ::Coord center = GetCenter()->ToCoord();
       ::Coord start = m_start.ToCoord();
@@ -82,73 +102,21 @@ namespace S {
     }
   }
 
-  //void Segment::SetAng(double angle)
-  //{
-  //  Coord _start(m_start.GetX(), m_start.GetY());
-  //  Coord _end(m_end.GetX(), m_end.GetY());
-  //  double _halfAngle = angle / 2;
-
-  //  ::Coord rotEnd = RotCoord(_start.ToCoord(), _end.ToCoord(), sin(_halfAngle), cos(_halfAngle));
-  //  ::Coord rotStart = RotCoord(_end.ToCoord(), _start.ToCoord(), sin(-_halfAngle), cos(-_halfAngle));
-
-  //  Sector lin1{ _start.ToCoord(), rotEnd };
-  //  Sector lin2{ _end.ToCoord(), rotStart };
-
-  //  ::Coord xc(0, 0);
-
-  //  double eps = 0, radEps = 0;
-
-  //  XLinesEps(lin1, lin2, &xc, eps, radEps);
-
-  //  m_center = Coord(xc.x, xc.y);
-  //}
-
-  //void Segment::SetArc(double angle, Coord center)
-  //{
-  //    //m_angle = angle;
-  //    m_center->SetX(center.GetX());
-  //    m_center->SetY(center.GetY());
-  //    //TODO m_radius
-  //}
-
-  std::string Segment::ToString(LogFormat i_format) const
+  std::optional<Coord> Segment::IntersectMidPerp(Segment* io_other)
   {
-    std::string result = "";
+    using namespace Geometry;
 
-    switch (i_format) {
-    case LogFormat::Default:
-      result = str(boost::format("%-.2f %-.2f") % m_start.GetX() % m_start.GetY());
-      return result;
-    case LogFormat::Short:
-      if (m_angle)
-        result = m_start.ToString(i_format) + " -> " + str(boost::format("%-.2f  (%-.2f %-.2f) -> ") % m_angle % GetCenter()->GetX() % GetCenter()->GetY()) + m_end.ToString(i_format) + "\n";
-      else
-        result = m_start.ToString(i_format) + " -> " + m_end.ToString(i_format) + "\n";
-      return result;
-    case LogFormat::Detailed:
-      result += str(boost::format(" Start: %-.2f %-.2f\n") % m_start.GetX() % m_start.GetY());
-      result += str(boost::format(" End: %-.2f %-.2f\n") % m_end.GetX() % m_end.GetY());
-      result += str(boost::format(" Length: %-.2f\n") % GetLength());
-      return result;
-    case LogFormat::JSON:
-      result += "{ ";
-      result += "\"start\": " + m_start.ToString(i_format) + ", ";
-      result += "\"end\": " + m_end.ToString(i_format) + ", ";
-      if (m_angle)
-        result += str(boost::format("\"angle\": %-.2f, \"center\": {%-.2f, %-.2f}") % m_angle % GetCenter()->GetX() % GetCenter()->GetY() );
-      result += " }";
-      return result;
-    }
+    Sector lin1 = MidPerp().ToSector();
+    Sector lin2 = io_other->MidPerp().ToSector();
 
-    return result;
-  }
+    ::Coord xc(0, 0);
 
-  const double Segment::GetLength() const
-  {
-    if (IsArc())
-      return abs(*GetRad() * m_angle);
+    double eps = 0, radEps = 0;
+
+    if (XLinesEps(lin1, lin2, &xc, eps, radEps))
+      return Coord(xc.x, xc.y);
     else
-      return sqrt(pow((m_end.GetX() - m_start.GetX()), 2) + pow((m_end.GetY() - m_start.GetY()), 2));
+      return std::nullopt;
   }
 
   bool Segment::Intersect(Segment* io_other)
@@ -193,51 +161,43 @@ namespace S {
       return true;
   }
 
-  std::optional<Coord> Segment::IntersectMidPerp(Segment* io_other)
+  bool Segment::IsArc() const
   {
-    using namespace Geometry;
-
-    Sector lin1 = MidPerp().ToSector();
-    Sector lin2 = io_other->MidPerp().ToSector();
-
-    ::Coord xc(0, 0);
-
-    double eps = 0, radEps = 0;
-
-    if (XLinesEps(lin1, lin2, &xc, eps, radEps))
-      return Coord(xc.x, xc.y);
-    else
-      return std::nullopt;
+    return (abs(m_angle) > EPS);
   }
 
-  std::optional<double> Segment::GetRad() const
+  // Converters
+  
+  std::string Segment::ToString(LogFormat i_format) const
   {
-    if (IsArc())
-    {
-      double halfDist = Dist(m_start.ToCoord(), m_end.ToCoord()) / 2;
-      return halfDist / sin(m_angle / 2);
-    }
-    else
-      return std::nullopt;
-  }
+    std::string result = "";
 
-  std::optional<Coord> Segment::GetCenter() const
-  {
-    if (IsArc())
-    {
-      double angle = PI / 2.00 - m_angle / 2.00;
-      double radius = *GetRad();
-      double halfDist = Dist(m_start.ToCoord(), m_end.ToCoord()) / 2;
-      double distToCenter = radius * cos(angle);
-      ::Coord dirVec = (m_end - m_start).ToCoord();
-      double vecLength = sqrt(dirVec.x * dirVec.x + dirVec.y * dirVec.y);
-      ::Coord unitVec = ::Coord(dirVec.x / vecLength, dirVec.y / vecLength);
-      ::Coord center = ::Coord(m_start.GetX() + unitVec.x * halfDist - unitVec.y * distToCenter,
-        m_start.GetY() + unitVec.y * halfDist + unitVec.x * distToCenter);
-      return Coord(center.x, center.y);
+    switch (i_format) {
+    case LogFormat::Default:
+      result = str(boost::format("%-.2f %-.2f") % m_start.GetX() % m_start.GetY());
+      return result;
+    case LogFormat::Short:
+      if (m_angle)
+        result = m_start.ToString(i_format) + " -> " + str(boost::format("%-.2f  (%-.2f %-.2f) -> ") % m_angle % GetCenter()->GetX() % GetCenter()->GetY()) + m_end.ToString(i_format) + "\n";
+      else
+        result = m_start.ToString(i_format) + " -> " + m_end.ToString(i_format) + "\n";
+      return result;
+    case LogFormat::Detailed:
+      result += str(boost::format(" Start: %-.2f %-.2f\n") % m_start.GetX() % m_start.GetY());
+      result += str(boost::format(" End: %-.2f %-.2f\n") % m_end.GetX() % m_end.GetY());
+      result += str(boost::format(" Length: %-.2f\n") % GetLength());
+      return result;
+    case LogFormat::JSON:
+      result += "{ ";
+      result += "\"start\": " + m_start.ToString(i_format) + ", ";
+      result += "\"end\": " + m_end.ToString(i_format) + ", ";
+      if (m_angle)
+        result += str(boost::format("\"angle\": %-.2f, \"center\": {%-.2f, %-.2f}") % m_angle % GetCenter()->GetX() % GetCenter()->GetY() );
+      result += " }";
+      return result;
     }
-    else
-      return std::nullopt;
+
+    return result;
   }
 }
 

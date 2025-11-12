@@ -1,4 +1,3 @@
-#pragma once
 #ifndef S_POLYLINE_HPP
 #define S_POLYLINE_HPP
 
@@ -16,12 +15,12 @@ namespace S {
   class SubPolygon
   {
   private:
+    void DeepCopy(const SubPolygon& other);
+    double SignedArea() const;
     void PolyToArc();
     void RemoveCollinear();
+    // FIXME
     void ArcToPoly();
-    double _SignedArea() const;
-    void SubPolygon::_deepCopy(const SubPolygon& other);
-    void _createArc(Array<Segment*>& io_arc, const Coord* i_prevMidPerpIntSectPt, Array <Segment*>& io_delArc);
 
   public:
     CircularArray <Segment*> m_segments;                // Segments: arcs or edges
@@ -29,25 +28,26 @@ namespace S {
 
     SubPolygon(Array<API_Coord>* coords, Array<API_PolyArc>* pars, Array<UInt32>* vertexIDs, const bool i_isHole = false);
     SubPolygon(const SubPolygon&);
+    SubPolygon(SubPolygon&&) = delete;
     SubPolygon() {}
     ~SubPolygon() = default;
 
-    void Preprocess();
-    void Postprocess();
-
+    // Operators
     //SubPolygon& SubPolygon::operator=(const SubPolygon&);
     SubPolygon& operator=(const SubPolygon&);
     SubPolygon& operator=(SubPolygon&&) = delete;
-    SubPolygon(SubPolygon&&) = delete;
 
-    inline void RemoveSegment(Segment* i_segment) { m_segments.DeleteAll(i_segment); }
+    // Getters only
     Segment* GetShortestSegment() const;
-    void RemoveShortestSegment();
     double GetShortestEdgeLength() const;
-
     inline bool IsValid() const { return m_segments.GetSize() >= 3; }
-    // Geometry
     bool IsClockWise() const;
+
+    // Geometry
+    void RemoveShortestSegment();
+    inline void RemoveSegment(Segment* i_segment) { m_segments.DeleteAll(i_segment); }
+    void Preprocess();
+    void Postprocess();
 
     // Converters
     std::string ToString() const;

@@ -1,4 +1,3 @@
-#pragma once
 #ifndef S_POLYGON_HPP
 #define S_POLYGON_HPP
 
@@ -20,44 +19,43 @@ namespace S {
     // (first representing the contour, others inner holes; all non-intersecting)
 // of straight edges and circular arcs (of class Segment)
   private:
-    //UINT m_pointCount;
     void RemoveShortestSegment();
     SubPolygon* GetSPolyHavingShortestSegment() const;
 
-    void SetUserdata();                                 //TODO
     void _Init(const API_ElementMemo*);
 
   public:
     bool m_isPolyline;                                   // False if polyline, true if hatch
-    Array <SubPolygon*> m_subpolys;                     // Subpolygons, like contour or holes
+    Array <SubPolygon*> m_subpolys;                      // Subpolygons, like contour or holes
 
     Polygon(const API_ElementMemo* p_memo);
     Polygon(const API_ElementMemo& p_memo) : Polygon(&p_memo) {}
-    Polygon(const API_Neig*);
-    Polygon(const API_Guid*);
     Polygon(const Polygon&);
+    Polygon(const API_Guid*);
+    Polygon(const API_Neig*);
     Polygon();
     ~Polygon();
 
+    // Operators
     Polygon& operator=(const Polygon&);
 
-    // Getters
-    std::string GetGDLcode() const;
-    void GetMemo(API_ElementMemo&) const;
+    // Getters / Setters
+    USize GetPointCount() const;
+    void SetPointCount(unsigned int i_count);                  // The main purpose of the addon
 
-    void SetPointCount(unsigned int i_count);     // The main purpose of the addon
-    USize GetPointCount() const;                              // 
-
-    API_Polygon ToPoly() const;
-
-    double GetShortestEdgeLength() const;               // Length of the shortest edge
+    double GetShortestEdgeLength() const;                       // Length of the shortest edge
     void SetShortestEdgeLength(double i_length);
 
-    void IntersectSegments(Segment* io_prev, Segment* io_next);  // Intersect two segments
+    // Geometry
+    void IntersectSegments(Segment* io_prev, Segment* io_next); // Intersect two segments
+    void MoveAllPoints();                                       // Only for testing
 
-    void MoveAllPoints();                               // For testing
     // Converters
+    API_Polygon ToPoly() const;
     std::string ToString() const;
+    void GetMemo(API_ElementMemo&) const;
+    // To be removed:
+    std::string GetGDLcode() const;
   };
 }
 #endif // !S_POLYGON_HPP

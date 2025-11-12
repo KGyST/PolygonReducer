@@ -1,5 +1,3 @@
-#pragma once
-
 #ifndef S_COORD_HPP
 #define S_COORD_HPP
 
@@ -12,6 +10,7 @@
 #include <optional>
 
 
+// FIXME Move to somewhere else
 enum class LogFormat {
 	Default,
 	Short,
@@ -22,6 +21,8 @@ enum class LogFormat {
 
 
 namespace S {
+	std::optional<double> AngleBetween(const Coord& i_pStart, const Coord& i_pEnd, const Coord& i_P3);
+
 	class Coord : public ::Coord
 	{
 	private:
@@ -43,27 +44,27 @@ namespace S {
 		Coord(const Geometry::Vector2<double>& p)
 			: m_x(p.x)
 			, m_y(p.y) {} 
-		~Coord() {}
+    ~Coord() = default;
 
-		void SetX(const double x) { m_x = x; }
-		void SetY(const double y) { m_y = y; }
-		void SetEps(const double eps) { m_eps = eps; }
-
-		const double GetX(void) const { return m_x; }
-		const double GetY(void) const { return m_y; }
-		const double GetEps(void) const { return m_eps; }
-    std::string ToString(LogFormat i_format = LogFormat::Short) const;
-
-		bool operator== (const Coord & i_other) const;
+    // Operators
+		bool operator== (const Coord& i_other) const;
 		Coord operator- (const Coord& anotherCoord) const { return this->ToCoord() - anotherCoord.ToCoord(); };
 
+		// Getters / Setters
+		const double GetX(void) const { return m_x; }
+		void SetX(const double x) { m_x = x; }
+
+		const double GetY(void) const { return m_y; }
+		void SetY(const double y) { m_y = y; }
+
+		const double GetEps(void) const { return m_eps; }
+		void SetEps(const double eps) { m_eps = eps; }
+
+		// Converters
 		::Coord ToCoord() const;
 		API_Coord ToAPICoord() const;
+		std::string ToString(LogFormat i_format = LogFormat::Short) const;
 	};
-
-	std::optional<double> AngleBetween(const Coord& i_pStart, const Coord& i_pEnd, const Coord& i_P3);
 }
-
-
 #endif // !S_COORD_HPP
 
