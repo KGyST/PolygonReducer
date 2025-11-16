@@ -7,6 +7,6 @@
     <ACDevKitSupport>$(ACDevKit)\Support</ACDevKitSupport>
     <ACDevKitModules>$(ACDevKitSupport)\Modules</ACDevKitModules>
     <NatVisRoot>$(ACBuildSupport)\Debug_Visualizers\GSVisualStudioDebugVisualizers</NatVisRoot>
-    <CommonModules>..\CommonLibs.cpp</CommonModules>
+    <CommonModules>Common\CommonLibs.cpp</CommonModules>
   </PropertyGroup>
 </Project>

@@ -20,7 +20,7 @@ namespace S {
       Segment* _nextSegment = io_arc.GetLast()->GetNext();
       io_arc[0]->SetNext(_nextSegment);
       _nextSegment->SetPrev(io_arc[0]);
-      std::optional<double> a1 = AngleBetween(io_arc[0]->GetStart()->ToCoord(), io_arc[0]->GetEnd()->ToCoord(), io_arc[1]->GetStart()->ToCoord());
+      std::optional<double> a1 = AngleBetween(io_arc[0]->GetStart(), io_arc[0]->GetEnd(), io_arc[1]->GetStart());
       if (a1)
       {
         io_arc[0]->SetAng(*a1);

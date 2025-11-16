@@ -15,8 +15,8 @@ namespace S {
   class Segment
   {
   private:
-    Coord           m_start;
-    Coord           m_end;
+    S::Coord           m_start;
+    S::Coord           m_end;
 
     Segment*        m_previous;
     Segment*        m_next;
@@ -28,6 +28,7 @@ namespace S {
 
   public:
     Segment(const Coord& start, const Coord& end) { Init(0, 0, 0, start, end); }
+    Segment(const Coord* start, const Coord* end) { Init(0, 0, 0, *start, *end); }
     Segment(int idx, const Coord& start, const Coord& end) { Init(idx, 0, 0, start, end); }
     Segment(int idx, const API_Coord& start, const API_Coord& end) { Init(idx, 0, 0, Coord(start), Coord(end)); }
     Segment(int idx, int startIdx, int endIdx, const Coord& start, const Coord& end) { Init(idx, startIdx, endIdx, start, end); }
@@ -37,10 +38,10 @@ namespace S {
     //Segment& operator=(const Segment&) noexcept;
 
     // Getters / Setters
-    const Coord* GetStart() const { return &m_start; }
+    const S::Coord* GetStart() const { return &m_start; }
     void SetStart(const Coord& start) { m_start = start; }
 
-    const Coord* GetEnd() const { return &m_end; }
+    const S::Coord* GetEnd() const { return &m_end; }
     void SetEnd(const Coord& end) { m_end = end; }
 
     double  GetAng() const { return m_angle; }

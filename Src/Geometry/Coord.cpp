@@ -4,15 +4,16 @@
 
 
 namespace S {
+
 	//-----------------------   Utility functions //-----------------------
 
-	std::optional<double> AngleBetween(const Coord& i_pStart, const Coord& i_pEnd, const Coord& i_P3) {
+	std::optional<double> AngleBetween(const S::Coord* i_pStart, const S::Coord* i_pEnd, const S::Coord* i_P3) {
 		Segment s1(i_pStart, i_P3);
 		Segment s2(i_P3, i_pEnd);
 		Coord cen = *s1.IntersectMidPerp(&s2);
 
-		Coord v1 = i_pStart - cen;
-		Coord v2 = i_pEnd - cen;
+		Coord v1 = *i_pStart - cen;
+		Coord v2 = *i_pEnd - cen;
 
 		double len1 = std::hypot(v1.GetX(), v1.GetY());
 		double len2 = std::hypot(v2.GetX(), v2.GetY());
@@ -30,8 +31,8 @@ namespace S {
 
 		double angle = std::atan2(det, dot);
 
-		Coord dirVec = i_pEnd - i_pStart;
-		Coord dir3 = i_P3 - i_pStart;
+		Coord dirVec = *i_pEnd - *i_pStart;
+		Coord dir3 = *i_P3 - *i_pStart;
 		double d3t = dirVec.GetY() * (dir3.GetX()) - dirVec.GetX() * (dir3.GetY());
 
 		if (d3t > 0)
@@ -47,7 +48,7 @@ namespace S {
 
 		return angle;
 	}
-
+	
 	//----------------------- / Utility functions //-----------------------
 
 	double S::Coord::m_eps = 0.01;
