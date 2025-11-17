@@ -30,6 +30,9 @@
     <Filter Include="Visualizers">
       <UniqueIdentifier>{c17c8a4a-2b83-4fdb-88ee-47e3fec7822f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Settings">
+      <UniqueIdentifier>{d729b2cd-04d9-4d7c-a6c8-426d0682a448}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="RFIX.WIN\$(ProjectName).rc2">
@@ -100,6 +103,12 @@
     <ClInclude Include="$(CommonModules)\Logger\Logger.hpp">
       <Filter>Source Files\Utils</Filter>
     </ClInclude>
+    <ClInclude Include="Common\CommonLibs.cpp\Settings\SettingsSingletonBase.hpp">
+      <Filter>Source Files\Settings</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Gui\SettingsSingleton.hpp">
+      <Filter>Source Files\Settings</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Src\PolygonReducer.cpp">
@@ -149,6 +158,12 @@
     </ClCompile>
     <ClCompile Include="$(CommonModules)\WinReg\WinReg.cpp">
       <Filter>Source Files\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="Common\CommonLibs.cpp\Settings\SettingsSingletonBase.cpp">
+      <Filter>Source Files\Settings</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Gui\SettingsSingleton.cpp">
+      <Filter>Source Files\Settings</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

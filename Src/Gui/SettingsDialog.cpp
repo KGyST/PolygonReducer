@@ -39,3 +39,4 @@ void SettingsDialogObserver::ButtonClicked(const DG::ButtonClickEvent& ev)
 	if (ev.GetSource() == &dialog->closeButton)
 		dialog->PostCloseRequest(DG::ModalDialog::Accept);
 }
+

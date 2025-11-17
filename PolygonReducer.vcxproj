@@ -161,6 +161,7 @@
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Common\CommonLibs.cpp\Settings\SettingsSingletonBase.hpp" />
     <ClInclude Include="Src\Containers\Array.hpp" />
     <ClInclude Include="Src\Geometry\Coord.hpp" />
     <ClInclude Include="Src\Geometry\GeometryHelpers.hpp" />
@@ -169,6 +170,7 @@
     <ClInclude Include="Src\Gui\SettingsDialog.hpp" />
     <ClInclude Include="Src\Geometry\Polygon.hpp" />
     <ClInclude Include="Src\Gui\InfoboxPanel.hpp" />
+    <ClInclude Include="Src\Gui\SettingsSingleton.hpp" />
     <ClInclude Include="Src\PolygonReducer.hpp" />
     <ClInclude Include="Src\PolygonReducer_Resource.h" />
     <ClInclude Include="Src\APIEnvir.h" />
@@ -179,9 +181,11 @@
     <ClInclude Include="$(CommonModules)\AC27.hpp" />
     <ClInclude Include="$(CommonModules)\Logger\Logger.hpp" />
     <ClInclude Include="$(CommonModules)\WinReg\WinReg.hpp" />
+    <ClCompile Include="$(CommonModules)\Utils\Resource.hpp" />
     <ClInclude Include="$(CommonModules)\DateTime\DateTime.hpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Common\CommonLibs.cpp\Settings\SettingsSingletonBase.cpp" />
     <ClCompile Include="Src\Containers\Array.cpp" />
     <ClCompile Include="Src\Geometry\Coord.cpp" />
     <ClCompile Include="Src\Geometry\GeometryHelpers.cpp" />
@@ -189,6 +193,7 @@
     <ClCompile Include="Src\Gui\InfoboxPanel.cpp" />
     <ClCompile Include="Src\Data\PolygonUserData.cpp" />
     <ClCompile Include="Src\Gui\SettingsDialog.cpp" />
+    <ClCompile Include="Src\Gui\SettingsSingleton.cpp" />
     <ClCompile Include="Src\Utils\Utils.cpp" />
     <ClCompile Include="Src\Geometry\Polygon.cpp" />
     <ClCompile Include="Src\PolygonReducer.cpp" />
@@ -197,6 +202,7 @@
     <ClCompile Include="$(CommonModules)\Logger\Logger.cpp" />
     <ClCompile Include="$(CommonModules)\DateTime\DateTime.cpp" />
     <ClCompile Include="$(CommonModules)\WinReg\WinReg.cpp" />
+    <ClCompile Include="$(CommonModules)\Utils\Resource.cpp" />
     <ClCompile Include="Src\AC$(ACVersion)\APICommon.c" />
   </ItemGroup>
   <ItemGroup>
