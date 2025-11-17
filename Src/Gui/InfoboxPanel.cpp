@@ -1,5 +1,5 @@
 #include "InfoboxPanel.hpp"
-#include "../PolygonReducer_Resource.h"
+//#include "../PolygonReducer_Resource.h"
 #include "../APIEnvir.h"
 #include "ACAPinc.h"
 #include "GDLDialog.hpp"

@@ -15,11 +15,7 @@
 
 #include "APIEnvir.h"
 #include "ACAPinc.h"					// also includes APIdefs.h
-#if ACVER == 19
-#include "AC19/APICommon.h"
-#else
 #include "AC27/APICommon.h"
-#endif
 
 #include <stdio.h>
 #include <string>
@@ -33,16 +29,19 @@
 #include "PolygonReducer_Resource.h"
 #include "Gui/InfoboxPanel.hpp"
 #include "PolygonReducer.template.hpp"			//templated functions' definitions
-//#include "PolygonReducer.hpp"
+#include "PolygonReducer.hpp"
 #include "Logger/Logger.hpp"
+#include "Logger/LoglevelStrings.hpp"
 
 using namespace PolygonReducer;
-// MUST NOT BE IN NAMESPACE
+// MUST NOT BE IN ANY NAMESPACE
 
 // ---------------------------------- Types ------------------------------------
 
 
 // ---------------------------------- Variables --------------------------------
+
+DGMessageData								cntlDlgData;	//Dummy, unused
 
 int	registrationSuccess = 0;
 
@@ -65,40 +64,93 @@ Logger logger("Karlisoft", "PolygonReducer");
 //
 // =============================================================================
 
-static void		ReducePolygons(void)
+static short DGCALLBACK SettingsDlgCallBack(short message, short dialID, short item, DGUserData userData, DGMessageData msgData)
 {
-    GSErrCode           err;
-    API_SelectionInfo   selectionInfo;
-    //GS::Array<API_Neig> indxs = *new GS::Array<API_Neig>();
-    //GS::Array<API_Guid> inds = *new GS::Array<API_Guid>();
-    GS::Array<API_ElementMemo> memos = {};
-    GS::Array<API_Coord> coords {};
+	short result = 0;
+	GS::UniString _text{};
+	API_PropertyDefinition _def;
+	IO::Location sFileLoc;
 
-    GS::Array<API_Neig> selNeigs{};
+	switch (message) {
+	case DG_MSG_INIT:
+	{
+		//GSErrCode err;
 
-    err = ACAPI_Selection_Get(&selectionInfo, &selNeigs, true);
+		for (auto _s : sLoglevels)
+		{
+			DGPopUpInsertItem(dialID, Loglevel_Popup, DG_LIST_BOTTOM);
+			DGPopUpSetItemText(dialID, Loglevel_Popup, DG_LIST_BOTTOM, _s);
+		}
 
-    if (err == APIERR_NOSEL)
-        return;
+		DGPopUpSelectItem(dialID, Loglevel_Popup, LOGGER.GetLoglevel() + 1);
 
-    if (err != NoError) {
-        return;
-    }
+		break;
+	}
+	case DG_MSG_CLICK:
+		switch (item) {
+		case OK_BUTTON:
 
-    err = ConvertToGSArray<API_Neig, API_ElementMemo>(&selNeigs, &memos, ReturnTrue<API_Neig>, ConvertToMemos);
+			break;
+		}
 
-    for (API_ElementMemo _memo: memos)
-    {
-        err = ConvertToGSArray<API_Coord, API_Coord>(_memo.coords, &coords);
-    }
+		result = item;
 
-    for (API_Coord _coord: coords)
-    {
-        WriteReport_Alert("X = %f, Y = %f", _coord.x, _coord.y);
-    }
+		break;
+	case DG_MSG_CHANGE:
+		switch (item) {
+		case Loglevel_Popup:
 
-    return;
+			break;
+		}
+
+		break;
+	}
+
+	return result;
 }
+
+static void		Do_DisplaySettings(void) {
+  GSErrCode		err = NoError;
+
+  err = DGModalDialog(ACAPI_GetOwnResModule(), SettingsPageId, ACAPI_GetOwnResModule(), SettingsDlgCallBack, (DGUserData)&cntlDlgData);
+}
+
+#if _DEBUG
+static void		Do_ReducePolygons(void)
+{
+  GSErrCode           err;
+  API_SelectionInfo   selectionInfo;
+  //GS::Array<API_Neig> indxs = *new GS::Array<API_Neig>();
+  //GS::Array<API_Guid> inds = *new GS::Array<API_Guid>();
+  GS::Array<API_ElementMemo> memos = {};
+  GS::Array<API_Coord> coords{};
+
+  GS::Array<API_Neig> selNeigs{};
+
+  err = ACAPI_Selection_Get(&selectionInfo, &selNeigs, true);
+
+  if (err == APIERR_NOSEL)
+    return;
+
+  if (err != NoError) {
+    return;
+  }
+
+  err = ConvertToGSArray<API_Neig, API_ElementMemo>(&selNeigs, &memos, ReturnTrue<API_Neig>, ConvertToMemos);
+
+  for (API_ElementMemo _memo : memos)
+  {
+    err = ConvertToGSArray<API_Coord, API_Coord>(_memo.coords, &coords);
+  }
+
+  for (API_Coord _coord : coords)
+  {
+    WriteReport_Alert("X = %f, Y = %f", _coord.x, _coord.y);
+  }
+
+  return;
+}
+#endif
 
 // -----------------------------------------------------------------------------
 // Create tabpage callback function
@@ -144,7 +196,10 @@ GSErrCode __ACENV_CALL	MenuCommandHandler(const API_MenuParams* params)
     return ACAPI_CallUndoableCommand("Reduce Polygons",
         [&]() -> GSErrCode {
             switch (params->menuItemRef.itemIndex) {
-            case 1:		ReducePolygons();				break;
+            case 1:		Do_DisplaySettings();		    break;
+#if _DEBUG
+            case 2:		Do_ReducePolygons();				break;
+#endif
             }
         
             return NoError;
@@ -179,20 +234,20 @@ API_AddonType	__ACENV_CALL	CheckEnvironment(API_EnvirParams* envir)
 //------------------------------------------------------
 GSErrCode	__ACENV_CALL	RegisterInterface(void)
 {
-    GSErrCode err = NoError;
+  GSErrCode err = NoError;
 
-    ACAPI_MenuItem_RegisterMenu(32500, 0, MenuCode_UserDef, MenuFlag_Default);
+  ACAPI_MenuItem_RegisterMenu(32500, 0, MenuCode_UserDef, MenuFlag_Default);
 
 	err = ACAPI_AddOnIntegration_RegisterInfoBoxPanel(InfoBoxPanelRefCon, API_PolyLineID, IDS_INFOBOXPAGE_NAME, InfoBoxPageId);
 	err = ACAPI_AddOnIntegration_RegisterInfoBoxPanel(InfoBoxPanelRefCon, API_HatchID, IDS_INFOBOXPAGE_NAME, InfoBoxPageId);
 
-    if (err != NoError) {
-        DBPrintf("PolygonReducer add-on: Cannot register info box panel\n");
-    }
-    else
-        registrationSuccess |= InfoBoxPanelRegistered;
+  if (err != NoError) {
+    DBPrintf("PolygonReducer add-on: Cannot register info box panel\n");
+  }
+  else
+    registrationSuccess |= InfoBoxPanelRegistered;
 
-    return NoError;
+  return NoError;
 }		/* RegisterInterface */
 
 

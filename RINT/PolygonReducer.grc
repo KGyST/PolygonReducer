@@ -14,9 +14,9 @@
 
 'STR#' 32000 "Add-on Info strings" {
 #ifdef _DEBUG
-/* [  1] */		"_PolygonReducer"
+  /* [  1] */		"_PolygonReducer"
 #else
-/* [  1] */		"PolygonReducer"
+  /* [  1] */		"PolygonReducer"
 #endif
 /* [  2] */		"Reduces/decimates polygons"
 }
@@ -26,7 +26,10 @@
 'STR#' 32500 "Menu strings" {
 /* [   ] */		"Samu"
 /* [   ] */		"PolygonReducer"
-/* [  1] */			"PolygonReducer"
+/* [  1] */			"PolygonReducer Settings"
+#ifdef _DEBUG
+  /* [  2] */			"PolygonReducer Test"
+#endif
 }
 
 'STR#' 32520 "Prompt strings" {
@@ -67,19 +70,22 @@
 
 'DLGH'  GDLPageId  DLG_GDLPageId {
 1	"Edit"		MultiLineEdit_0
-2	"Close window"		Button_0
+2	"Close window"		OK_BUTTON
 }
 
 /*----------------------------------------------------------*/
 
 'GDLG'  SettingsPageId  Modal | grow   0    0  160   36  "Settings" {
 /* [  1] */ LeftText            0    0  100   18  ExtraSmall  vCenter  "Settings"
-/* [  2] */ Button				127   18  16   16  ExtraSmall  ""
-
+/* [  2] */ Button				      127   18  16   16  ExtraSmall  ""
+/* [  3] */ PopupControl        280   10   200  24  24 5
+/* [  4] */ IntEdit            0    0  34   16  ExtraSmall  "0" "1000"
 }
 
 'DLGH'  SettingsPageId  DLG_SettingsPageId {
-1	"Current number of segments"		LeftText_0
-2	"Close window"		Button_0
+1	"Loglevel"		    LeftText_0
+2	"Close window"		OK_BUTTON
+3	""		            PopupControl_0
+3	""		            IntEdit_0
 }
 

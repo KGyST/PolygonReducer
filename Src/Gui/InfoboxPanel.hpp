@@ -1,7 +1,10 @@
-#pragma once
 #ifndef INFOBOX_PANEL_HPP
 #define INFOBOX_PANEL_HPP
-#define ACExtension
+//#define ACExtension
+
+#include "APIEnvir.h"
+#include "ACAPinc.h"					// also includes APIdefs.h
+#include "../AC27/APICommon.h"
 
 #include "DGModule.hpp"
 #include "IAPIToolUIData.hpp"
@@ -9,7 +12,7 @@
 #include "../PolygonReducer.hpp"
 #include "../Geometry/Polygon.hpp"
 #include <optional>
-#include "Logger/Logger.hpp"
+#include "Utils/Resource.hpp"
 
 extern Logger logger;
 

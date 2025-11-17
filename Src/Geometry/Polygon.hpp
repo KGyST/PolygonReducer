@@ -10,6 +10,7 @@
 #include <string>
 #include "Logger/Logger.hpp"
 
+
 extern Logger logger;
 
 namespace S {

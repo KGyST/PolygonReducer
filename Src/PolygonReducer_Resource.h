@@ -1,9 +1,15 @@
-#pragma once
+// For PolygonReducer.grc
 
 
-#define IDS_INFOBOXPAGE_NAME			32552
+#define NoneLeftText_0  0
+#define OK_BUTTON       1
+#define Loglevel_Popup  2
+#define IntEdit_0       3
 
-#define InfoBoxPageId					32703
-#define GDLPageId						32704
-#define SettingsPageId					32705
+#define IDS_APP_NAME          32500
+#define IDS_INFOBOXPAGE_NAME  32552
+
+#define InfoBoxPageId         32703
+#define GDLPageId             32704
+#define SettingsPageId        32705
 
