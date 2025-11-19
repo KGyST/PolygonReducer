@@ -80,7 +80,7 @@
   </ImportGroup>
   <PropertyGroup>
     <IntDir>Build\$(Configuration)\</IntDir>
-    <OutDir>Build\$(Configuration)\</OutDir>
+    <OutDir>Build\$(Configuration)\</OutDir> 
     <TargetExt>.apx</TargetExt>
   </PropertyGroup>
   <ItemDefinitionGroup>
@@ -181,7 +181,7 @@
     <ClInclude Include="$(CommonModules)\AC27.hpp" />
     <ClInclude Include="$(CommonModules)\Logger\Logger.hpp" />
     <ClInclude Include="$(CommonModules)\WinReg\WinReg.hpp" />
-    <ClCompile Include="$(CommonModules)\Utils\Resource.hpp" />
+    <ClInclude Include="$(CommonModules)\Utils\Resource.hpp" />
     <ClInclude Include="$(CommonModules)\DateTime\DateTime.hpp" />
     <ClInclude Include="$(CommonModules)" />
   </ItemGroup>
