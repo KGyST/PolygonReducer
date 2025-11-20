@@ -13,3 +13,6 @@
 #define GDLPageId             32704
 #define SettingsPageId        32705
 
+#define COMPANY_NAME        "Samu"
+#define APP_NAME            "PolygonReducer"
+
