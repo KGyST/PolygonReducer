@@ -14,7 +14,7 @@ private:
   UINT m_iMinEdgeCount = 3;
 public:
   PolygonReducerSettings()
-  : SettingsSingletonBase(GetStringFromResource_(IDS_APP_NAME, 1), GetStringFromResource_(IDS_APP_NAME, 2)){};
+  : SettingsSingletonBase(GetStringFromResource(IDS_APP_NAME, 1), GetStringFromResource(IDS_APP_NAME, 2)){};
   ~PolygonReducerSettings() = default;
 };
 

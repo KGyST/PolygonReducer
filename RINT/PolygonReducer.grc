@@ -23,7 +23,7 @@
 
 /* Text appearing in the menu */
 
-'STR#' 32500 "Menu strings" {
+'STR#' IDS_APP_NAME "Menu strings" {
 /* [   ] */		"Samu"
 /* [   ] */		"PolygonReducer"
 /* [  1] */			"PolygonReducer Settings"
