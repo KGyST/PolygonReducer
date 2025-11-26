@@ -1,6 +1,7 @@
 # Polygon Reducer for ArchiCAD
 This is an ArchiCAD add-on that decimates 2D polygons in a geometrically correct way, optimized for creating simplified door/windows profiles.
 Currently supports ArchiCAD 27/SE 2024.
+Under construction.
 
 ## Usage of this project
 - if not got using `git clone --recurse-submodules https://github.com/KGyST/PolygonReducer.git` then update submodules:
@@ -17,6 +18,7 @@ Currently supports ArchiCAD 27/SE 2024.
 - Postprocess
 	- Skipped segment connectings
 	- Arc to polyline conversion
+- Registry automation: register member variables to regkeys and default values
 - Coding style mods/refactoring
 	- One row between functions, two between classes
 	- 2 char tabs

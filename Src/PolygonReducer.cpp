@@ -32,6 +32,8 @@
 #include "PolygonReducer.hpp"
 #include "Logger/Logger.hpp"
 #include "Logger/LoglevelStrings.hpp"
+#include <boost/format.hpp>
+
 
 using namespace PolygonReducer;
 // MUST NOT BE IN ANY NAMESPACE
@@ -54,7 +56,7 @@ enum {
 };
 
 PolygonReducerPanel* infoBox = NULL;
-Logger logger("Karlisoft", "PolygonReducer");
+Logger logger(COMPANY_NAME, APP_NAME);
 
 // ----------------------------------  --------------------------------
 
@@ -71,42 +73,51 @@ static short DGCALLBACK SettingsDlgCallBack(short message, short dialID, short i
 	API_PropertyDefinition _def;
 	IO::Location sFileLoc;
 
-	switch (message) {
-	case DG_MSG_INIT:
-	{
-		//GSErrCode err;
+  LOGGER.Log(boost::format("SettingsDlgCallBack: message = %d, dialID = %d, item = %d") % message % dialID % item, Loglevel::LogLev_TRACE);
 
-		for (auto _s : sLoglevels)
-		{
-			DGPopUpInsertItem(dialID, Loglevel_Popup, DG_LIST_BOTTOM);
-			DGPopUpSetItemText(dialID, Loglevel_Popup, DG_LIST_BOTTOM, _s);
-		}
+  switch (message) {
+    case DG_CLOSEBOX:
+      result = Button_OK;
 
-		DGPopUpSelectItem(dialID, Loglevel_Popup, LOGGER.GetLoglevel() + 1);
+      break;
+    case DG_MSG_INIT:
+      //GSErrCode err;
 
-		break;
-	}
-	case DG_MSG_CLICK:
-		switch (item) {
-		case OK_BUTTON:
+      for (const GS::UniString& _s : sLoglevels)
+      {
+        DGPopUpInsertItem(dialID, PopupControl_LogLev, DG_LIST_BOTTOM);
+        DGPopUpSetItemText(dialID, PopupControl_LogLev, DG_LIST_BOTTOM, _s);
+      }
 
-			break;
-		}
+      DGPopUpSelectItem(dialID, PopupControl_LogLev, LOGGER.GetLoglevel() + 1);
 
-		result = item;
+      DGSetItemValLong(dialID, IntEdit_ArcEdges, SETTINGS.GetMinEdgeCount());
 
-		break;
-	case DG_MSG_CHANGE:
-		switch (item) {
-		case Loglevel_Popup:
+      break;
+    case DG_MSG_CLICK:
+      switch (item) {
+      //case -1:
+      case Button_OK:
+        result = item;
 
-			break;
-		}
+        break;
+      }
+      
+      break;
+    case DG_MSG_CHANGE:
+      switch (item) {
+      case PopupControl_LogLev:
+        LOGGER.SetLoglevel((Loglevel)(DGGetItemValLong(dialID, PopupControl_LogLev) - 1));
 
-		break;
-	}
+        break;
+      case IntEdit_ArcEdges:
+        SETTINGS.SetMinEdgeCount((UINT)DGGetItemValLong(dialID, IntEdit_ArcEdges));
 
-	return result;
+        break;
+      }
+  }
+
+  return result;
 }
 
 static void		Do_DisplaySettings(void) {

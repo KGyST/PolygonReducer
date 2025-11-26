@@ -100,13 +100,19 @@
     <ClInclude Include="Src\Gui\SettingsSingleton.hpp">
       <Filter>Source Files\Settings</Filter>
     </ClInclude>
-    <ClInclude Include="Common\CommonLibs.cpp\Settings\SettingsSingletonBase.template.hpp" />
     <ClInclude Include="$(CommonModules)" />
     <ClInclude Include="Src\PolygonReducer_Resource.h">
       <Filter>Source Files\Data</Filter>
     </ClInclude>
     <ClInclude Include="Src\Geometry\GeometryHelpers.hpp">
       <Filter>Source Files\Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="$(CommonModules)" />
+    <ClInclude Include="$(CommonModules)\Utils\Resource.hpp">
+      <Filter>Source Files\Data</Filter>
+    </ClInclude>
+    <ClInclude Include="$(CommonModules)\Settings\SettingsSingletonBase.template.hpp">
+      <Filter>Source Files\Settings</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -159,9 +165,6 @@
       <Filter>Source Files\Settings</Filter>
     </ClCompile>
     <ClCompile Include="$(CommonModules)\Utils\Resource.cpp">
-      <Filter>Source Files\Data</Filter>
-    </ClCompile>
-    <ClCompile Include="$(CommonModules)\Utils\Resource.hpp">
       <Filter>Source Files\Data</Filter>
     </ClCompile>
     <ClCompile Include="Src\Geometry\GeometryHelpers.cpp">

@@ -11,9 +11,12 @@ class PolygonReducerSettings
 private:
   UINT m_iMinEdgeCount = 3;
 public:
-  PolygonReducerSettings()
-  : SettingsSingletonBase(COMPANY_NAME, APP_NAME) {}
-  ~PolygonReducerSettings() = default;
+  PolygonReducerSettings();
+  ~PolygonReducerSettings();
+
+  // Getters / Setters
+  UINT GetMinEdgeCount() { return m_iMinEdgeCount; }
+  void SetMinEdgeCount(UINT i_iMinEdgeCount) { m_iMinEdgeCount = i_iMinEdgeCount; }
 };
 
 inline PolygonReducerSettings& SETTINGS = PolygonReducerSettings::GetInstance();

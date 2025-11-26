@@ -125,7 +125,7 @@ Type S::CircularArray<Type>::operator[](int i_index) const
     throw std::out_of_range("CircularArray is empty");
 
   if (i_index < 0)
-    logger.Log(GS::UniString(str(boost::format("CircularArray: negative index: %d") % i_index)));
+    logger.Log(boost::format("CircularArray: negative index: %d") % i_index, LogLev_TRACE);
 
   i_index = ((i_index % size) + size) % size;
 

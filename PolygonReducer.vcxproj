@@ -6,7 +6,7 @@
       <Platform>x64</Platform>
     </ProjectConfiguration>
     <ProjectConfiguration Include="Release 19|x64">
-      <Configuration>Release 19</Configuration>
+      <Configuration>Release 19</Configuration> 
       <Platform>x64</Platform>
     </ProjectConfiguration>
     <ProjectConfiguration Include="Debug 27|x64">
@@ -161,7 +161,7 @@
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="Common\CommonLibs.cpp\Settings\SettingsSingletonBase.template.hpp" />
+    <ClInclude Include="$(CommonModules)\Settings\SettingsSingletonBase.template.hpp" />
     <ClInclude Include="Src\Containers\Array.hpp" />
     <ClInclude Include="Src\Geometry\Coord.hpp" />
     <ClInclude Include="Src\Geometry\GeometryHelpers.hpp" />

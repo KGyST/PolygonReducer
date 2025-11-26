@@ -341,6 +341,15 @@ namespace PolygonReducer {
     }
   }
 
+  void PolygonReducerPageObserver::RealEditChanged(const DG::RealEditChangeEvent& ev)
+  {
+    if (ev.GetSource() == &m_tabPage->iUISmallestLength)
+    {
+      double dLengthVal = ev.GetSource()->GetValue();
+      m_tabPage->SetSmallestLength(dLengthVal);
+    }
+  }
+
   void PolygonReducerPageObserver::BarControlChanged(const DG::BarControlChangeEvent& ev)
   {
     if (ev.GetSource() == &m_tabPage->iSlider)
