@@ -1,8 +1,10 @@
+#include <boost/format.hpp>
+
+#include "Algorithms.hpp"
+
 #include "SubPolygon.hpp"
 #include "../PolygonReducer.template.hpp"
-#include "Algorithms.hpp"
-#include "Coord.hpp"
-#include <boost/format.hpp>
+//#include "Coord.hpp"
 
 using namespace Geometry;
 using namespace std;
@@ -12,9 +14,7 @@ namespace S {
 
   static void _CreateArc(Array<Segment*>& io_arc, const Coord* i_prevMidPerpIntSectPt, Array <Segment*>& io_delArc)
   {
-    UINT minSize = 3;
-
-    if (io_arc.GetSize() > minSize)
+    if (io_arc.GetSize() > SETTINGS.GetMinEdgeCount())
     {
       io_arc[0]->SetEnd(*io_arc.GetLast()->GetEnd());
       Segment* _nextSegment = io_arc.GetLast()->GetNext();
@@ -81,7 +81,6 @@ namespace S {
     Segment* prevSegment = m_segments[-1];
     unique_ptr<Coord> prevMidPerpIntSectPt = make_unique<Coord>(), midPerpIntSectPt = make_unique<Coord>();
     Array<Segment*> arc, _delarc;
-    UINT minSize = 3;
 
     for (Segment* s : m_segments)
     {

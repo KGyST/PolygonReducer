@@ -2,12 +2,16 @@
 #define S_COORD_HPP
 
 #define ACExtension
+
+#include <optional>
+
 #include "APIEnvir.h"
 #include "ACAPinc.h"					// also includes APIdefs.h
+
 #include "Point2D.hpp"
 #include "Vector2D.hpp"
-#include "GeometryHelpers.hpp"
-#include <optional>
+
+//#include "GeometryHelpers.hpp"		// Now empty
 
 
 // FIXME Move to somewhere else

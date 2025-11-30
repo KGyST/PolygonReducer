@@ -219,30 +219,15 @@ static GSErrCode _Wrapper(std::function<void(S::Polygon&)> i_func)
 //----------------------- / Utility functions //-----------------------
 
 namespace PolygonReducer {
-  void PolygonReducerInfoboxPage::SetControls()
+  void GUIDMixin::SetCurrentPolyGUID(API_Guid i_currentPolygonGUID)
   {
-    auto _originalGuid = GetOriginalPolyGUID(m_currentPolygonGUID);
-    API_Guid originalGuid = _originalGuid.value_or(m_currentPolygonGUID);
+    m_currentPolygonGUID = i_currentPolygonGUID;
 
-    S::Polygon* currentPgon = GetPolygonByGUID(m_currentPolygonGUID), * originalPgon = GetPolygonByGUID(originalGuid);
-    
-    iUIPointNumber.SetValue(currentPgon->GetPointCount());
-
-    DGSetItemValLong(InfoBoxPageId, iUISliderId, currentPgon->GetPointCount());
-    DGSetItemMaxLong(InfoBoxPageId, iUISliderId, originalPgon->GetPointCount());
-
-    iUISmallestLength.SetValue(currentPgon->GetShortestEdgeLength());
+    SetControls();
   }
 
-  PolygonReducerInfoboxPage::PolygonReducerInfoboxPage(const DG::TabControl& tabControl, TBUI::IAPIToolUIData* p_uiData)
-    :DG::TabPage(tabControl, 1, ACAPI_GetOwnResModule(), InfoBoxPageId, InvalidResModule)
-    , iUIPointNumber(GetReference(), iUIPointNumberId)
-    , iSlider(GetReference(), iUISliderId)
-    , GDLButton(GetReference(), GDLButtonId)
-    , SettingsButton(GetReference(), SettingsButtonId)
-    , iUISmallestLength(GetReference(), iUISmallestLengthId)
-    , uiData(p_uiData)
-    , m_currentPolygonGUID()
+  GUIDMixin::GUIDMixin()
+    : m_currentPolygonGUID() 
   {
     auto FirstGUID = GetFirstPolygonGUIDFromSelection();
 
@@ -252,13 +237,37 @@ namespace PolygonReducer {
     }
   }
 
-  PolygonReducerInfoboxPage::~PolygonReducerInfoboxPage() {
+  void PointNrInfoboxPage::SetControls()
+  {
+    auto _originalGuid = GetOriginalPolyGUID(m_currentPolygonGUID);
+    API_Guid originalGuid = _originalGuid.value_or(m_currentPolygonGUID);
+
+    S::Polygon* currentPgon = GetPolygonByGUID(m_currentPolygonGUID), * originalPgon = GetPolygonByGUID(originalGuid);
+    
+    iUIPointNumber.SetValue(currentPgon->GetPointCount());
+
+    DGSetItemValLong(PointNrInfoBoxId, iUISliderId, currentPgon->GetPointCount());
+    DGSetItemMaxLong(PointNrInfoBoxId, iUISliderId, originalPgon->GetPointCount());
+
+    iUISmallestLength.SetValue(currentPgon->GetShortestEdgeLength());
+  }
+
+  PointNrInfoboxPage::PointNrInfoboxPage(const DG::TabControl& tabControl, TBUI::IAPIToolUIData* p_uiData)
+    :DG::TabPage(tabControl, 1, ACAPI_GetOwnResModule(), PointNrInfoBoxId, InvalidResModule)
+    , iUIPointNumber(GetReference(), iUIPointNumberId)
+    , iSlider(GetReference(), iUISliderId)
+    , GDLButton(GetReference(), GDLButtonId)
+    , SettingsButton(GetReference(), SettingsButtonId)
+    , iUISmallestLength(GetReference(), iUISmallestLengthId)
+    , uiData(p_uiData) {}
+
+  PointNrInfoboxPage::~PointNrInfoboxPage() {
     uiData = NULL;
   }
 
   // Getters / Setters
 
-  int PolygonReducerInfoboxPage::GetPointNumber()
+  int PointNrInfoboxPage::GetPointNumber()
   {
     S::Polygon* pgon = GetFirstPolygonFromSelection();
 
@@ -273,7 +282,7 @@ namespace PolygonReducer {
     }
   }
 
-  GSErrCode PolygonReducerInfoboxPage::SetPointNumber(const int i_iPoint)
+  GSErrCode PointNrInfoboxPage::SetPointNumber(const int i_iPoint)
   {
     auto func = [i_iPoint](S::Polygon& i_poly) -> void {
       return i_poly.SetPointCount(i_iPoint);
@@ -282,7 +291,7 @@ namespace PolygonReducer {
     return _Wrapper(func);
   }
 
-  double PolygonReducerInfoboxPage::GetSmallestLength()
+  double PointNrInfoboxPage::GetSmallestLength()
   {
     S::Polygon* pgon = GetFirstPolygonFromSelection();
 
@@ -297,7 +306,7 @@ namespace PolygonReducer {
     }
   }
 
-  GSErrCode PolygonReducerInfoboxPage::SetSmallestLength(double i_length)
+  GSErrCode PointNrInfoboxPage::SetSmallestLength(double i_length)
   {
     auto func = [i_length](S::Polygon& i_poly) -> void {
       return i_poly.SetShortestEdgeLength(i_length);
@@ -306,16 +315,9 @@ namespace PolygonReducer {
     return _Wrapper(func);
   }
 
-  void PolygonReducerInfoboxPage::SetCurrentPolyGUID(API_Guid i_currentPolygonGUID)
-  {
-    m_currentPolygonGUID = i_currentPolygonGUID;
-
-    SetControls();
-  }
-
   // --- PolygonReducerPageObserver -------------------------------------------------
 
-  void PolygonReducerPageObserver::APIElementChanged(const TBUI::APIElemDefaultFieldMask& fieldMask) {
+  void PointNrPageObserver::APIElementChanged(const TBUI::APIElemDefaultFieldMask& fieldMask) {
     if (fieldMask.GetRegDataChanged()) {
       auto FirstGUID = GetFirstPolygonGUIDFromSelection();
 
@@ -326,22 +328,22 @@ namespace PolygonReducer {
     }
   }
 
-  void PolygonReducerPageObserver::PosIntEditChanged(const DG::PosIntEditChangeEvent& ev)
+  void PointNrPageObserver::PosIntEditChanged(const DG::PosIntEditChangeEvent& ev)
   {
     if (ev.GetSource() == &m_tabPage->iUIPointNumber)
     {
       int iPointVal = ev.GetSource()->GetValue();
       //int iPointMax = ev.GetSource()->GetMax() ;
 
-      DGSetItemValLong(InfoBoxPageId, m_tabPage->iUISliderId, iPointVal);
-      //DGSetItemValLong(InfoBoxPageId, iUISliderId, iPointMax);
+      DGSetItemValLong(PointNrInfoBoxId, m_tabPage->iUISliderId, iPointVal);
+      //DGSetItemValLong(PointNrInfoBoxId, iUISliderId, iPointMax);
 
       m_tabPage->SetPointNumber(iPointVal/*, iPointMax*/);
 
     }
   }
 
-  void PolygonReducerPageObserver::RealEditChanged(const DG::RealEditChangeEvent& ev)
+  void PointNrPageObserver::RealEditChanged(const DG::RealEditChangeEvent& ev)
   {
     if (ev.GetSource() == &m_tabPage->iUISmallestLength)
     {
@@ -350,19 +352,19 @@ namespace PolygonReducer {
     }
   }
 
-  void PolygonReducerPageObserver::BarControlChanged(const DG::BarControlChangeEvent& ev)
+  void PointNrPageObserver::BarControlChanged(const DG::BarControlChangeEvent& ev)
   {
     if (ev.GetSource() == &m_tabPage->iSlider)
     {
       int iPointVal = ev.GetSource()->GetValue();
 
-      DGSetItemValLong(InfoBoxPageId, m_tabPage->iUIPointNumberId, iPointVal);
+      DGSetItemValLong(PointNrInfoBoxId, m_tabPage->iUIPointNumberId, iPointVal);
 
       m_tabPage->SetPointNumber(iPointVal/*, iPointMax*/);
     }
   }
 
-  void PolygonReducerPageObserver::ButtonClicked(const DG::ButtonClickEvent& ev)
+  void PointNrPageObserver::ButtonClicked(const DG::ButtonClickEvent& ev)
   {
     if (ev.GetSource() == &m_tabPage->GDLButton)
     {
@@ -383,7 +385,7 @@ namespace PolygonReducer {
     }
   }
 
-  PolygonReducerPageObserver::PolygonReducerPageObserver(PolygonReducerInfoboxPage* testPage) :
+  PointNrPageObserver::PointNrPageObserver(PointNrInfoboxPage* testPage) :
     m_tabPage(testPage)
   {
     AttachToAllItems(*m_tabPage);
@@ -394,39 +396,92 @@ namespace PolygonReducer {
     APIElementChanged(mask);
   }
 
-  PolygonReducerPageObserver::~PolygonReducerPageObserver(void) {
+  PointNrPageObserver::~PointNrPageObserver(void) {
     DetachFromAllItems(*m_tabPage);
     m_tabPage->uiData->DetachObserver(this);
     m_tabPage = NULL;
   }
 
   // --- PolygonReducerPage ---------------------------------------------------------
+  
+  // --- LengthInfoboxPage ---------------------------------------------------------
 
-  PolygonReducerPanel::PolygonReducerPanel(Int32 refCon) :
-    TBUI::APIToolUIPanel(refCon)
+  void LengthInfoboxPage::SetControls()
   {
+    auto _originalGuid = GetOriginalPolyGUID(m_currentPolygonGUID);
+    API_Guid originalGuid = _originalGuid.value_or(m_currentPolygonGUID);
 
+    S::Polygon* currentPgon = GetPolygonByGUID(m_currentPolygonGUID), * originalPgon = GetPolygonByGUID(originalGuid);
+
+    //iUIStoredLength.SetValue();
+    iUICurrentLength.SetValue((GS::ULong) currentPgon->GetShortestEdgeLength());
   }
 
-  PolygonReducerPanel::~PolygonReducerPanel() {
-
+  LengthInfoboxPage::LengthInfoboxPage(const DG::TabControl& tabControl, TBUI::IAPIToolUIData* p_uiData)
+    : DG::TabPage(tabControl, 1, ACAPI_GetOwnResModule(), PointNrInfoBoxId, InvalidResModule)
+    , iUIStoredLength(GetReference(), iUIStoredLengthId)
+    , StoreButton(GetReference(), StoredButtonId)
+    , ApplyButton(GetReference(), ApplyButtonId)
+    , iUICurrentLength(GetReference(), iUICurrentLengthId)
+    , uiData(p_uiData) {
   }
 
-  bool	PolygonReducerPanel::CreatePage(const DG::TabControl& tabControl, TBUI::IAPIToolUIData* data, DG::TabPage** tabPage) {
-    this->tabPage = new PolygonReducerInfoboxPage(tabControl, data);
-    *tabPage = this->tabPage;
-
-    observer = new PolygonReducerPageObserver(dynamic_cast<PolygonReducerInfoboxPage*> (this->tabPage));
-
-    return true;
+  LengthInfoboxPage::~LengthInfoboxPage() {
+    uiData = NULL;
   }
 
-  void	PolygonReducerPanel::DestroyPage(void) {
-    delete observer;		// this must be first
-    observer = NULL;
+  // --- LengthPageObserver -------------------------------------------------
 
-    delete tabPage;			// this must be after destroying the observers
-    tabPage = NULL;
+  void LengthPageObserver::APIElementChanged(const TBUI::APIElemDefaultFieldMask& fieldMask) {
+    if (fieldMask.GetRegDataChanged()) {
+      auto FirstGUID = GetFirstPolygonGUIDFromSelection();
+
+      if (FirstGUID)
+      {
+        m_tabPage->SetCurrentPolyGUID(*FirstGUID);
+      }
+    }
+  }
+
+  void LengthPageObserver::ButtonClicked(const DG::ButtonClickEvent& ev)
+  {
+    if (ev.GetSource() == &m_tabPage->StoreButton)
+    {
+
+    }
+
+    if (ev.GetSource() == &m_tabPage->ApplyButton)
+    {
+
+    }
+  }
+
+  void LengthPageObserver::RealEditChanged(const DG::RealEditChangeEvent& ev)
+  {
+    if (ev.GetSource() == &m_tabPage->iUIStoredLength)
+    {
+    }
+
+    if (ev.GetSource() == &m_tabPage->iUIStoredLength)
+    {
+    }
+  }
+
+  LengthPageObserver::LengthPageObserver(LengthInfoboxPage* testPage) :
+    m_tabPage(testPage)
+  {
+    AttachToAllItems(*m_tabPage);
+    m_tabPage->uiData->AttachObserver(dynamic_cast<TBUI::IAPIToolUIDataObserver*>(this));
+
+    TBUI::APIElemDefaultFieldMask mask;
+    mask.SetAll();
+    APIElementChanged(mask);
+  }
+
+  LengthPageObserver::~LengthPageObserver(void) {
+    DetachFromAllItems(*m_tabPage);
+    m_tabPage->uiData->DetachObserver(dynamic_cast<TBUI::IAPIToolUIDataObserver*>(this));
+    m_tabPage = NULL;
   }
 }
 

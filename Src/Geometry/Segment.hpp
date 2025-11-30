@@ -2,13 +2,16 @@
 #define S_SEGMENT_HPP
 
 #define ACExtension
+
+#include <string>
+#include <optional>
 #include "APIEnvir.h"
 #include "ACAPinc.h"					// also includes APIdefs.h
+
 #include "Point2DData.h"
 #include "Sector2DData.h"
-#include <string>
+
 #include "Coord.hpp"
-#include <optional>
 
 
 namespace S {

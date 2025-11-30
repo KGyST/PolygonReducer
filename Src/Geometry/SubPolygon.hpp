@@ -4,10 +4,13 @@
 #define ACExtension
 #include "APIEnvir.h"
 #include "ACAPinc.h"					// also includes APIdefs.h
-#include "Segment.hpp"
+
 #include "Sector2DData.h"
+
+#include "Segment.hpp"
+#include "../Gui/SettingsSingleton.hpp"
 #include "../Containers/Array.hpp"
-#include "Logger/Logger.hpp"
+//#include "Logger/Logger.hpp"
 
 extern Logger logger;
 
