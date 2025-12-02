@@ -13,9 +13,7 @@
 
 SettingsDialog::SettingsDialog() :
 	DG::ModalDialog(ACAPI_GetOwnResModule(), SettingsPageId, ACAPI_GetOwnResModule()),
-	closeButton(GetReference(), SettingsCloseButtonID)
-{
-}
+	closeButton(GetReference(), SettingsCloseButtonID) {}
 
 SettingsDialog::~SettingsDialog()
 {

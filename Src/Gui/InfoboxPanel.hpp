@@ -2,6 +2,8 @@
 #define INFOBOX_PANEL_HPP
 //#define ACExtension
 
+#include <optional>
+
 #include "APIEnvir.h"
 #include "ACAPinc.h"					// also includes APIdefs.h
 #include "../AC27/APICommon.h"
@@ -9,9 +11,9 @@
 #include "DGModule.hpp"
 #include "IAPIToolUIData.hpp"
 #include "APIToolUIPanel.hpp"
-#include "../PolygonReducer.hpp"
-#include "../Geometry/Polygon.hpp"
-#include <optional>
+
+//#include "PolygonReducer.hpp"
+#include "Geometry/Polygon.hpp"
 #include "Utils/Resource.hpp"
 
 extern Logger logger;

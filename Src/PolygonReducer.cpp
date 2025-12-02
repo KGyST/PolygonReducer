@@ -21,6 +21,7 @@
 #include <string>
 #include <algorithm>
 #include <numeric>
+#include <boost/format.hpp>
 
 #include "basicgeometry.h"
 #include "Utils/Utils.hpp"
@@ -32,8 +33,7 @@
 #include "PolygonReducer.hpp"
 #include "Logger/Logger.hpp"
 #include "Logger/LoglevelStrings.hpp"
-#include <boost/format.hpp>
-
+#include "Gui/SettingsDialog.hpp"
 
 using namespace PolygonReducer;
 // MUST NOT BE IN ANY NAMESPACE
@@ -48,16 +48,14 @@ DGMessageData								cntlDlgData;	//Dummy, unused
 int	registrationSuccess = 0;
 
 enum {
-    SettingsPanelRefCon = 1,
-    PointNrInfoBoxPanelRefCon = 2,
-    LengthInfoBoxPanelRefCon = 3,
+    PointNrInfoBoxPanelRefCon = 1,
+    LengthInfoBoxPanelRefCon = 2,
 
-    SettingsPanelRegistered = 1 << SettingsPanelRefCon,
     PointNrInfoBoxPanelRegistered = 1 << PointNrInfoBoxPanelRefCon,
     LengthInfoBoxPanelRegistered = 1 << LengthInfoBoxPanelRefCon
 };
 
-PointNrPanel* pointNrInfoBox = NULL;
+//PointNrPanel* pointNrInfoBox = NULL;
 LengthPanel* lengthInfoBox = NULL;
 Logger logger(COMPANY_NAME, APP_NAME);
 
@@ -80,8 +78,6 @@ static short DGCALLBACK SettingsDlgCallBack(short message, short dialID, short i
 
   switch (message) {
     case DG_MSG_INIT:
-      //GSErrCode err;
-
       for (const GS::UniString& _s : sLoglevels)
       {
         DGPopUpInsertItem(dialID, PopupControl_LogLev, DG_LIST_BOTTOM);
@@ -95,9 +91,8 @@ static short DGCALLBACK SettingsDlgCallBack(short message, short dialID, short i
       break;
     case DG_MSG_CLICK:
       switch (item) {
-      case DG_CLOSEBOX:
-        //case -1:
       case Button_OK:
+      case Button_Cancel:
         result = item;
 
         break;
@@ -123,7 +118,11 @@ static short DGCALLBACK SettingsDlgCallBack(short message, short dialID, short i
 static void		Do_DisplaySettings(void) {
   GSErrCode		err = NoError;
 
-  err = DGModalDialog(ACAPI_GetOwnResModule(), SettingsPageId, ACAPI_GetOwnResModule(), SettingsDlgCallBack, (DGUserData)&cntlDlgData);
+  //err = DGModalDialog(ACAPI_GetOwnResModule(), SettingsPageId, ACAPI_GetOwnResModule(), SettingsDlgCallBack, (DGUserData)&cntlDlgData);
+
+  SettingsDialog* dialog = new SettingsDialog();
+  SettingsDialogObserver observer(dialog);
+  dialog->Invoke();
 }
 
 #if _DEBUG
@@ -131,8 +130,6 @@ static void		Do_ReducePolygons(void)
 {
   GSErrCode           err;
   API_SelectionInfo   selectionInfo;
-  //GS::Array<API_Neig> indxs = *new GS::Array<API_Neig>();
-  //GS::Array<API_Guid> inds = *new GS::Array<API_Guid>();
   GS::Array<API_ElementMemo> memos = {};
   GS::Array<API_Coord> coords{};
 
@@ -175,8 +172,8 @@ static	GSErrCode	__ACENV_CALL	CreatePageCallback(Int32 refCon, const void* tabCo
 
     switch (refCon) {
         case PointNrInfoBoxPanelRefCon:		
-          if (pointNrInfoBox != NULL)
-            success = pointNrInfoBox->CreatePage(*control, reinterpret_cast<TBUI::IAPIToolUIData*>(data), page);
+          if (SETTINGS.m_pointNrInfoBox != NULL)
+            success = SETTINGS.m_pointNrInfoBox->CreatePage(*control, reinterpret_cast<TBUI::IAPIToolUIData*>(data), page);
             break;
         case LengthInfoBoxPanelRefCon:		
           if (lengthInfoBox != NULL)
@@ -196,13 +193,13 @@ static	GSErrCode	__ACENV_CALL	DestroyPageCallback(Int32 refCon, void* /*tabPage*
     switch (refCon) {
 
     case PointNrInfoBoxPanelRefCon:		
-      if (pointNrInfoBox != NULL)
-        pointNrInfoBox->DestroyPage();
+      if (SETTINGS.m_pointNrInfoBox != NULL)
+        SETTINGS.m_pointNrInfoBox->DestroyPage();
         break;
 
     case LengthInfoBoxPanelRefCon:		
       if (lengthInfoBox != NULL)
-      lengthInfoBox->DestroyPage();
+        lengthInfoBox->DestroyPage();
         break;
     }
 
@@ -215,17 +212,17 @@ static	GSErrCode	__ACENV_CALL	DestroyPageCallback(Int32 refCon, void* /*tabPage*
 
 GSErrCode __ACENV_CALL	MenuCommandHandler(const API_MenuParams* params)
 {
-    return ACAPI_CallUndoableCommand("Reduce Polygons",
-        [&]() -> GSErrCode {
-            switch (params->menuItemRef.itemIndex) {
-            case 1:		Do_DisplaySettings();		    break;
+  //return ACAPI_CallUndoableCommand("Reduce Polygons",
+  //  [&]() -> GSErrCode {
+  switch (params->menuItemRef.itemIndex) {
+
+  case 1:		Do_DisplaySettings();		    break;
 #if _DEBUG
-            case 2:		Do_ReducePolygons();				break;
+  case 2:		Do_ReducePolygons();				break;
 #endif
-            }
-        
-            return NoError;
-    });
+  }
+  return NoError;
+    //});
 }		// DoCommand
 
 
@@ -258,7 +255,7 @@ GSErrCode	__ACENV_CALL	RegisterInterface(void)
 {
   GSErrCode err = NoError;
 
-  ACAPI_MenuItem_RegisterMenu(32500, 0, MenuCode_UserDef, MenuFlag_Default);
+  ACAPI_MenuItem_RegisterMenu(IDS_APP_NAME, 0, MenuCode_UserDef, MenuFlag_Default);
 
 	err = ACAPI_AddOnIntegration_RegisterInfoBoxPanel(PointNrInfoBoxPanelRefCon, API_PolyLineID, PointNr_IBOXPAGE_NAME, PointNrInfoBoxId);
 	err = ACAPI_AddOnIntegration_RegisterInfoBoxPanel(PointNrInfoBoxPanelRefCon, API_HatchID, PointNr_IBOXPAGE_NAME, PointNrInfoBoxId);
@@ -266,12 +263,16 @@ GSErrCode	__ACENV_CALL	RegisterInterface(void)
 	err = ACAPI_AddOnIntegration_RegisterInfoBoxPanel(LengthInfoBoxPanelRefCon, API_PolyLineID, Length_IBOXPAGE_NAME, LengthInfoBoxId);
 	err = ACAPI_AddOnIntegration_RegisterInfoBoxPanel(LengthInfoBoxPanelRefCon, API_HatchID, Length_IBOXPAGE_NAME, LengthInfoBoxId);
 
-  if (err != NoError) {
-    DBPrintf("PolygonReducer add-on: Cannot register info box panel\n");
-  }
-  else
-    registrationSuccess |= PointNrInfoBoxPanelRefCon;
-    registrationSuccess |= LengthInfoBoxPanelRefCon;
+  //if (err != NoError) {
+  //  DBPrintf("PolygonReducer add-on: Cannot register info box panel\n");
+  //}
+  //else
+  //{
+    registrationSuccess |= PointNrInfoBoxPanelRegistered;
+    registrationSuccess |= LengthInfoBoxPanelRegistered;
+  //}
+
+  //ACAPI_KeepInMemory(true);
 
   return NoError;
 }		/* RegisterInterface */
@@ -289,33 +290,33 @@ GSErrCode	__ACENV_CALL Initialize(void)
     if (err != NoError)
         DBPrintf("Geometry_Test:: Initialize() ACAPI_Install_MenuHandler failed\n");
 
-    if (registrationSuccess & PointNrInfoBoxPanelRefCon & LengthInfoBoxPanelRefCon) {
-        try {
-            pointNrInfoBox = new PointNrPanel(PointNrInfoBoxPanelRefCon);
-        }
-        catch (...) {
-            DBPrintf("Panel_Test add-on: infoBoxPanel construction failed\n");
-            pointNrInfoBox = NULL;
-        }
+    try {
+      SETTINGS.m_pointNrInfoBox = new PointNrPanel(PointNrInfoBoxPanelRefCon);
+    }
+    catch (...) {
+        DBPrintf("Panel_Test add-on: infoBoxPanel construction failed\n");
+        SETTINGS.m_pointNrInfoBox = NULL;
+    }
 
-        try {
-          lengthInfoBox = new LengthPanel(LengthInfoBoxPanelRefCon);
-        }
-        catch (...) {
-            DBPrintf("Panel_Test add-on: infoBoxPanel construction failed\n");
-            lengthInfoBox = NULL;
-        }
+    if (SETTINGS.m_pointNrInfoBox != NULL) {
+      err = ACAPI_AddOnIntegration_InstallPanelHandler(SETTINGS.m_pointNrInfoBox->GetRefCon(), CreatePageCallback, DestroyPageCallback);
+      if (err != NoError) {
+        DBPrintf("Panel_Test add-on: Info box panel handler initialization failed\n");
+      }
+    }
 
-        if (pointNrInfoBox != NULL && lengthInfoBox != NULL) {
-            err = ACAPI_AddOnIntegration_InstallPanelHandler(pointNrInfoBox->GetRefCon(), CreatePageCallback, DestroyPageCallback);
-            if (err != NoError) {
-              DBPrintf("Panel_Test add-on: Info box panel handler initialization failed\n");
-            }
+    try {
+      lengthInfoBox = new LengthPanel(LengthInfoBoxPanelRefCon);
+    }
+    catch (...) {
+        DBPrintf("Panel_Test add-on: infoBoxPanel construction failed\n");
+        lengthInfoBox = NULL;
+    }
 
-            err = ACAPI_AddOnIntegration_InstallPanelHandler(lengthInfoBox->GetRefCon(), CreatePageCallback, DestroyPageCallback);
-            if (err != NoError) {
-                DBPrintf("Panel_Test add-on: Info box panel handler initialization failed\n");
-            }
+    if (lengthInfoBox != NULL) {
+      err = ACAPI_AddOnIntegration_InstallPanelHandler(lengthInfoBox->GetRefCon(), CreatePageCallback, DestroyPageCallback);
+        if (err != NoError) {
+            DBPrintf("Panel_Test add-on: Info box panel handler initialization failed\n");
         }
     }
 
@@ -330,8 +331,11 @@ GSErrCode	__ACENV_CALL Initialize(void)
 
 GSErrCode __ACENV_CALL	FreeData(void)
 {
-    if (pointNrInfoBox != NULL)
-        delete pointNrInfoBox;
+    //if (pointNrInfoBox != NULL)
+    //    delete pointNrInfoBox;
+
+    //if (lengthInfoBox != NULL)
+    //    delete lengthInfoBox;
 
     return NoError;
 }		// FreeData
