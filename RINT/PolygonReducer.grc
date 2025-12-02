@@ -69,7 +69,7 @@
 }
 
 'GDLG'  LengthInfoBoxId  TabPage  0    0  160   36  "" {
-/* [  1] */ LeftText        0    0  79   18  ExtraSmall  vCenter  "Shortest segment length:"
+/* [  1] */ LeftText        0    0  99   18  ExtraSmall  vCenter  "Shortest segment length:"
 /* [  2] */ IntEdit         0   18  34   16  ExtraSmall  "0" "1000"
 /* [  3] */ Button			   36   18  16   16  ExtraSmall  "<<"
 /* [  4] */ Button			   56   18  16   16  ExtraSmall  ">>"

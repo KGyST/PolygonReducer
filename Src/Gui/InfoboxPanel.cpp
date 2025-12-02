@@ -222,8 +222,6 @@ namespace PolygonReducer {
   void GUIDMixin::SetCurrentPolyGUID(API_Guid i_currentPolygonGUID)
   {
     m_currentPolygonGUID = i_currentPolygonGUID;
-
-    SetControls();
   }
 
   GUIDMixin::GUIDMixin()
@@ -259,7 +257,10 @@ namespace PolygonReducer {
     , GDLButton(GetReference(), GDLButtonId)
     , SettingsButton(GetReference(), SettingsButtonId)
     , iUISmallestLength(GetReference(), iUISmallestLengthId)
-    , uiData(p_uiData) {}
+    , uiData(p_uiData) 
+  {
+    SetControls();
+  }
 
   PointNrInfoboxPage::~PointNrInfoboxPage() {
     uiData = NULL;
@@ -339,7 +340,6 @@ namespace PolygonReducer {
       //DGSetItemValLong(PointNrInfoBoxId, iUISliderId, iPointMax);
 
       m_tabPage->SetPointNumber(iPointVal/*, iPointMax*/);
-
     }
   }
 
@@ -418,12 +418,14 @@ namespace PolygonReducer {
   }
 
   LengthInfoboxPage::LengthInfoboxPage(const DG::TabControl& tabControl, TBUI::IAPIToolUIData* p_uiData)
-    : DG::TabPage(tabControl, 1, ACAPI_GetOwnResModule(), PointNrInfoBoxId, InvalidResModule)
+    : DG::TabPage(tabControl, 1, ACAPI_GetOwnResModule(), LengthInfoBoxId, InvalidResModule)
     , iUIStoredLength(GetReference(), iUIStoredLengthId)
     , StoreButton(GetReference(), StoredButtonId)
     , ApplyButton(GetReference(), ApplyButtonId)
     , iUICurrentLength(GetReference(), iUICurrentLengthId)
-    , uiData(p_uiData) {
+    , uiData(p_uiData) 
+  {
+    SetControls();
   }
 
   LengthInfoboxPage::~LengthInfoboxPage() {

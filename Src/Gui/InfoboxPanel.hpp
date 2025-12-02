@@ -27,7 +27,6 @@ namespace PolygonReducer {
     ~GUIDMixin() = default;
 
     void SetCurrentPolyGUID(API_Guid i_currentPolygonGUID);
-    virtual void SetControls() = 0;
   };
 
 
@@ -46,7 +45,7 @@ namespace PolygonReducer {
       , m_observer()
       , m_typedPage()
       , m_tabPage() {};
-    ~WrapperMixin() {} ;
+    virtual ~WrapperMixin() = default;
 
     bool	CreatePage(const DG::TabControl& tabControl, TBUI::IAPIToolUIData* data, DG::TabPage** tabPage) {
       m_typedPage = new InfoboxPage(tabControl, data);

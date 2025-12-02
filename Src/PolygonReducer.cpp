@@ -174,8 +174,13 @@ static	GSErrCode	__ACENV_CALL	CreatePageCallback(Int32 refCon, const void* tabCo
     DG::TabPage** page = reinterpret_cast<DG::TabPage**>(tabPage);
 
     switch (refCon) {
-        case PointNrInfoBoxPanelRefCon:		if (pointNrInfoBox != NULL)
+        case PointNrInfoBoxPanelRefCon:		
+          if (pointNrInfoBox != NULL)
             success = pointNrInfoBox->CreatePage(*control, reinterpret_cast<TBUI::IAPIToolUIData*>(data), page);
+            break;
+        case LengthInfoBoxPanelRefCon:		
+          if (lengthInfoBox != NULL)
+            success = lengthInfoBox->CreatePage(*control, reinterpret_cast<TBUI::IAPIToolUIData*>(data), page);
             break;
         }
     return (success ? NoError : (GSErrCode)APIERR_GENERAL);
@@ -190,8 +195,14 @@ static	GSErrCode	__ACENV_CALL	DestroyPageCallback(Int32 refCon, void* /*tabPage*
 {
     switch (refCon) {
 
-    case PointNrInfoBoxPanelRefCon:		if (pointNrInfoBox != NULL)
+    case PointNrInfoBoxPanelRefCon:		
+      if (pointNrInfoBox != NULL)
         pointNrInfoBox->DestroyPage();
+        break;
+
+    case LengthInfoBoxPanelRefCon:		
+      if (lengthInfoBox != NULL)
+      lengthInfoBox->DestroyPage();
         break;
     }
 
