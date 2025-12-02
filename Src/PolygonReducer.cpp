@@ -80,8 +80,6 @@ static short DGCALLBACK SettingsDlgCallBack(short message, short dialID, short i
 
   switch (message) {
     case DG_MSG_INIT:
-      //GSErrCode err;
-
       for (const GS::UniString& _s : sLoglevels)
       {
         DGPopUpInsertItem(dialID, PopupControl_LogLev, DG_LIST_BOTTOM);
@@ -95,9 +93,8 @@ static short DGCALLBACK SettingsDlgCallBack(short message, short dialID, short i
       break;
     case DG_MSG_CLICK:
       switch (item) {
-      case DG_CLOSEBOX:
-        //case -1:
       case Button_OK:
+      case Button_Cancel:
         result = item;
 
         break;
@@ -131,8 +128,6 @@ static void		Do_ReducePolygons(void)
 {
   GSErrCode           err;
   API_SelectionInfo   selectionInfo;
-  //GS::Array<API_Neig> indxs = *new GS::Array<API_Neig>();
-  //GS::Array<API_Guid> inds = *new GS::Array<API_Guid>();
   GS::Array<API_ElementMemo> memos = {};
   GS::Array<API_Coord> coords{};
 
@@ -202,7 +197,7 @@ static	GSErrCode	__ACENV_CALL	DestroyPageCallback(Int32 refCon, void* /*tabPage*
 
     case LengthInfoBoxPanelRefCon:		
       if (lengthInfoBox != NULL)
-      lengthInfoBox->DestroyPage();
+        lengthInfoBox->DestroyPage();
         break;
     }
 
@@ -258,7 +253,7 @@ GSErrCode	__ACENV_CALL	RegisterInterface(void)
 {
   GSErrCode err = NoError;
 
-  ACAPI_MenuItem_RegisterMenu(32500, 0, MenuCode_UserDef, MenuFlag_Default);
+  ACAPI_MenuItem_RegisterMenu(IDS_APP_NAME, 0, MenuCode_UserDef, MenuFlag_Default);
 
 	err = ACAPI_AddOnIntegration_RegisterInfoBoxPanel(PointNrInfoBoxPanelRefCon, API_PolyLineID, PointNr_IBOXPAGE_NAME, PointNrInfoBoxId);
 	err = ACAPI_AddOnIntegration_RegisterInfoBoxPanel(PointNrInfoBoxPanelRefCon, API_HatchID, PointNr_IBOXPAGE_NAME, PointNrInfoBoxId);
@@ -298,6 +293,13 @@ GSErrCode	__ACENV_CALL Initialize(void)
             pointNrInfoBox = NULL;
         }
 
+        if (pointNrInfoBox != NULL) {
+          err = ACAPI_AddOnIntegration_InstallPanelHandler(pointNrInfoBox->GetRefCon(), CreatePageCallback, DestroyPageCallback);
+          if (err != NoError) {
+            DBPrintf("Panel_Test add-on: Info box panel handler initialization failed\n");
+          }
+        }
+
         try {
           lengthInfoBox = new LengthPanel(LengthInfoBoxPanelRefCon);
         }
@@ -306,13 +308,8 @@ GSErrCode	__ACENV_CALL Initialize(void)
             lengthInfoBox = NULL;
         }
 
-        if (pointNrInfoBox != NULL && lengthInfoBox != NULL) {
-            err = ACAPI_AddOnIntegration_InstallPanelHandler(pointNrInfoBox->GetRefCon(), CreatePageCallback, DestroyPageCallback);
-            if (err != NoError) {
-              DBPrintf("Panel_Test add-on: Info box panel handler initialization failed\n");
-            }
-
-            err = ACAPI_AddOnIntegration_InstallPanelHandler(lengthInfoBox->GetRefCon(), CreatePageCallback, DestroyPageCallback);
+        if (lengthInfoBox != NULL) {
+          err = ACAPI_AddOnIntegration_InstallPanelHandler(lengthInfoBox->GetRefCon(), CreatePageCallback, DestroyPageCallback);
             if (err != NoError) {
                 DBPrintf("Panel_Test add-on: Info box panel handler initialization failed\n");
             }
@@ -332,6 +329,9 @@ GSErrCode __ACENV_CALL	FreeData(void)
 {
     if (pointNrInfoBox != NULL)
         delete pointNrInfoBox;
+
+    if (lengthInfoBox != NULL)
+        delete lengthInfoBox;
 
     return NoError;
 }		// FreeData
