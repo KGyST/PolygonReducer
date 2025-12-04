@@ -1,15 +1,17 @@
+#include <functional>
+
 #include "InfoboxPanel.hpp"
-//#include "../PolygonReducer_Resource.h"
-#include "../APIEnvir.h"
+#include "APIEnvir.h"
 #include "ACAPinc.h"
+
 #include "GDLDialog.hpp"
 #include "SettingsDialog.hpp"
-#include "../PolygonReducer.template.hpp"
-#include "../Utils/Utils.hpp"
+#include "PolygonReducer.template.hpp"
+#include "Utils/Utils.hpp"
 #include "Array.hpp"
 #include <APIdefs_Elements.h>
-#include "../Geometry/Polygon.hpp"
-#include <functional>
+#include "Geometry/Polygon.hpp"
+
 
 //-----------------------   Utility functions //-----------------------
 
@@ -251,7 +253,7 @@ namespace PolygonReducer {
   }
 
   PointNrInfoboxPage::PointNrInfoboxPage(const DG::TabControl& tabControl, TBUI::IAPIToolUIData* p_uiData)
-    :DG::TabPage(tabControl, 1, ACAPI_GetOwnResModule(), PointNrInfoBoxId, InvalidResModule)
+    : DG::TabPage(tabControl, 1, ACAPI_GetOwnResModule(), PointNrInfoBoxId, InvalidResModule)
     , iUIPointNumber(GetReference(), iUIPointNumberId)
     , iSlider(GetReference(), iUISliderId)
     , GDLButton(GetReference(), GDLButtonId)

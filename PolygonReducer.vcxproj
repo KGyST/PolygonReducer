@@ -156,7 +156,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(ACVersion)'=='27'">
     <ClCompile>
-      <AdditionalIncludeDirectories>$(CommonModules);$(ACDevKitSupport)\Inc;$(ACDevKitModules)\RS;$(ACDevKitModules)\CADInfrastructureBase;$(ACDevKitModules)\Graphix;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>Src;$(CommonModules);$(ACDevKitSupport)\Inc;$(ACDevKitModules)\RS;$(ACDevKitModules)\CADInfrastructureBase;$(ACDevKitModules)\Graphix;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
   </ItemDefinitionGroup>
