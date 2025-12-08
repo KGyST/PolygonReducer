@@ -32,7 +32,7 @@ namespace PolygonReducer {
 
 	public:
 		GDLDialog();
-		~GDLDialog();
+		~GDLDialog() = default;
 		void setEditText(GS::UniString text);
 		void setEditText(std::string text);
 	};

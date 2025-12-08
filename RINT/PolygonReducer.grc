@@ -100,17 +100,18 @@
 
 'GDLG'  SettingsPageId  Modal   0      0  300  70  "Settings" {
 /* [  1] */ Button				      284   40   16  20  SmallPlain  ""
-/* [  2] */ LeftText            0      0  145  20  SmallPlain  vCenter  "Loglevel"
-/* [  3] */ PopupControl        150    0  150  20  24 5
-/* [  4] */ LeftText            0     20  245  20  SmallPlain  vCenter  "Minimum number of edges to create an arc"
-/* [  5] */ IntEdit             250   20   50  20  SmallPlain  "0" "1000"
+
+/* [  3] */ LeftText            0      0  145  20  SmallPlain  vCenter  "Loglevel"
+/* [  4] */ PopupControl        150    0  150  20  24 5
+/* [  5] */ LeftText            0     20  245  20  SmallPlain  vCenter  "Minimum number of edges to create an arc"
+/* [  6] */ IntEdit             250   20   50  20  SmallPlain  "0" "1000"
 }
 
 'DLGH'  SettingsPageId  DLG_SettingsPageId {
-11	"Close window"		                                Button_OK
-13	"Loglevel"		                                    LeftText_LogLev
-14	"Select Loglevel"		                              PopupControl_LogLev
-15	"Minimum number of edges to create an arc"		    LeftText_ArcEdges
-16	"Select Minimum number of edges to create an arc" IntEdit_ArcEdges
+1	"Close window"		                                Button_OK
+3	"Loglevel"		                                    LeftText_LogLev
+4	"Select Loglevel"		                              PopupControl_LogLev
+5	"Minimum number of edges to create an arc"		    LeftText_ArcEdges
+6	"Select Minimum number of edges to create an arc" IntEdit_ArcEdges
 }
 

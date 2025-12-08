@@ -10,12 +10,12 @@
 #define GDLPageId             32704
 #define SettingsPageId        32705
 
-#define Button_OK             11
-#define Button_Cancel         12
-#define LeftText_LogLev       13
-#define PopupControl_LogLev   14
-#define LeftText_ArcEdges     15
-#define IntEdit_ArcEdges      16
+#define Button_OK             1
+#define Button_Cancel         2
+#define LeftText_LogLev       3
+#define PopupControl_LogLev   4
+#define LeftText_ArcEdges     5
+#define IntEdit_ArcEdges      6
 
 #define COMPANY_NAME        "Samu"
 #define APP_NAME            "PolygonReducer"

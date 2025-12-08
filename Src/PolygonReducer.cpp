@@ -13,15 +13,15 @@
 
 // ---------------------------------- Includes ---------------------------------
 
-#include "APIEnvir.h"
-#include "ACAPinc.h"					// also includes APIdefs.h
-#include "AC27/APICommon.h"
-
 #include <stdio.h>
 #include <string>
 #include <algorithm>
 #include <numeric>
 #include <boost/format.hpp>
+
+#include "APIEnvir.h"
+#include "ACAPinc.h"					// also includes APIdefs.h
+#include "AC27/APICommon.h"
 
 #include "basicgeometry.h"
 #include "Utils/Utils.hpp"
@@ -91,8 +91,8 @@ static short DGCALLBACK SettingsDlgCallBack(short message, short dialID, short i
       break;
     case DG_MSG_CLICK:
       switch (item) {
-      case Button_OK:
-      case Button_Cancel:
+      case DG_OK:
+      case DG_CANCEL:
         result = item;
 
         break;
