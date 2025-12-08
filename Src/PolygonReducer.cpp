@@ -13,15 +13,15 @@
 
 // ---------------------------------- Includes ---------------------------------
 
-#include "APIEnvir.h"
-#include "ACAPinc.h"					// also includes APIdefs.h
-#include "AC27/APICommon.h"
-
 #include <stdio.h>
 #include <string>
 #include <algorithm>
 #include <numeric>
 #include <boost/format.hpp>
+
+#include "APIEnvir.h"
+#include "ACAPinc.h"					// also includes APIdefs.h
+#include "AC27/APICommon.h"
 
 #include "basicgeometry.h"
 #include "Utils/Utils.hpp"
@@ -56,7 +56,7 @@ enum {
 };
 
 //PointNrPanel* pointNrInfoBox = NULL;
-LengthPanel* lengthInfoBox = NULL;
+LengthPanelWrapper* lengthInfoBox = NULL;
 Logger logger(COMPANY_NAME, APP_NAME);
 
 // ----------------------------------  --------------------------------
@@ -91,8 +91,8 @@ static short DGCALLBACK SettingsDlgCallBack(short message, short dialID, short i
       break;
     case DG_MSG_CLICK:
       switch (item) {
-      case Button_OK:
-      case Button_Cancel:
+      case DG_OK:
+      case DG_CANCEL:
         result = item;
 
         break;
@@ -118,10 +118,8 @@ static short DGCALLBACK SettingsDlgCallBack(short message, short dialID, short i
 static void		Do_DisplaySettings(void) {
   GSErrCode		err = NoError;
 
-  //err = DGModalDialog(ACAPI_GetOwnResModule(), SettingsPageId, ACAPI_GetOwnResModule(), SettingsDlgCallBack, (DGUserData)&cntlDlgData);
-
   SettingsDialog* dialog = new SettingsDialog();
-  SettingsDialogObserver observer(dialog);
+
   dialog->Invoke();
 }
 
@@ -306,7 +304,7 @@ GSErrCode	__ACENV_CALL Initialize(void)
     }
 
     try {
-      lengthInfoBox = new LengthPanel(LengthInfoBoxPanelRefCon);
+      lengthInfoBox = new LengthPanelWrapper(LengthInfoBoxPanelRefCon);
     }
     catch (...) {
         DBPrintf("Panel_Test add-on: infoBoxPanel construction failed\n");

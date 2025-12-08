@@ -32,13 +32,13 @@ namespace PolygonReducer {
   };
 
 
-  template<typename InfoboxPage, typename PageObserver>
+  template<typename T_InfoboxPage, typename T_PageObserver>
   class WrapperMixin:
     public TBUI::APIToolUIPanel
   {
   private:
-    PageObserver* m_observer;
-    InfoboxPage* m_typedPage;
+    T_PageObserver* m_observer;
+    T_InfoboxPage* m_typedPage;
     DG::TabPage* m_tabPage;
 
   public:
@@ -50,10 +50,10 @@ namespace PolygonReducer {
     virtual ~WrapperMixin() = default;
 
     bool	CreatePage(const DG::TabControl& tabControl, TBUI::IAPIToolUIData* data, DG::TabPage** tabPage) {
-      m_typedPage = new InfoboxPage(tabControl, data);
+      m_typedPage = new T_InfoboxPage(tabControl, data);
       *tabPage = m_typedPage;
 
-      m_observer = new PageObserver(m_typedPage);
+      m_observer = new T_PageObserver(m_typedPage);
 
       return true;
     }
@@ -203,10 +203,10 @@ namespace PolygonReducer {
 
   // --- Wrapper class --------------------------------------------------------
 
-  class LengthPanel
+  class LengthPanelWrapper
     : public WrapperMixin<LengthInfoboxPage, LengthPageObserver > {
   public:
-    LengthPanel(Int32 refCon) : WrapperMixin(refCon) {}
+    LengthPanelWrapper(Int32 refCon) : WrapperMixin(refCon) {}
   };
 }
 

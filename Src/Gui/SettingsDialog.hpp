@@ -7,47 +7,31 @@
 
 // ---------------------------------- Includes ---------------------------------
 #include	"DGModule.hpp"
-#include "../PolygonReducer_Resource.h"
 
 // --- Class declaration: SEttingsDialog -------------------------------------
 
 class SettingsDialog : 
-	public DG::ModalDialog
+	public	DG::ModalDialog,
+	public	DG::ButtonItemObserver,
+	public	DG::PopUpObserver,
+	public	DG::IntEditObserver,
+	public	DG::CompoundItemObserver
 
 {
-friend class SettingsDialogObserver;
-
 protected:
-	enum Controls {
-		TextID = 1,
-		SettingsCloseButtonID = 2
-	};
-
 	DG::Button	closeButton;
+	DG::PopUp		logLevPopup;
+	DG::IntEdit arcEdgesEdit;
 
 public:
 	SettingsDialog();
-	~SettingsDialog();
-};
-
-// --- SettingsDialogObserver -------------------------------------
-
-class SettingsDialogObserver :
-	public		DG::PanelObserver,
-	public		DG::ButtonItemObserver,
-	public		DG::CompoundItemObserver
-{
-private:
-	SettingsDialog* dialog;
+	~SettingsDialog() = default;
 
 protected:
-	virtual void	ButtonClicked(const DG::ButtonClickEvent& ev) override;
-
-public:
-	explicit SettingsDialogObserver(SettingsDialog* dialog);
-	~SettingsDialogObserver(void);
+	virtual void ButtonClicked(const DG::ButtonClickEvent& ev) override;
+	virtual void PopUpChanged(const DG::PopUpChangeEvent& ev) override;
+	virtual void IntEditChanged(const DG::IntEditChangeEvent& ev) override;
 };
-
 
 #endif // SETTINGS_DIALOG_HPP
 

@@ -382,7 +382,7 @@ namespace PolygonReducer {
     if (ev.GetSource() == &m_tabPage->SettingsButton)
     {
       SettingsDialog* dialog = new SettingsDialog();
-      SettingsDialogObserver observer(dialog);
+      //SettingsDialogObserver observer(dialog);
       dialog->Invoke();
     }
   }
@@ -462,6 +462,7 @@ namespace PolygonReducer {
 
   void LengthPageObserver::RealEditChanged(const DG::RealEditChangeEvent& ev)
   {
+    // TODO
     if (ev.GetSource() == &m_tabPage->iUIStoredLength)
     {
     }

@@ -26,10 +26,6 @@ namespace PolygonReducer {
 		edit.SetText(text);
 	}
 
-	GDLDialog::~GDLDialog()
-	{
-	}
-
 	// --- GDLDialogObserver -------------------------------------
 
 	GDLDialogObserver::GDLDialogObserver(GDLDialog* dialog) :
@@ -50,3 +46,4 @@ namespace PolygonReducer {
 			dialog->PostCloseRequest(DG::ModalDialog::Accept);
 	}
 }
+
