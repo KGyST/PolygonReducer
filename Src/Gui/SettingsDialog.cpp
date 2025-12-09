@@ -10,15 +10,16 @@
 #include	"SettingsDialog.hpp"
 #include "Logger/LoglevelStrings.hpp"
 #include "Gui/SettingsSingleton.hpp"
+#include "../PolygonReducer_Resource.h"
 
 
 // --- Class definition: SettingsDialog --------------------------------------
 
 SettingsDialog::SettingsDialog()
 	:	DG::ModalDialog(ACAPI_GetOwnResModule(), SettingsPageId, ACAPI_GetOwnResModule())
-	, closeButton(GetReference(), Button_OKID)
-	, logLevPopup(GetReference(), LogLevID)
-	, arcEdgesEdit(GetReference(), ArcEdgesID)
+	, closeButton(GetReference(), Button_OK)
+	, logLevPopup(GetReference(), PopupControl_LogLev)
+	, arcEdgesEdit(GetReference(), IntEdit_ArcEdges)
 {
 	for (const GS::UniString& _s : sLoglevels)
 	{
@@ -31,10 +32,18 @@ SettingsDialog::SettingsDialog()
   arcEdgesEdit.SetValue(SETTINGS.GetMinEdgeCount());
 }
 
+//SettingsDialog::~SettingsDialog()
+//{
+//}
+
 SettingsDialogObserver::SettingsDialogObserver(SettingsDialog* dialog):
 	dialog(dialog)
 {
-	dialog->Attach(*this);
+	//dialog->Attach(*this);
+	dialog->closeButton.Attach(*(DG::ButtonItemObserver*) this);
+	dialog->logLevPopup.Attach(*this);
+  dialog->arcEdgesEdit.Attach(*(DG::IntEditObserver*) this);
+
 	AttachToAllItems(*dialog);
 } 
 

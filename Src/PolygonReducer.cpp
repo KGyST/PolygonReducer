@@ -56,7 +56,7 @@ enum {
 };
 
 //PointNrPanel* pointNrInfoBox = NULL;
-LengthPanel* lengthInfoBox = NULL;
+LengthPanelWrapper* lengthInfoBox = NULL;
 Logger logger(COMPANY_NAME, APP_NAME);
 
 // ----------------------------------  --------------------------------
@@ -306,7 +306,7 @@ GSErrCode	__ACENV_CALL Initialize(void)
     }
 
     try {
-      lengthInfoBox = new LengthPanel(LengthInfoBoxPanelRefCon);
+      lengthInfoBox = new LengthPanelWrapper(LengthInfoBoxPanelRefCon);
     }
     catch (...) {
         DBPrintf("Panel_Test add-on: infoBoxPanel construction failed\n");

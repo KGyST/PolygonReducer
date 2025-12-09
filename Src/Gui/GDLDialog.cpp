@@ -46,3 +46,4 @@ namespace PolygonReducer {
 			dialog->PostCloseRequest(DG::ModalDialog::Accept);
 	}
 }
+

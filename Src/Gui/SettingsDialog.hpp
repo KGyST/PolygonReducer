@@ -7,7 +7,6 @@
 
 // ---------------------------------- Includes ---------------------------------
 #include	"DGModule.hpp"
-#include "../PolygonReducer_Resource.h"
 
 // --- Class declaration: SEttingsDialog -------------------------------------
 
@@ -18,11 +17,11 @@ class SettingsDialog :
 friend class SettingsDialogObserver;
 
 protected:
-	enum Controls {
-		Button_OKID = 1,
-		LogLevID = 4,
-		ArcEdgesID = 6
-	};
+	//enum Controls {
+	//	Button_OKID = 1,
+	//	LogLevID = 4,
+	//	ArcEdgesID = IntEdit_ArcEdges
+	//};
 
 	DG::Button	closeButton;
 	DG::PopUp		logLevPopup;

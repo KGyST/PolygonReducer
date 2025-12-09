@@ -462,6 +462,7 @@ namespace PolygonReducer {
 
   void LengthPageObserver::RealEditChanged(const DG::RealEditChangeEvent& ev)
   {
+    // TODO
     if (ev.GetSource() == &m_tabPage->iUIStoredLength)
     {
     }

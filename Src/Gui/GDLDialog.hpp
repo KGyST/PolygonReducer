@@ -58,3 +58,4 @@ namespace PolygonReducer {
 
 
 #endif // GDLDIALOG_HPP
+
