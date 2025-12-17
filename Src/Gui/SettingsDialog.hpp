@@ -5,32 +5,31 @@
 #ifndef SETTINGS_DIALOG_HPP
 #define SETTINGS_DIALOG_HPP
 
-// ---------------------------------- Includes ---------------------------------
 #include	"DGModule.hpp"
 
-// --- Class declaration: SEttingsDialog -------------------------------------
+using namespace DG;
 
 class SettingsDialog : 
-	public	DG::ModalDialog,
-	public	DG::ButtonItemObserver,
-	public	DG::PopUpObserver,
-	public	DG::IntEditObserver,
-	public	DG::CompoundItemObserver
+	public	ModalDialog,
+	public	ButtonItemObserver,
+	public	PopUpObserver,
+	public	IntEditObserver,
+	public	CompoundItemObserver
 
 {
 protected:
-	DG::Button	closeButton;
-	DG::PopUp		logLevPopup;
-	DG::IntEdit arcEdgesEdit;
+	Button	closeButton;
+	PopUp		logLevPopup;
+	IntEdit arcEdgesEdit;
 
 public:
 	SettingsDialog();
 	~SettingsDialog() = default;
 
 protected:
-	virtual void ButtonClicked(const DG::ButtonClickEvent& ev) override;
-	virtual void PopUpChanged(const DG::PopUpChangeEvent& ev) override;
-	virtual void IntEditChanged(const DG::IntEditChangeEvent& ev) override;
+	void ButtonClicked(const ButtonClickEvent& ev) override;
+	void PopUpChanged(const PopUpChangeEvent& ev) override;
+	void IntEditChanged(const IntEditChangeEvent& ev) override;
 };
 
 #endif // SETTINGS_DIALOG_HPP

@@ -15,6 +15,8 @@
 #define LeftText_ArcEdges     4
 #define IntEdit_ArcEdges      5
 
+#define MultiLineEdit_GDL     2
+
 #define COMPANY_NAME        "Samu"
 #define APP_NAME            "PolygonReducer"
 

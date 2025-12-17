@@ -67,54 +67,6 @@ Logger logger(COMPANY_NAME, APP_NAME);
 //
 // =============================================================================
 
-static short DGCALLBACK SettingsDlgCallBack(short message, short dialID, short item, DGUserData userData, DGMessageData msgData)
-{
-	short result = 0;
-	GS::UniString _text{};
-	API_PropertyDefinition _def;
-	IO::Location sFileLoc;
-
-  LOGGER.Log(boost::format("SettingsDlgCallBack: message = %d, dialID = %d, item = %d") % message % dialID % item, Loglevel::LogLev_TRACE);
-
-  switch (message) {
-    case DG_MSG_INIT:
-      for (const GS::UniString& _s : sLoglevels)
-      {
-        DGPopUpInsertItem(dialID, PopupControl_LogLev, DG_LIST_BOTTOM);
-        DGPopUpSetItemText(dialID, PopupControl_LogLev, DG_LIST_BOTTOM, _s);
-      }
-
-      DGPopUpSelectItem(dialID, PopupControl_LogLev, LOGGER.GetLoglevel() + 1);
-
-      DGSetItemValLong(dialID, IntEdit_ArcEdges, SETTINGS.GetMinEdgeCount());
-
-      break;
-    case DG_MSG_CLICK:
-      switch (item) {
-      case DG_OK:
-      case DG_CANCEL:
-        result = item;
-
-        break;
-      }
-      
-      break;
-    case DG_MSG_CHANGE:
-      switch (item) {
-      case PopupControl_LogLev:
-        LOGGER.SetLoglevel((Loglevel)(DGGetItemValLong(dialID, PopupControl_LogLev) - 1));
-
-        break;
-      case IntEdit_ArcEdges:
-        SETTINGS.SetMinEdgeCount((UINT)DGGetItemValLong(dialID, IntEdit_ArcEdges));
-
-        break;
-      }
-  }
-
-  return result;
-}
-
 static void		Do_DisplaySettings(void) {
   GSErrCode		err = NoError;
 
@@ -210,8 +162,6 @@ static	GSErrCode	__ACENV_CALL	DestroyPageCallback(Int32 refCon, void* /*tabPage*
 
 GSErrCode __ACENV_CALL	MenuCommandHandler(const API_MenuParams* params)
 {
-  //return ACAPI_CallUndoableCommand("Reduce Polygons",
-  //  [&]() -> GSErrCode {
   switch (params->menuItemRef.itemIndex) {
 
   case 1:		Do_DisplaySettings();		    break;
@@ -220,9 +170,7 @@ GSErrCode __ACENV_CALL	MenuCommandHandler(const API_MenuParams* params)
 #endif
   }
   return NoError;
-    //});
-}		// DoCommand
-
+}
 
 // =============================================================================
 //
@@ -261,16 +209,8 @@ GSErrCode	__ACENV_CALL	RegisterInterface(void)
 	err = ACAPI_AddOnIntegration_RegisterInfoBoxPanel(LengthInfoBoxPanelRefCon, API_PolyLineID, Length_IBOXPAGE_NAME, LengthInfoBoxId);
 	err = ACAPI_AddOnIntegration_RegisterInfoBoxPanel(LengthInfoBoxPanelRefCon, API_HatchID, Length_IBOXPAGE_NAME, LengthInfoBoxId);
 
-  //if (err != NoError) {
-  //  DBPrintf("PolygonReducer add-on: Cannot register info box panel\n");
-  //}
-  //else
-  //{
-    registrationSuccess |= PointNrInfoBoxPanelRegistered;
-    registrationSuccess |= LengthInfoBoxPanelRegistered;
-  //}
-
-  //ACAPI_KeepInMemory(true);
+  registrationSuccess |= PointNrInfoBoxPanelRegistered;
+  registrationSuccess |= LengthInfoBoxPanelRegistered;
 
   return NoError;
 }		/* RegisterInterface */
@@ -329,11 +269,5 @@ GSErrCode	__ACENV_CALL Initialize(void)
 
 GSErrCode __ACENV_CALL	FreeData(void)
 {
-    //if (pointNrInfoBox != NULL)
-    //    delete pointNrInfoBox;
-
-    //if (lengthInfoBox != NULL)
-    //    delete lengthInfoBox;
-
     return NoError;
 }		// FreeData

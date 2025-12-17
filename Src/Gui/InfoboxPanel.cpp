@@ -375,7 +375,6 @@ namespace PolygonReducer {
       std::string _s = pgon->GetGDLcode();
       dialog->setEditText(_s);
 
-      GDLDialogObserver observer(dialog);
       dialog->Invoke();
     }
 

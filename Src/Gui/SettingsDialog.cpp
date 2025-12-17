@@ -2,8 +2,6 @@
 // SettingsDialog.cpp
 // -----------------------------------------------------------------------------
 
-// ---------------------------------- Includes ---------------------------------
-
 #include	"../APIEnvir.h"
 #include	"ACAPinc.h"
 
@@ -14,7 +12,6 @@
 
 
 // --- Class definition: SettingsDialog --------------------------------------
-
 
 SettingsDialog::SettingsDialog()
 	:	DG::ModalDialog(ACAPI_GetOwnResModule(), SettingsPageId, ACAPI_GetOwnResModule())
