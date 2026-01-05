@@ -55,7 +55,7 @@ enum {
     LengthInfoBoxPanelRegistered = 1 << LengthInfoBoxPanelRefCon
 };
 
-//PointNrPanel* pointNrInfoBox = NULL;
+PointNrPanel* pointNrInfoBox = NULL;
 LengthPanelWrapper* lengthInfoBox = NULL;
 Logger logger(COMPANY_NAME, APP_NAME);
 
@@ -122,8 +122,8 @@ static	GSErrCode	__ACENV_CALL	CreatePageCallback(Int32 refCon, const void* tabCo
 
     switch (refCon) {
         case PointNrInfoBoxPanelRefCon:		
-          if (SETTINGS.m_pointNrInfoBox != NULL)
-            success = SETTINGS.m_pointNrInfoBox->CreatePage(*control, reinterpret_cast<TBUI::IAPIToolUIData*>(data), page);
+          if (pointNrInfoBox != NULL)
+            success = pointNrInfoBox->CreatePage(*control, reinterpret_cast<TBUI::IAPIToolUIData*>(data), page);
             break;
         case LengthInfoBoxPanelRefCon:		
           if (lengthInfoBox != NULL)
@@ -143,8 +143,8 @@ static	GSErrCode	__ACENV_CALL	DestroyPageCallback(Int32 refCon, void* /*tabPage*
     switch (refCon) {
 
     case PointNrInfoBoxPanelRefCon:		
-      if (SETTINGS.m_pointNrInfoBox != NULL)
-        SETTINGS.m_pointNrInfoBox->DestroyPage();
+      if (pointNrInfoBox != NULL)
+        pointNrInfoBox->DestroyPage();
         break;
 
     case LengthInfoBoxPanelRefCon:		
@@ -229,15 +229,15 @@ GSErrCode	__ACENV_CALL Initialize(void)
         DBPrintf("Geometry_Test:: Initialize() ACAPI_Install_MenuHandler failed\n");
 
     try {
-      SETTINGS.m_pointNrInfoBox = new PointNrPanel(PointNrInfoBoxPanelRefCon);
+      pointNrInfoBox = new PointNrPanel(PointNrInfoBoxPanelRefCon);
     }
     catch (...) {
         DBPrintf("Panel_Test add-on: infoBoxPanel construction failed\n");
-        SETTINGS.m_pointNrInfoBox = NULL;
+        pointNrInfoBox = NULL;
     }
 
-    if (SETTINGS.m_pointNrInfoBox != NULL) {
-      err = ACAPI_AddOnIntegration_InstallPanelHandler(SETTINGS.m_pointNrInfoBox->GetRefCon(), CreatePageCallback, DestroyPageCallback);
+    if (pointNrInfoBox != NULL) {
+      err = ACAPI_AddOnIntegration_InstallPanelHandler(pointNrInfoBox->GetRefCon(), CreatePageCallback, DestroyPageCallback);
       if (err != NoError) {
         DBPrintf("Panel_Test add-on: Info box panel handler initialization failed\n");
       }

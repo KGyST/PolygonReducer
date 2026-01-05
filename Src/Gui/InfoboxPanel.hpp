@@ -100,12 +100,8 @@ namespace PolygonReducer {
     ~PointNrInfoboxPage();
 
     // Getters / Setters
-    int GetPointNumber();
-    GSErrCode SetPointNumber(int);
-
-    double GetSmallestLength();
-    GSErrCode SetSmallestLength(double);
-
+    //int GetPointNumber();
+    //GSErrCode SetPointNumber(int);
   };
 
   // --- PolygonReducerPageObserver -------------------------------------------------
@@ -123,11 +119,11 @@ namespace PolygonReducer {
     PointNrInfoboxPage* m_tabPage;
 
   protected:
-    virtual	void		APIElementChanged(const TBUI::APIElemDefaultFieldMask& fieldMask) override;
-    virtual void		PosIntEditChanged(const DG::PosIntEditChangeEvent& ev);
-    virtual void		RealEditChanged(const DG::RealEditChangeEvent& ev);
-    virtual void		ButtonClicked(const DG::ButtonClickEvent& ev) override;
-    virtual void		BarControlChanged(const DG::BarControlChangeEvent& ev) override;
+    void		APIElementChanged(const TBUI::APIElemDefaultFieldMask& fieldMask) override;
+    void		PosIntEditChanged(const DG::PosIntEditChangeEvent& ev);
+    void		RealEditChanged(const DG::RealEditChangeEvent& ev);
+    void		ButtonClicked(const DG::ButtonClickEvent& ev) override;
+    void		BarControlChanged(const DG::BarControlChangeEvent& ev) override;
 
   public:
     explicit PointNrPageObserver(PointNrInfoboxPage* testPage);
@@ -154,7 +150,7 @@ namespace PolygonReducer {
 
   protected:
     enum Controls {
-      iUIStoredLengthId = 1,
+      iUIStoredLengthId = 2,
       StoredButtonId,
       ApplyButtonId,
       iUICurrentLengthId,
@@ -172,13 +168,8 @@ namespace PolygonReducer {
     ~LengthInfoboxPage();
 
     //// Getters / Setters
-    //int GetPointNumber();
-    //GSErrCode SetPointNumber(int);
-
     //double GetSmallestLength();
     //GSErrCode SetSmallestLength(double);
-
-    //void SetCurrentPolyGUID(API_Guid i_currentPolygonGUID);
   };
 
   // --- PolygonReducerPageObserver -------------------------------------------------

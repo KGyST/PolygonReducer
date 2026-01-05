@@ -71,18 +71,18 @@
 
 'GDLG'  LengthInfoBoxId  TabPage  0    0  160   36  "" {
 /* [  1] */ LeftText        0    0  99   18  ExtraSmall  vCenter  "Shortest segment length:"
-/* [  2] */ IntEdit         0   18  34   16  ExtraSmall  "0" "1000"
+/* [  2] */ LengthEdit      0   18  34   16  ExtraSmall  "0" "1000"
 /* [  3] */ Button			   36   18  16   16  ExtraSmall  "<<"
 /* [  4] */ Button			   56   18  16   16  ExtraSmall  ">>"
-/* [  5] */ IntEdit        78   18  34   16  ExtraSmall  "0" "1000"
+/* [  5] */ LengthEdit     78   18  34   16  ExtraSmall  "0" "1000"
 }
 
 'DLGH'  LengthInfoBoxId  DLG_LengthInfoBoxId {
 1	"Shortest segment length"		LeftText_0
-2	"Stored segment length"		  IntEdit_0
+2	"Stored segment length"		  LengthEdit_0
 3	"Store"				              Button_0
 4	"Apply to current polygon"	Button_1
-5	"Current segment length"		IntEdit_1
+5	"Current segment length"		LengthEdit_1
 }
 
 /*----------------------------------------------------------*/

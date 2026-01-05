@@ -11,6 +11,7 @@
 #include "Array.hpp"
 #include <APIdefs_Elements.h>
 #include "Geometry/Polygon.hpp"
+#include "Gui/SettingsSingleton.hpp"
 
 
 //-----------------------   Utility functions //-----------------------
@@ -218,6 +219,54 @@ static GSErrCode _Wrapper(std::function<void(S::Polygon&)> i_func)
   return err;
 }
 
+int GetPointNumber()
+{
+  S::Polygon* pgon = GetFirstPolygonFromSelection();
+
+  if (pgon != NULL) {
+    UINT16 iPoints = (UINT16)pgon->GetPointCount();
+    delete pgon;
+
+    return iPoints;
+  }
+  else {
+    return 0; // no polygon found in selection
+  }
+}
+
+GSErrCode SetPointNumber(const int i_iPoint)
+{
+  auto func = [i_iPoint](S::Polygon& i_poly) -> void {
+    return i_poly.SetPointCount(i_iPoint);
+    };
+
+  return _Wrapper(func);
+}
+
+double GetSmallestLength()
+{
+  S::Polygon* pgon = GetFirstPolygonFromSelection();
+
+  if (pgon != NULL) {
+    double _sel = pgon->GetShortestEdgeLength();
+    delete pgon;
+
+    return _sel;
+  }
+  else {
+    return 0.00; // no polygon found in selection
+  }
+}
+
+GSErrCode SetSmallestLength(double i_length)
+{
+  auto func = [i_length](S::Polygon& i_poly) -> void {
+    return i_poly.SetShortestEdgeLength(i_length);
+    };
+
+  return _Wrapper(func);
+}
+
 //----------------------- / Utility functions //-----------------------
 
 namespace PolygonReducer {
@@ -270,54 +319,6 @@ namespace PolygonReducer {
 
   // Getters / Setters
 
-  int PointNrInfoboxPage::GetPointNumber()
-  {
-    S::Polygon* pgon = GetFirstPolygonFromSelection();
-
-    if (pgon != NULL) {
-      UINT16 iPoints = (UINT16)pgon->GetPointCount();
-      delete pgon;
-
-      return iPoints;
-    }
-    else {
-      return 0; // no polygon found in selection
-    }
-  }
-
-  GSErrCode PointNrInfoboxPage::SetPointNumber(const int i_iPoint)
-  {
-    auto func = [i_iPoint](S::Polygon& i_poly) -> void {
-      return i_poly.SetPointCount(i_iPoint);
-      };
-
-    return _Wrapper(func);
-  }
-
-  double PointNrInfoboxPage::GetSmallestLength()
-  {
-    S::Polygon* pgon = GetFirstPolygonFromSelection();
-
-    if (pgon != NULL) {
-      double _sel = pgon->GetShortestEdgeLength();
-      delete pgon;
-
-      return _sel;
-    }
-    else {
-      return 0.00; // no polygon found in selection
-    }
-  }
-
-  GSErrCode PointNrInfoboxPage::SetSmallestLength(double i_length)
-  {
-    auto func = [i_length](S::Polygon& i_poly) -> void {
-      return i_poly.SetShortestEdgeLength(i_length);
-      };
-
-    return _Wrapper(func);
-  }
-
   // --- PolygonReducerPageObserver -------------------------------------------------
 
   void PointNrPageObserver::APIElementChanged(const TBUI::APIElemDefaultFieldMask& fieldMask) {
@@ -336,12 +337,10 @@ namespace PolygonReducer {
     if (ev.GetSource() == &m_tabPage->iUIPointNumber)
     {
       int iPointVal = ev.GetSource()->GetValue();
-      //int iPointMax = ev.GetSource()->GetMax() ;
 
       DGSetItemValLong(PointNrInfoBoxId, m_tabPage->iUISliderId, iPointVal);
-      //DGSetItemValLong(PointNrInfoBoxId, iUISliderId, iPointMax);
 
-      m_tabPage->SetPointNumber(iPointVal/*, iPointMax*/);
+      SetPointNumber(iPointVal);
     }
   }
 
@@ -350,7 +349,7 @@ namespace PolygonReducer {
     if (ev.GetSource() == &m_tabPage->iUISmallestLength)
     {
       double dLengthVal = ev.GetSource()->GetValue();
-      m_tabPage->SetSmallestLength(dLengthVal);
+      SetSmallestLength(dLengthVal);
     }
   }
 
@@ -362,7 +361,7 @@ namespace PolygonReducer {
 
       DGSetItemValLong(PointNrInfoBoxId, m_tabPage->iUIPointNumberId, iPointVal);
 
-      m_tabPage->SetPointNumber(iPointVal/*, iPointMax*/);
+      SetPointNumber(iPointVal/*, iPointMax*/);
     }
   }
 
@@ -381,7 +380,7 @@ namespace PolygonReducer {
     if (ev.GetSource() == &m_tabPage->SettingsButton)
     {
       SettingsDialog* dialog = new SettingsDialog();
-      //SettingsDialogObserver observer(dialog);
+     
       dialog->Invoke();
     }
   }
@@ -414,8 +413,9 @@ namespace PolygonReducer {
 
     S::Polygon* currentPgon = GetPolygonByGUID(m_currentPolygonGUID), * originalPgon = GetPolygonByGUID(originalGuid);
 
-    //iUIStoredLength.SetValue();
-    iUICurrentLength.SetValue((GS::ULong) currentPgon->GetShortestEdgeLength());
+    iUIStoredLength.SetValue(SETTINGS.GetMinEdgeLength());
+
+    iUICurrentLength.SetValue(currentPgon->GetShortestEdgeLength());
   }
 
   LengthInfoboxPage::LengthInfoboxPage(const DG::TabControl& tabControl, TBUI::IAPIToolUIData* p_uiData)
@@ -450,24 +450,33 @@ namespace PolygonReducer {
   {
     if (ev.GetSource() == &m_tabPage->StoreButton)
     {
+      SETTINGS.SetMinEdgeLength(m_tabPage->iUICurrentLength.GetValue() );
 
+      m_tabPage->SetControls();
     }
 
     if (ev.GetSource() == &m_tabPage->ApplyButton)
     {
+      SetSmallestLength(SETTINGS.GetMinEdgeLength());
 
+      m_tabPage->SetControls();
     }
   }
 
   void LengthPageObserver::RealEditChanged(const DG::RealEditChangeEvent& ev)
   {
-    // TODO
     if (ev.GetSource() == &m_tabPage->iUIStoredLength)
     {
+      SETTINGS.SetMinEdgeLength(m_tabPage->iUIStoredLength.GetValue());
+
+      m_tabPage->SetControls();
     }
 
-    if (ev.GetSource() == &m_tabPage->iUIStoredLength)
+    if (ev.GetSource() == &m_tabPage->iUICurrentLength)
     {
+      SetSmallestLength(m_tabPage->iUIStoredLength.GetValue());
+
+      m_tabPage->SetControls();
     }
   }
 
