@@ -6,7 +6,7 @@
 
 #include "GDLDialog.hpp"
 #include "SettingsDialog.hpp"
-#include "PolygonReducer.template.hpp"
+//#include "PolygonReducer.template.hpp"
 #include "Utils/Utils.hpp"
 #include "Array.hpp"
 #include <APIdefs_Elements.h>
@@ -390,6 +390,9 @@ namespace PolygonReducer {
   {
     AttachToAllItems(*m_tabPage);
     m_tabPage->uiData->AttachObserver(this);
+    SETTINGS.Register(this, [this]() {
+      m_tabPage->SetControls();
+      });
 
     TBUI::APIElemDefaultFieldMask mask;
     mask.SetAll();
@@ -398,6 +401,8 @@ namespace PolygonReducer {
 
   PointNrPageObserver::~PointNrPageObserver(void) {
     DetachFromAllItems(*m_tabPage);
+    SETTINGS.Unregister(this);
+
     m_tabPage->uiData->DetachObserver(this);
     m_tabPage = NULL;
   }
@@ -485,6 +490,9 @@ namespace PolygonReducer {
   {
     AttachToAllItems(*m_tabPage);
     m_tabPage->uiData->AttachObserver(dynamic_cast<TBUI::IAPIToolUIDataObserver*>(this));
+    SETTINGS.Register(this, [this]() {
+      m_tabPage->SetControls();
+      });
 
     TBUI::APIElemDefaultFieldMask mask;
     mask.SetAll();
@@ -493,6 +501,8 @@ namespace PolygonReducer {
 
   LengthPageObserver::~LengthPageObserver(void) {
     DetachFromAllItems(*m_tabPage);
+    SETTINGS.Unregister(this);
+
     m_tabPage->uiData->DetachObserver(dynamic_cast<TBUI::IAPIToolUIDataObserver*>(this));
     m_tabPage = NULL;
   }

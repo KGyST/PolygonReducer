@@ -6,7 +6,7 @@
       <Platform>x64</Platform>
     </ProjectConfiguration>
     <ProjectConfiguration Include="Release 19|x64">
-      <Configuration>Release 19</Configuration> 
+      <Configuration>Release 19</Configuration>
       <Platform>x64</Platform>
     </ProjectConfiguration>
     <ProjectConfiguration Include="Debug 27|x64">
@@ -80,7 +80,7 @@
   </ImportGroup>
   <PropertyGroup>
     <IntDir>Build\$(Configuration)\</IntDir>
-    <OutDir>Build\$(Configuration)\</OutDir> 
+    <OutDir>Build\$(Configuration)\</OutDir>
     <TargetExt>.apx</TargetExt>
   </PropertyGroup>
   <ItemDefinitionGroup>
@@ -167,6 +167,8 @@
     <ClInclude Include="Src\Geometry\GeometryHelpers.hpp" />
     <ClInclude Include="Src\Gui\GDLDialog.hpp" />
     <ClInclude Include="Src\Data\PolygonUserData.hpp" />
+    <ClInclude Include="Src\Gui\Observable.hpp" />
+    <ClInclude Include="Src\Gui\Observable.template.hpp" />
     <ClInclude Include="Src\Gui\SettingsDialog.hpp" />
     <ClInclude Include="Src\Geometry\Polygon.hpp" />
     <ClInclude Include="Src\Gui\InfoboxPanel.hpp" />
@@ -192,6 +194,7 @@
     <ClCompile Include="Src\Gui\GDLDialog.cpp" />
     <ClCompile Include="Src\Gui\InfoboxPanel.cpp" />
     <ClCompile Include="Src\Data\PolygonUserData.cpp" />
+    <ClCompile Include="Src\Gui\Observable.cpp" />
     <ClCompile Include="Src\Gui\SettingsDialog.cpp" />
     <ClCompile Include="Src\Gui\SettingsSingleton.cpp" />
     <ClCompile Include="Src\Utils\Utils.cpp" />
